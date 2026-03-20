@@ -2,11 +2,48 @@
 :root {
     --primary-color: #0d6efd;
     --secondary-color: #6c757d;
-    --dark-bg: #0f172a;
-    --card-bg: #1e293b;
     --accent-color: #f59e0b;
     --success-color: #10b981;
     --danger-color: #ef4444;
+}
+
+/* Dark Mode (Default) */
+:root,
+[data-theme="dark"] {
+    --dark-bg: #0f172a;
+    --card-bg: #1e293b;
+    --text-primary: #e5e7eb;
+    --text-secondary: #cbd5e1;
+    --text-light: rgba(255, 255, 255, 0.7);
+    --border-color: rgba(255, 255, 255, 0.1);
+    --border-light: #334155;
+    --hero-bg-start: #1e293b;
+    --hero-bg-end: #0f172a;
+    --section-bg: #1e293b;
+    --footer-bg-start: #0f172a;
+    --footer-bg-end: #1a1f35;
+    --form-bg: #334155;
+    --form-border: #475569;
+    --form-focus-bg: #475569;
+}
+
+/* Light Mode */
+[data-theme="light"] {
+    --dark-bg: #ffffff;
+    --card-bg: #f8f9fa;
+    --text-primary: #1a202c;
+    --text-secondary: #4a5568;
+    --text-light: rgba(0, 0, 0, 0.6);
+    --border-color: rgba(0, 0, 0, 0.08);
+    --border-light: #d1d5db;
+    --hero-bg-start: #e8ecf1;
+    --hero-bg-end: #0d6efd;
+    --section-bg: #f5f5f5;
+    --footer-bg-start: #e8ecf1;
+    --footer-bg-end: #d1d5db;
+    --form-bg: #ffffff;
+    --form-border: #d1d5db;
+    --form-focus-bg: #f3f4f6;
 }
 
 /* General Styles */
@@ -19,8 +56,9 @@
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: var(--dark-bg);
-    color: #e5e7eb;
+    color: var(--text-primary);
     line-height: 1.6;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Navbar Styling */
@@ -33,6 +71,11 @@ body {
 .navbar-brand {
     font-size: 1.5rem;
     font-weight: bold;
+    color: var(--text-primary) !important;
+    transition: color 0.3s ease;
+}
+
+[data-theme="dark"] .navbar-brand {
     color: #fff !important;
 }
 
@@ -100,12 +143,14 @@ body {
     font-weight: 800;
     margin-bottom: 1rem;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    color: #fff;
 }
 
 .hero-content .lead {
     font-size: 1.5rem;
     margin-bottom: 2rem;
-    color: #f0f0f0;
+    color: #fff;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .btn-primary {
@@ -141,8 +186,8 @@ h2 {
 
 /* Game Cards with Zoom Animation */
 .game-card {
-    background: rgba(30, 41, 59, 0.8);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
     border-radius: 15px;
     overflow: hidden;
     transition: all 0.3s ease;
@@ -181,7 +226,7 @@ h2 {
 }
 
 .game-card-title {
-    color: #fff;
+    color: var(--text-primary);
     font-weight: 600;
     font-size: 1.1rem;
     margin-bottom: 0.5rem;
@@ -198,7 +243,7 @@ h2 {
 }
 
 .game-card-description {
-    color: #cbd5e1;
+    color: var(--text-secondary);
     font-size: 0.9rem;
     margin-bottom: 1rem;
     flex-grow: 1;
@@ -236,7 +281,7 @@ h2 {
 
 .category-card {
     background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: 1px solid var(--border-color);
     padding: 30px 20px;
     border-radius: 20px;
     transition: all 0.3s ease;
@@ -265,25 +310,26 @@ h2 {
 }
 
 .category-card h5 {
-    color: #fff;
+    color: var(--text-primary);
     font-weight: 700;
     margin: 12px 0 8px 0;
     font-size: 1rem;
 }
 
 .category-card .game-count {
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--text-light);
     margin: 0;
     font-size: 0.85rem;
 }
 
 /* About Section */
 #about {
-    background: linear-gradient(135deg, var(--dark-bg) 0%, #1e293b 100%);
+    background: linear-gradient(135deg, var(--dark-bg) 0%, var(--section-bg) 100%);
+    transition: background 0.3s ease;
 }
 
 #about h2 {
-    color: #fff;
+    color: var(--text-primary);
 }
 
 .features-list {
@@ -292,7 +338,7 @@ h2 {
 }
 
 .features-list li {
-    color: #e5e7eb;
+    color: var(--text-primary);
     margin: 1rem 0;
     font-size: 1.1rem;
 }
@@ -304,12 +350,13 @@ h2 {
 
 /* Pricing Section */
 #pricing {
-    background-color: #1e293b;
+    background-color: var(--section-bg);
+    transition: background-color 0.3s ease;
 }
 
 .pricing-card {
     background: var(--card-bg);
-    border: 1px solid #334155;
+    border: 1px solid var(--border-light);
     border-radius: 12px;
     padding: 2.5rem;
     text-align: center;
@@ -319,7 +366,7 @@ h2 {
 }
 
 .pricing-card h4 {
-    color: #fff;
+    color: var(--text-primary);
     font-weight: 700;
     margin-bottom: 1rem;
 }
@@ -339,9 +386,9 @@ h2 {
 }
 
 .pricing-card ul li {
-    color: #cbd5e1;
+    color: var(--text-secondary);
     padding: 0.5rem 0;
-    border-bottom: 1px solid #334155;
+    border-bottom: 1px solid var(--border-light);
 }
 
 .pricing-card.featured {
@@ -357,14 +404,15 @@ h2 {
 
 /* Contact Section */
 #contact {
-    background: linear-gradient(135deg, var(--dark-bg) 0%, #1e293b 100%);
+    background: linear-gradient(135deg, var(--dark-bg) 0%, var(--section-bg) 100%);
+    transition: background 0.3s ease;
 }
 
 .form-control,
 .form-select {
-    background-color: #334155;
-    border: 1px solid #475569;
-    color: #fff;
+    background-color: var(--form-bg);
+    border: 1px solid var(--form-border);
+    color: var(--text-primary);
     padding: 0.75rem 1rem;
     border-radius: 8px;
     transition: all 0.3s ease;
@@ -372,14 +420,14 @@ h2 {
 
 .form-control:focus,
 .form-select:focus {
-    background-color: #475569;
+    background-color: var(--form-focus-bg);
     border-color: var(--accent-color);
     box-shadow: 0 0 0 0.2rem rgba(245, 158, 11, 0.25);
-    color: #fff;
+    color: var(--text-primary);
 }
 
 .form-control::placeholder {
-    color: #94a3b8;
+    color: var(--text-secondary);
 }
 
 /* Search and Filter */
@@ -390,21 +438,22 @@ h2 {
 
 /* Footer */
 .footer-section {
-    background: linear-gradient(135deg, #0f172a 0%, #1a1f35 100%);
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    background: linear-gradient(135deg, var(--footer-bg-start) 0%, var(--footer-bg-end) 100%);
+    border-top: 1px solid var(--border-color);
     padding: 60px 0 30px;
     margin-top: 100px;
+    transition: background 0.3s ease;
 }
 
 .footer-title {
-    color: #fff;
+    color: var(--text-primary);
     font-weight: 700;
     margin-bottom: 1rem;
     font-size: 1.1rem;
 }
 
 .footer-text {
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--text-light);
     font-size: 0.95rem;
     line-height: 1.6;
 }
@@ -419,7 +468,7 @@ h2 {
 }
 
 .footer-links a {
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--text-light);
     text-decoration: none;
     transition: all 0.3s ease;
     font-size: 0.95rem;
@@ -430,12 +479,12 @@ h2 {
 }
 
 .footer-divider {
-    border-color: rgba(255, 255, 255, 0.1);
+    border-color: var(--border-color);
     margin: 2rem 0;
 }
 
 .footer-copyright {
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--text-secondary);
     font-size: 0.9rem;
     margin-bottom: 0;
 }
@@ -563,20 +612,25 @@ h2 {
 /* Modal Styling */
 .modal-content {
     background: var(--card-bg);
-    color: #e5e7eb;
-    border: 1px solid #334155;
+    color: var(--text-primary);
+    border: 1px solid var(--border-light);
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .modal-header {
-    border-bottom: 1px solid #334155;
+    border-bottom: 1px solid var(--border-light);
 }
 
 .modal-title {
-    color: #fff;
+    color: var(--text-primary);
 }
 
 .btn-close {
     filter: brightness(0) invert(1);
+}
+
+[data-theme="light"] .btn-close {
+    filter: brightness(1) invert(0);
 }
 
 /* Cart Modal */
@@ -585,14 +639,14 @@ h2 {
 }
 
 .cart-item {
-    background: #1e293b;
+    background: var(--section-bg);
     padding: 1rem;
     border-radius: 8px;
     margin-bottom: 1rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border: 1px solid #334155;
+    border: 1px solid var(--border-light);
 }
 
 .cart-item-info {
@@ -600,7 +654,7 @@ h2 {
 }
 
 .cart-item-name {
-    color: #fff;
+    color: var(--text-primary);
     font-weight: 600;
 }
 
@@ -735,6 +789,7 @@ h2 {
 
 ::-webkit-scrollbar-track {
     background: var(--dark-bg);
+    transition: background 0.3s ease;
 }
 
 ::-webkit-scrollbar-thumb {

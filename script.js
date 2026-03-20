@@ -87,6 +87,7 @@ let currentGameForModal = null;
 
 // Initialize the page
 document.addEventListener('DOMContentLoaded', function() {
+    initializeTheme();
     displayFeaturedGames();
     displayAllGames();
     setupEventListeners();
@@ -153,6 +154,7 @@ function setupEventListeners() {
     const categoryFilter = document.getElementById('categoryFilter');
     const cartLink = document.querySelector('.cart-link');
     const contactForm = document.getElementById('contactForm');
+    const themeToggleBtn = document.getElementById('themeToggle');
 
     searchInput.addEventListener('input', filterGames);
     categoryFilter.addEventListener('change', filterGames);
@@ -161,6 +163,9 @@ function setupEventListeners() {
         showCart();
     });
     contactForm.addEventListener('submit', handleContactSubmit);
+    if (themeToggleBtn) {
+        themeToggleBtn.addEventListener('click', toggleTheme);
+    }
 }
 
 // Filter games
@@ -451,3 +456,38 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         }
     });
 });
+
+// ============ THEME SWITCHING ============
+// Initialize theme on page load
+function initializeTheme() {
+    const savedTheme = localStorage.getItem('gameHubTheme') || 'dark';
+    setTheme(savedTheme);
+}
+
+// Set theme
+function setTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('gameHubTheme', theme);
+    updateThemeIcon(theme);
+}
+
+// Toggle theme
+function toggleTheme() {
+    const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    setTheme(newTheme);
+}
+
+// Update theme toggle icon
+function updateThemeIcon(theme) {
+    const themeToggleBtn = document.getElementById('themeToggle');
+    if (themeToggleBtn) {
+        if (theme === 'dark') {
+            themeToggleBtn.innerHTML = '<i class="fas fa-moon"></i>';
+            themeToggleBtn.title = 'Switch to light mode';
+        } else {
+            themeToggleBtn.innerHTML = '<i class="fas fa-sun"></i>';
+            themeToggleBtn.title = 'Switch to dark mode';
+        }
+    }
+}
