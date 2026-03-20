@@ -1,569 +1,560 @@
-// ========================================
-// TARIQ SMILE GAME HUB - ENHANCED GAME DATABASE & CMS
-// ========================================
+// =============================================
+// TARIQ SMILE GAME HUB - COMPLETE SYSTEM
+// =============================================
 
-// Default games data with genre support
+// ===========================================
+// CONFIG - EMAILJS SETUP
+// ===========================================
+// Replace these with your EmailJS credentials
+const EMAILJS_SERVICE_ID = 'YOUR_EMAILJS_SERVICE_ID_HERE';    // Get from EmailJS dashboard
+const EMAILJS_TEMPLATE_ID = 'YOUR_EMAILJS_TEMPLATE_ID_HERE';  // Get from EmailJS dashboard
+const EMAILJS_PUBLIC_KEY = 'YOUR_EMAILJS_PUBLIC_KEY_HERE';    // Get from EmailJS dashboard
+
+// Initialize EmailJS
+emailjs.init(EMAILJS_PUBLIC_KEY);
+
+// ===========================================
+// CATEGORY DEFINITIONS
+// ===========================================
+const categories = [
+    { id: 'action', name: 'Action', icon: '⚡', description: 'Fast-paced and thrilling' },
+    { id: 'open-world', name: 'Open World', icon: '🌍', description: 'Explore vast worlds' },
+    { id: 'adventure', name: 'Adventure', icon: '🗺️', description: 'Epic exploration' },
+    { id: 'rpg', name: 'RPG', icon: '🐉', description: 'Role-playing adventures' },
+    { id: 'horror', name: 'Horror', icon: '👻', description: 'Spine-chilling' },
+    { id: 'sports', name: 'Sports', icon: '⚽', description: 'Competitive gaming' },
+    { id: 'racing', name: 'Racing', icon: '🏎️', description: 'High-speed thrills' },
+    { id: 'strategy', name: 'Strategy', icon: '♟️', description: 'Tactical gameplay' },
+    { id: 'simulation', name: 'Simulation', icon: '🎮', description: 'Realistic experiences' },
+    { id: 'puzzle', name: 'Puzzle', icon: '🧩', description: 'Mind challenges' }
+];
+
+// ===========================================
+// DEFAULT GAMES DATABASE
+// ===========================================
 const defaultGames = [
     {
         id: 1,
-        name: 'Dragon Quest',
-        genre: 'rpg',
+        title: 'Dragon Quest',
+        category: 'rpg',
         price: 29.99,
         rating: 4.8,
         image: 'https://via.placeholder.com/300x200?text=Dragon+Quest',
         developer: 'Epic Studios',
         description: 'Embark on an epic adventure in a fantasy world filled with dragons, magic, and treasures.',
-        downloadLink: 'https://example.com/download/dragon-quest',
-        releaseDate: '2024-01-15'
+        link: 'https://example.com/download/dragon-quest'
     },
     {
         id: 2,
-        name: 'Cyber Storm',
-        genre: 'action',
+        title: 'Cyber Storm',
+        category: 'action',
         price: 39.99,
         rating: 4.5,
         image: 'https://via.placeholder.com/300x200?text=Cyber+Storm',
         developer: 'Vertex Games',
-        description: 'Experience intense action in a cyberpunk world with stunning visuals and fast-paced gameplay.',
-        downloadLink: 'https://example.com/download/cyber-storm',
-        releaseDate: '2024-02-10'
+        description: 'Experience intense action in a cyberpunk world with stunning visuals.',
+        link: 'https://example.com/download/cyber-storm'
     },
     {
         id: 3,
-        name: 'Lost Temple',
-        genre: 'adventure',
+        title: 'Lost Temple',
+        category: 'adventure',
         price: 24.99,
         rating: 4.6,
         image: 'https://via.placeholder.com/300x200?text=Lost+Temple',
         developer: 'Adventure Inc',
         description: 'Explore ancient ruins and solve puzzles to find the legendary Lost Temple.',
-        downloadLink: 'https://example.com/download/lost-temple',
-        releaseDate: '2024-01-20'
-    },
-    {
-        id: 4,
-        name: 'Brain Master',
-        genre: 'puzzle',
-        price: 9.99,
-        rating: 4.4,
-        image: 'https://via.placeholder.com/300x200?text=Brain+Master',
-        developer: 'Mind Games Co',
-        description: 'Challenge your mind with hundreds of brain-teasing puzzles and logic challenges.',
-        downloadLink: 'https://example.com/download/brain-master',
-        releaseDate: '2023-12-05'
-    },
-    {
-        id: 5,
-        name: 'Nightmare Realm',
-        genre: 'horror',
-        price: 34.99,
-        rating: 4.7,
-        image: 'https://via.placeholder.com/300x200?text=Nightmare+Realm',
-        developer: 'Fear Studios',
-        description: 'Survive terrifying creatures and navigate through a haunting nightmare dimension.',
-        downloadLink: 'https://example.com/download/nightmare-realm',
-        releaseDate: '2024-03-01'
-    },
-    {
-        id: 6,
-        name: 'Night Hunter',
-        genre: 'action',
-        price: 44.99,
-        rating: 4.9,
-        image: 'https://via.placeholder.com/300x200?text=Night+Hunter',
-        developer: 'Dark Games LLC',
-        description: 'Hunt supernatural creatures in a dark, atmospheric world filled with mystery.',
-        downloadLink: 'https://example.com/download/night-hunter',
-        releaseDate: '2024-02-15'
-    },
-    {
-        id: 7,
-        name: 'Fantasy Quest',
-        genre: 'rpg',
-        price: 49.99,
-        rating: 4.8,
-        image: 'https://via.placeholder.com/300x200?text=Fantasy+Quest',
-        developer: 'Quest Studios',
-        description: 'Create your character and explore a vast fantasy world with thousands of quests.',
-        downloadLink: 'https://example.com/download/fantasy-quest',
-        releaseDate: '2024-01-30'
-    },
-    {
-        id: 8,
-        name: 'Open Worlds',
-        genre: 'open-world',
-        price: 59.99,
-        rating: 4.9,
-        image: 'https://via.placeholder.com/300x200?text=Open+Worlds',
-        developer: 'World Games',
-        description: 'Explore infinite open worlds with dynamic weather, wildlife, and complete freedom.',
-        downloadLink: 'https://example.com/download/open-worlds',
-        releaseDate: '2024-03-05'
+        link: 'https://example.com/download/lost-temple'
     }
 ];
 
-// ========================================
-// STATE & CONFIGURATION
-// ========================================
+// ===========================================
+// STATE MANAGEMENT
+// ===========================================
+let games = JSON.parse(localStorage.getItem('games')) || defaultGames;
+let cart = JSON.parse(localStorage.getItem('cart')) || [];
+let currentFilter = null;
+let adminVerified = false;
+let generatedOTP = null;
 
-let games = [];
-let cart = [];
-let currentGameForModal = null;
-let currentEditingGameId = null;
+// ===========================================
+// INITIALIZATION
+// ===========================================
+document.addEventListener('DOMContentLoaded', function () {
+    initializeCategories();
+    renderGames(games);
+    updateCartBadge();
+    setupEventListeners();
+});
 
-const GENRES = ['action', 'adventure', 'rpg', 'puzzle', 'horror', 'open-world', 'sports'];
-const GENRE_LABELS = {
-    'action': '⚡ Action',
-    'adventure': '🗺️ Adventure',
-    'rpg': '🐉 RPG',
-    'puzzle': '🧩 Puzzle',
-    'horror': '👻 Horror',
-    'open-world': '🌍 Open World',
-    'sports': '⚽ Sports'
-};
-
-const STORAGE_KEYS = {
-    GAMES: 'gameHubGames',
-    CART: 'gameHubCart'
-};
-
-// ========================================
-// GAME DATABASE MANAGEMENT FUNCTIONS
-// ========================================
-
-function initializeGames() {
-    const savedGames = localStorage.getItem(STORAGE_KEYS.GAMES);
-    if (savedGames) {
-        try {
-            games = JSON.parse(savedGames);
-        } catch (e) {
-            console.error('Error loading saved games:', e);
-            games = JSON.parse(JSON.stringify(defaultGames));
-        }
-    } else {
-        games = JSON.parse(JSON.stringify(defaultGames));
-        saveGamesToStorage();
-    }
-}
-
-function saveGamesToStorage() {
-    localStorage.setItem(STORAGE_KEYS.GAMES, JSON.stringify(games));
-}
-
-function addGame(gameData) {
-    const newId = Math.max(...games.map(g => g.id), 0) + 1;
-    const newGame = {
-        id: newId,
-        name: gameData.name || 'New Game',
-        genre: gameData.genre || 'action',
-        price: parseFloat(gameData.price) || 0,
-        rating: parseFloat(gameData.rating) || 4.5,
-        image: gameData.image || 'https://via.placeholder.com/300x200?text=Game',
-        developer: gameData.developer || 'Unknown Developer',
-        description: gameData.description || 'No description available',
-        downloadLink: gameData.downloadLink || '#',
-        releaseDate: gameData.releaseDate || new Date().toISOString().split('T')[0]
-    };
-    games.push(newGame);
-    saveGamesToStorage();
-    return newGame;
-}
-
-function updateGame(gameId, gameData) {
-    const gameIndex = games.findIndex(g => g.id === gameId);
-    if (gameIndex !== -1) {
-        games[gameIndex] = {
-            ...games[gameIndex],
-            name: gameData.name || games[gameIndex].name,
-            genre: gameData.genre || games[gameIndex].genre,
-            price: parseFloat(gameData.price) || games[gameIndex].price,
-            rating: parseFloat(gameData.rating) || games[gameIndex].rating,
-            image: gameData.image || games[gameIndex].image,
-            developer: gameData.developer || games[gameIndex].developer,
-            description: gameData.description || games[gameIndex].description,
-            downloadLink: gameData.downloadLink || games[gameIndex].downloadLink,
-            releaseDate: gameData.releaseDate || games[gameIndex].releaseDate
-        };
-        saveGamesToStorage();
-        return games[gameIndex];
-    }
-    return null;
-}
-
-function deleteGame(gameId) {
-    const gameName = games.find(g => g.id === gameId)?.name;
-    games = games.filter(g => g.id !== gameId);
-    cart = cart.filter(item => item.id !== gameId);
-    saveGamesToStorage();
-    saveCartToStorage();
-    return gameName;
-}
-
-function getGameById(gameId) {
-    return games.find(g => g.id === gameId);
-}
-
-function getGamesByGenre(genre) {
-    return games.filter(g => g.genre === genre);
-}
-
-function getAllGenres() {
-    const genresInUse = [...new Set(games.map(g => g.genre))];
-    return genresInUse.sort();
-}
-
-// ========================================
-// DISPLAY & RENDERING FUNCTIONS
-// ========================================
-
-function displayFeaturedGames() {
-    const featured = games.slice(0, 3);
-    const featuredContainer = document.getElementById('featuredGames');
-    if (!featuredContainer) return;
-
-    featuredContainer.innerHTML = featured.map(game => `
-        <div class="col-md-4 mb-4">
-            <div class="game-card featured-game" onclick="openGameModal(${game.id})">
-                <div class="game-card-image-wrapper">
-                    <img src="${game.image}" alt="${game.name}" class="game-card-image">
-                    <div class="game-genre-badge">${GENRE_LABELS[game.genre] || game.genre}</div>
-                </div>
-                <div class="game-card-body">
-                    <h5 class="game-card-title">${game.name}</h5>
-                    <p class="game-card-description">${game.description}</p>
-                    <div class="game-card-footer">
-                        <span class="game-price">$${game.price.toFixed(2)}</span>
-                        <div class="game-rating">
-                            ${'★'.repeat(Math.floor(game.rating))}${'☆'.repeat(5-Math.floor(game.rating))}
-                            <span class="rating-value">${game.rating}/5</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+// ===========================================
+// CATEGORIES INITIALIZATION
+// ===========================================
+function initializeCategories() {
+    const grid = document.getElementById('categoriesGrid');
+    grid.innerHTML = categories.map(cat => `
+        <button class="category-btn" onclick="filterByCategory('${cat.id}', '${cat.name}')">
+            <i>${cat.icon}</i>
+            <h5>${cat.name}</h5>
+            <p>${cat.description}</p>
+        </button>
     `).join('');
 }
 
-function displayAllGames(gamesArray = null) {
-    const gamesList = document.getElementById('gamesList');
-    if (!gamesList) return;
-
-    const displayGames = gamesArray || games;
-
-    if (displayGames.length === 0) {
-        gamesList.innerHTML = '<div class="col-12"><p class="text-center text-muted">No games found matching your criteria.</p></div>';
+// ===========================================
+// GAMES RENDERING
+// ===========================================
+function renderGames(gamesToRender = games) {
+    const container = document.getElementById('gamesList');
+    
+    if (gamesToRender.length === 0) {
+        container.innerHTML = '';
+        document.getElementById('noResultsMessage').style.display = 'block';
         return;
     }
-
-    gamesList.innerHTML = displayGames.map(game => `
-        <div class="col-lg-3 col-md-6 col-sm-12 mb-4">
-            <div class="game-card" data-game-id="${game.id}" onclick="openGameModal(${game.id})">
-                <div class="game-card-image-wrapper">
-                    <img src="${game.image}" alt="${game.name}" class="game-card-image">
-                    <div class="game-genre-badge">${GENRE_LABELS[game.genre] || game.genre}</div>
-                    <div class="game-card-overlay">
-                        <button class="btn btn-sm btn-primary" onclick="event.stopPropagation(); addToCart(${game.id})">
-                            <i class="fas fa-shopping-cart"></i> Add to Cart
-                        </button>
-                    </div>
-                </div>
-                <div class="game-card-body">
-                    <h5 class="game-card-title">${game.name}</h5>
-                    <p class="game-card-developer">${game.developer}</p>
-                    <p class="game-card-description">${game.description}</p>
-                    <div class="game-card-footer">
-                        <span class="game-price">$${game.price.toFixed(2)}</span>
-                        <div class="game-rating">
-                            ${'★'.repeat(Math.floor(game.rating))}${'☆'.repeat(5-Math.floor(game.rating))}
-                            <span class="rating-value">${game.rating}/5</span>
-                        </div>
-                    </div>
+    
+    document.getElementById('noResultsMessage').style.display = 'none';
+    container.innerHTML = gamesToRender.map(game => `
+        <div class="game-card" onclick="showGameDetails(${game.id})">
+            <img src="${game.image}" alt="${game.title}" class="game-card-image">
+            <span class="game-category-badge">${game.category.toUpperCase()}</span>
+            <div class="game-card-body">
+                <h6 class="game-card-title">${game.title}</h6>
+                <p class="game-card-developer">${game.developer || 'Unknown'}</p>
+                <p class="game-card-description">${game.description || 'Premium game'}</p>
+                <div class="game-card-footer">
+                    <span class="game-price">$${game.price.toFixed(2)}</span>
+                    <span class="game-rating">⭐ ${game.rating || 4.5}</span>
                 </div>
             </div>
         </div>
     `).join('');
 }
 
-function displayGenreFilter() {
-    const filterContainer = document.getElementById('genreFilterContainer');
-    if (!filterContainer) return;
-
-    const allGenres = getAllGenres();
+// ===========================================
+// CATEGORY FILTERING
+// ===========================================
+function filterByCategory(categoryId, categoryName) {
+    currentFilter = categoryId;
+    const filtered = games.filter(game => game.category === categoryId);
     
-    filterContainer.innerHTML = `
-        <div class="genre-filter-pills">
-            <button class="genre-pill active" data-genre="" onclick="filterByGenre('')">
-                All Games
-            </button>
-            ${allGenres.map(genre => `
-                <button class="genre-pill" data-genre="${genre}" onclick="filterByGenre('${genre}')">
-                    ${GENRE_LABELS[genre] || genre}
-                </button>
-            `).join('')}
-        </div>
-    `;
+    document.getElementById('activeFilter').style.display = 'inline-flex';
+    document.getElementById('activeFilterName').textContent = categoryName;
+    
+    renderGames(filtered);
 }
 
-function filterByGenre(genre) {
-    const filtered = genre ? games.filter(g => g.genre === genre) : games;
-    displayAllGames(filtered);
-    
-    // Update active pill
-    document.querySelectorAll('.genre-pill').forEach(pill => {
-        pill.classList.remove('active');
-        if (pill.dataset.genre === genre) {
-            pill.classList.add('active');
-        }
-    });
+function clearFilter() {
+    currentFilter = null;
+    document.getElementById('activeFilter').style.display = 'none';
+    renderGames(games);
 }
 
-// ========================================
-// MODAL & INTERACTION FUNCTIONS
-// ========================================
+// ===========================================
+// GAME SEARCH
+// ===========================================
+document.addEventListener('DOMContentLoaded', () => {
+    const search = document.getElementById('searchInput');
+    if (search) {
+        search.addEventListener('input', function () {
+            const query = this.value.toLowerCase();
+            const filtered = games.filter(game =>
+                game.title.toLowerCase().includes(query) ||
+                game.description.toLowerCase().includes(query)
+            );
+            renderGames(filtered);
+        });
+    }
+});
 
-function openGameModal(gameId) {
-    const game = getGameById(gameId);
+// ===========================================
+// GAME DETAILS MODAL
+// ===========================================
+function showGameDetails(gameId) {
+    const game = games.find(g => g.id === gameId);
     if (!game) return;
 
-    currentGameForModal = game;
-
-    document.getElementById('gameModalTitle').textContent = game.name;
+    document.getElementById('gameModalTitle').textContent = game.title;
     document.getElementById('gameModalImage').src = game.image;
     document.getElementById('gameModalDescription').textContent = game.description;
     document.getElementById('gameModalDeveloper').textContent = game.developer;
-    document.getElementById('gameModalGenre').textContent = GENRE_LABELS[game.genre] || game.genre;
+    document.getElementById('gameModalGenre').textContent = game.category.toUpperCase();
     document.getElementById('gameModalPrice').textContent = game.price.toFixed(2);
-    document.getElementById('gameModalReleaseDate').textContent = game.releaseDate;
-
-    const ratingHtml = `
-        <div class="rating-display">
-            ${'★'.repeat(Math.floor(game.rating))}${'☆'.repeat(5-Math.floor(game.rating))}
-            <span class="rating-value ms-2">${game.rating}/5</span>
-        </div>
-    `;
-    document.getElementById('gameModalRating').innerHTML = ratingHtml;
-
-    const gameInCart = cart.find(item => item.id === gameId);
-    const buyButton = document.getElementById('buyButton');
-    if (gameInCart) {
-        buyButton.textContent = '✓ Already in Cart';
-        buyButton.disabled = true;
-        buyButton.classList.add('btn-success');
-        buyButton.classList.remove('btn-primary');
-    } else {
-        buyButton.textContent = 'Add to Cart';
-        buyButton.disabled = false;
-        buyButton.classList.remove('btn-success');
-        buyButton.classList.add('btn-primary');
-    }
-
-    const modal = new bootstrap.Modal(document.getElementById('gameModal'));
-    modal.show();
+    document.getElementById('gameModalRating').innerHTML = `${'⭐'.repeat(Math.round(game.rating))} (${game.rating})`;
+    
+    document.getElementById('buyButton').dataset.gameId = gameId;
+    
+    new bootstrap.Modal(document.getElementById('gameModal')).show();
 }
 
-function addToCartFromButton() {
-    if (currentGameForModal) {
-        addToCart(currentGameForModal.id);
-    }
+function addToCartFromModal() {
+    const gameId = parseInt(document.getElementById('buyButton').dataset.gameId);
+    addToCart(gameId);
+    bootstrap.Modal.getInstance(document.getElementById('gameModal')).hide();
 }
 
+// ===========================================
+// SHOPPING CART
+// ===========================================
 function addToCart(gameId) {
-    const game = getGameById(gameId);
+    const game = games.find(g => g.id === gameId);
     if (!game) return;
 
     const existingItem = cart.find(item => item.id === gameId);
-
-    if (!existingItem) {
+    
+    if (existingItem) {
+        existingItem.quantity = (existingItem.quantity || 1) + 1;
+    } else {
         cart.push({
             ...game,
             quantity: 1
         });
-        saveCartToStorage();
-        updateCartBadge();
-        showNotification(`${game.name} added to cart!`, 'success');
-        
-        // Update button if modal is open
-        if (currentGameForModal && currentGameForModal.id === gameId) {
-            const buyButton = document.getElementById('buyButton');
-            buyButton.textContent = '✓ Already in Cart';
-            buyButton.disabled = true;
-        }
-    } else {
-        showNotification(`${game.name} is already in your cart!`, 'info');
     }
-}
-
-function showCart() {
-    const cartModal = new bootstrap.Modal(document.getElementById('cartModal'));
-    updateCartDisplay();
-    cartModal.show();
-}
-
-function updateCartDisplay() {
-    const cartItemsContainer = document.getElementById('cartItems');
-    const cartTotalElement = document.getElementById('cartTotal');
-
-    if (cart.length === 0) {
-        cartItemsContainer.innerHTML = '<p class="text-center text-muted">Your cart is empty</p>';
-        cartTotalElement.textContent = '0.00';
-        return;
-    }
-
-    let total = 0;
-    cartItemsContainer.innerHTML = cart.map((item, index) => {
-        total += item.price * item.quantity;
-        return `
-            <div class="cart-item">
-                <div class="cart-item-info">
-                    <h6 class="cart-item-name">${item.name}</h6>
-                    <p class="text-muted mb-0">Qty: <input type="number" min="1" value="${item.quantity}" 
-                        onchange="updateCartQuantity(${index}, this.value)" class="cart-qty-input"></p>
-                </div>
-                <div class="cart-item-price-section">
-                    <span class="cart-item-price">$${(item.price * item.quantity).toFixed(2)}</span>
-                    <button class="btn btn-sm btn-danger ms-2" onclick="removeFromCart(${index})">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
-            </div>
-        `;
-    }).join('');
-
-    cartTotalElement.textContent = total.toFixed(2);
-}
-
-function updateCartQuantity(index, quantity) {
-    const qty = parseInt(quantity);
-    if (qty > 0) {
-        cart[index].quantity = qty;
-        saveCartToStorage();
-        updateCartDisplay();
-    }
-}
-
-function removeFromCart(index) {
-    const gameName = cart[index].name;
-    cart.splice(index, 1);
-    saveCartToStorage();
+    
+    saveCart();
     updateCartBadge();
+    showNotification('Added to cart!');
+}
+
+function removeFromCart(gameId) {
+    cart = cart.filter(item => item.id !== gameId);
+    saveCart();
     updateCartDisplay();
-    showNotification(`${gameName} removed from cart`, 'info');
+    updateCartBadge();
 }
 
 function updateCartBadge() {
     const badge = document.querySelector('.badge-cart');
-    if (badge) {
+    if (cart.length > 0) {
         badge.textContent = cart.length;
-        badge.style.display = cart.length > 0 ? 'inline-block' : 'none';
+        badge.style.display = 'inline-block';
+    } else {
+        badge.style.display = 'none';
     }
 }
 
-function saveCartToStorage() {
-    localStorage.setItem(STORAGE_KEYS.CART, JSON.stringify(cart));
-}
-
-function loadCartFromStorage() {
-    const savedCart = localStorage.getItem(STORAGE_KEYS.CART);
-    if (savedCart) {
-        try {
-            cart = JSON.parse(savedCart);
-            updateCartBadge();
-        } catch (e) {
-            console.error('Error loading cart:', e);
-            cart = [];
-        }
-    }
-}
-
-// ========================================
-// SEARCH & FILTER FUNCTIONS
-// ========================================
-
-function filterGames() {
-    const searchTerm = document.getElementById('searchInput')?.value.toLowerCase() || '';
-    const genre = document.getElementById('genreFilter')?.value || '';
-
-    const filtered = games.filter(game => {
-        const matchesSearch = game.name.toLowerCase().includes(searchTerm) ||
-            game.description.toLowerCase().includes(searchTerm) ||
-            game.developer.toLowerCase().includes(searchTerm);
-        const matchesGenre = !genre || game.genre === genre;
-        return matchesSearch && matchesGenre;
-    });
-
-    displayAllGames(filtered);
-}
-
-// ========================================
-// NOTIFICATION SYSTEM
-// ========================================
-
-function showNotification(message, type = 'info') {
-    const notificationContainer = document.getElementById('notificationContainer') ||
-        document.body;
-
-    const alertDiv = document.createElement('div');
-    alertDiv.className = `alert alert-${type === 'success' ? 'success' : type === 'danger' ? 'danger' : 'info'} alert-dismissible fade show`;
-    alertDiv.role = 'alert';
-    alertDiv.style.cssText = `
-        position: fixed;
-        top: 80px;
-        right: 20px;
-        z-index: 9999;
-        max-width: 400px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    `;
-    alertDiv.innerHTML = `
-        ${message}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    `;
-
-    document.body.appendChild(alertDiv);
-
-    setTimeout(() => {
-        alertDiv.remove();
-    }, 3000);
-}
-
-// ========================================
-// INITIALIZATION
-// ========================================
-
-document.addEventListener('DOMContentLoaded', function () {
-    initializeGames();
-    loadCartFromStorage();
+function updateCartDisplay() {
+    const container = document.getElementById('cartItems');
+    const checkoutBtn = document.getElementById('checkoutBtn');
     
-    displayFeaturedGames();
-    displayAllGames();
-    displayGenreFilter();
-    setupEventListeners();
-});
-
-// ========================================
-// EVENT LISTENERS SETUP
-// ========================================
-
-function setupEventListeners() {
-    const searchInput = document.getElementById('searchInput');
-    const genreFilter = document.getElementById('genreFilter');
-    const cartLink = document.querySelector('.cart-link');
-
-    if (searchInput) searchInput.addEventListener('input', filterGames);
-    if (genreFilter) genreFilter.addEventListener('change', filterGames);
-    if (cartLink) cartLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        showCart();
-    });
+    if (cart.length === 0) {
+        container.innerHTML = `
+            <div class="empty-cart-message">
+                <i class="fas fa-shopping-cart"></i>
+                <p>Your cart is empty</p>
+            </div>
+        `;
+        checkoutBtn.style.display = 'none';
+        document.getElementById('cartTotal').textContent = '0.00';
+    } else {
+        container.innerHTML = cart.map(item => `
+            <div class="cart-item">
+                <div class="cart-item-info">
+                    <p class="cart-item-name">${item.title}</p>
+                    <p class="cart-item-price">$${item.price.toFixed(2)}</p>
+                </div>
+                <button class="btn btn-sm btn-danger" onclick="removeFromCart(${item.id})">Remove</button>
+            </div>
+        `).join('');
+        
+        const total = cart.reduce((sum, item) => sum + item.price, 0);
+        document.getElementById('cartTotal').textContent = total.toFixed(2);
+        checkoutBtn.style.display = 'block';
+    }
 }
 
-// ========================================
-// CHECKOUT PLACEHOLDER
-// ========================================
+function openCartModal(event) {
+    event.preventDefault();
+    updateCartDisplay();
+    new bootstrap.Modal(document.getElementById('cartModal')).show();
+}
 
 function proceedToCheckout() {
-    if (cart.length === 0) {
-        showNotification('Your cart is empty!', 'warning');
+    if (cart.length === 0) return;
+    
+    const total = cart.reduce((sum, item) => sum + item.price, 0);
+    alert(`Proceeding to checkout. Total: $${total.toFixed(2)}\n\n🔒 Secure payment gateway would be integrated here.\n\nFor now, this is a demonstration. In a real system, Stripe or another payment provider would handle the transaction.`);
+}
+
+function saveCart() {
+    localStorage.setItem('cart', JSON.stringify(cart));
+}
+
+// ===========================================
+// ADMIN SYSTEM WITH 2FA
+// ===========================================
+
+function triggerAdminEntry() {
+    new bootstrap.Modal(document.getElementById('adminEntryModal')).show();
+}
+
+async function sendAdminCode() {
+    const btn = document.getElementById('sendCodeBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+    
+    try {
+        // Generate 6-digit code
+        generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
+        
+        // Validate EmailJS configuration
+        if (EMAILJS_SERVICE_ID === 'YOUR_EMAILJS_SERVICE_ID_HERE') {
+            showCodeStatus('error', '❌ EmailJS not configured! Please add your credentials to script.js');
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-envelope"></i> Request 2FA Code';
+            return;
+        }
+        
+        // Send email via EmailJS
+        await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+            to_email: 'ericmosha676@gmail.com',
+            admin_code: generatedOTP,
+            subject: 'Tariq Smile Game Hub - Admin Access Code'
+        });
+        
+        showCodeStatus('success', '✓ Code sent to ericmosha676@gmail.com! Check your email.');
+        
+        // Show OTP input
+        setTimeout(() => {
+            document.getElementById('adminLoginStep1').style.display = 'none';
+            document.getElementById('adminLoginStep2').style.display = 'block';
+        }, 1500);
+        
+    } catch (error) {
+        console.error('EmailJS Error:', error);
+        showCodeStatus('error', '❌ Failed to send code. Please configure EmailJS first.');
+    }
+    
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-envelope"></i> Request 2FA Code';
+}
+
+function verifyAdminCode() {
+    const otp = document.getElementById('otpInput').value;
+    
+    if (otp === generatedOTP) {
+        adminVerified = true;
+        bootstrap.Modal.getInstance(document.getElementById('adminEntryModal')).hide();
+        openAdminPanel();
+    } else {
+        alert('❌ Incorrect code. Please try again.');
+        document.getElementById('otpInput').value = '';
+    }
+}
+
+function resetAdminForm() {
+    document.getElementById('adminLoginStep1').style.display = 'block';
+    document.getElementById('adminLoginStep2').style.display = 'none';
+    document.getElementById('otpInput').value = '';
+    document.getElementById('codeStatus').style.display = 'none';
+}
+
+function showCodeStatus(type, message) {
+    const status = document.getElementById('codeStatus');
+    status.className = `alert alert-${type === 'success' ? 'success' : 'danger'}`;
+    status.textContent = message;
+    status.style.display = 'block';
+}
+
+// ===========================================
+// ADMIN PANEL
+// ===========================================
+
+function openAdminPanel() {
+    updateDashboard();
+    new bootstrap.Modal(document.getElementById('adminOfficeModal')).show();
+}
+
+function exitAdminPanel() {
+    adminVerified = false;
+    resetAdminForm();
+}
+
+function updateDashboard() {
+    document.getElementById('totalGamesCount').textContent = games.length;
+}
+
+// Add Game Form
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('addGameForm');
+    if (form) {
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            addNewGame();
+        });
+    }
+});
+
+function addNewGame() {
+    const newGame = {
+        id: Math.max(...games.map(g => g.id), 0) + 1,
+        title: document.getElementById('gameTitle').value,
+        category: document.getElementById('gameCategory').value,
+        price: parseFloat(document.getElementById('gamePrice').value),
+        link: document.getElementById('gameLink').value,
+        description: document.getElementById('gameDescription').value,
+        developer: document.getElementById('gameDeveloper').value,
+        image: document.getElementById('gameImage').value || 'https://via.placeholder.com/300x200?text=Game',
+        rating: parseFloat(document.getElementById('gameRating').value) || 4.5
+    };
+    
+    games.push(newGame);
+    saveGames();
+    
+    // Clear form
+    document.getElementById('addGameForm').reset();
+    
+    // Update dashboard
+    updateDashboard();
+    renderAdminGamesList();
+    
+    alert('✅ Game added successfully!');
+}
+
+function renderAdminGamesList() {
+    const container = document.querySelector('.games-management-list');
+    
+    if (games.length === 0) {
+        container.innerHTML = '<p class="text-muted">No games added yet.</p>';
         return;
     }
-    window.location.href = '/public/checkout.html';
+    
+    container.innerHTML = games.map(game => `
+        <div class="game-management-item">
+            <div>
+                <h6 style="color: #e5e7eb;">${game.title}</h6>
+                <small style="color: #94a3b8;">$${game.price.toFixed(2)} | ${game.category}</small>
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+                <button class="btn btn-sm btn-outline-light" onclick="editGame(${game.id})">Edit</button>
+                <button class="btn btn-sm btn-outline-danger" onclick="deleteGame(${game.id})">Delete</button>
+            </div>
+        </div>
+    `).join('');
 }
+
+function deleteGame(gameId) {
+    if (confirm('Are you sure you want to delete this game?')) {
+        games = games.filter(g => g.id !== gameId);
+        saveGames();
+        updateDashboard();
+        renderAdminGamesList();
+        renderGames(games);
+        alert('✅ Game deleted successfully!');
+    }
+}
+
+function editGame(gameId) {
+    const game = games.find(g => g.id === gameId);
+    if (!game) return;
+    
+    document.getElementById('gameTitle').value = game.title;
+    document.getElementById('gameCategory').value = game.category;
+    document.getElementById('gamePrice').value = game.price;
+    document.getElementById('gameLink').value = game.link;
+    document.getElementById('gameDescription').value = game.description;
+    document.getElementById('gameDeveloper').value = game.developer;
+    document.getElementById('gameImage').value = game.image;
+    document.getElementById('gameRating').value = game.rating;
+    
+    // Change button text
+    const btn = document.querySelector('#addGameForm button');
+    btn.innerHTML = '<i class="fas fa-save"></i> Update Game';
+    
+    // Update form handler
+    document.getElementById('addGameForm').onsubmit = function (e) {
+        e.preventDefault();
+        
+        game.title = document.getElementById('gameTitle').value;
+        game.category = document.getElementById('gameCategory').value;
+        game.price = parseFloat(document.getElementById('gamePrice').value);
+        game.link = document.getElementById('gameLink').value;
+        game.description = document.getElementById('gameDescription').value;
+        game.developer = document.getElementById('gameDeveloper').value;
+        game.image = document.getElementById('gameImage').value;
+        game.rating = parseFloat(document.getElementById('gameRating').value);
+        
+        saveGames();
+        document.getElementById('addGameForm').reset();
+        btn.innerHTML = '<i class="fas fa-plus"></i> Add Game';
+        document.getElementById('addGameForm').onsubmit = null;
+        updateDashboard();
+        renderAdminGamesList();
+        renderGames(games);
+        alert('✅ Game updated successfully!');
+    };
+    
+    // Scroll to form
+    document.querySelector('[data-bs-target="#addGameTab"]').click();
+}
+
+function exportGamesData() {
+    const dataStr = JSON.stringify(games, null, 2);
+    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(dataBlob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'games-backup.json';
+    link.click();
+    alert('✅ Games data exported!');
+}
+
+function resetAllData() {
+    if (confirm('⚠️ This will reset ALL games to default. Are you sure?')) {
+        games = JSON.parse(JSON.stringify(defaultGames));
+        saveGames();
+        updateDashboard();
+        renderAdminGamesList();
+        renderGames(games);
+        alert('✅ Data reset to defaults!');
+    }
+}
+
+// ===========================================
+// CONTACT FORM
+// ===========================================
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('contactForm');
+    if (form) {
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('contactName').value;
+            const email = document.getElementById('contactEmail').value;
+            const message = document.getElementById('contactMessage').value;
+            
+            console.log('Contact Message:', { name, email, message });
+            alert('✅ Thank you for your message! We\'ll get back to you soon.');
+            
+            form.reset();
+        });
+    }
+});
+
+// ===========================================
+// UTILITY FUNCTIONS
+// ===========================================
+
+function saveGames() {
+    localStorage.setItem('games', JSON.stringify(games));
+}
+
+function showNotification(message) {
+    // Simple notification (in real app, would be a toast)
+    console.log('Notification:', message);
+}
+
+function setupEventListeners() {
+    // Event listeners setup can go here if needed
+}
+
+// Handle manage games tab properly
+document.addEventListener('DOMContentLoaded', () => {
+    const manageTab = document.querySelector('[data-bs-target="#manageGamesTab"]');
+    if (manageTab) {
+        manageTab.addEventListener('click', renderAdminGamesList);
+    }
+});
+
+// Store current game being edited
+let currentEditingGameId = null;

@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tariq Smile Game Hub - Download Premium Games</title>
+    <title>Tariq Smile Game Hub - Premium Gaming Platform</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
     <link href="styles.css" rel="stylesheet">
 </head>
 <body>
@@ -24,11 +25,8 @@
                     <li class="nav-item"><a class="nav-link" href="#categories">Categories</a></li>
                     <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
                     <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
-                    <li class="nav-item"><a class="nav-link" href="admin.html" target="_blank">
-                        <i class="fas fa-cog"></i> Admin
-                    </a></li>
                     <li class="nav-item">
-                        <a class="nav-link cart-link" href="#cart">
+                        <a class="nav-link cart-link" href="#" onclick="openCartModal(event)">
                             <i class="fas fa-shopping-cart"></i> Cart <span class="badge badge-cart" style="display:none;">0</span>
                         </a>
                     </li>
@@ -37,178 +35,84 @@
         </div>
     </nav>
 
+    <!-- Admin Secret Entry Point (Hidden Icon at bottom-right) -->
+    <div class="admin-trigger-hint" onclick="triggerAdminEntry()">
+        <i class="fas fa-lock"></i>
+    </div>
+
     <!-- Hero Section -->
     <section id="home" class="hero-section">
+        <div class="hero-overlay"></div>
         <div class="container">
             <div class="hero-content">
-                <h1 class="display-4 fw-bold">Welcome to Tariq Smile Game Hub</h1>
-                <p class="lead">Download Amazing Games. Instant Access. Premium Experience.</p>
-                <button class="btn btn-primary btn-lg" onclick="document.getElementById('games').scrollIntoView({behavior: 'smooth'})">
-                    Explore Games
+                <h1 class="display-4 fw-bold animate__animated animate__fadeInDown">Welcome to Tariq Smile Game Hub</h1>
+                <p class="lead animate__animated animate__fadeInUp">Premium Gaming. Instant Access. Unmatched Experience.</p>
+                <button class="btn btn-neon btn-lg animate__animated animate__fadeInUp" onclick="document.getElementById('games').scrollIntoView({behavior: 'smooth'})">
+                    <i class="fas fa-rocket"></i> Explore Games
                 </button>
             </div>
         </div>
     </section>
 
-    <!-- Featured Games -->
-    <section id="featured" class="py-5 bg-light">
+    <!-- Categories Grid Section (Premium Visual) -->
+    <section id="categories" class="categories-section py-5">
         <div class="container">
-            <h2 class="text-center mb-5">Featured Games</h2>
-            <div class="row g-4" id="featuredGames">
-                <!-- Featured games will be populated by JavaScript -->
+            <h2 class="section-title text-center mb-5">Game Categories</h2>
+            <div class="categories-grid" id="categoriesGrid">
+                <!-- Categories will be populated by JavaScript -->
             </div>
         </div>
     </section>
 
-    <!-- Games Grid -->
-    <section id="games" class="py-5">
+    <!-- Games Section -->
+    <section id="games" class="games-section py-5">
         <div class="container">
-            <h2 class="mb-5">Browse All Games</h2>
+            <h2 class="section-title mb-4">Browse All Games</h2>
             
-            <!-- Genre Filter -->
-            <div id="genreFilterContainer">
-                <!-- Genre pills will be populated by JavaScript -->
+            <!-- Search Bar -->
+            <div class="search-container mb-4">
+                <input type="text" class="form-control search-input" id="searchInput" placeholder="Search games...">
+                <i class="fas fa-search search-icon"></i>
             </div>
 
-            <!-- Search & Filter -->
-            <div class="row mb-5">
-                <div class="col-md-6">
-                    <input type="text" class="form-control" id="searchInput" placeholder="Search games...">
-                </div>
-                <div class="col-md-6">
-                    <select class="form-select" id="genreFilter">
-                        <option value="">All Genres</option>
-                        <option value="action">⚡ Action</option>
-                        <option value="adventure">🗺️ Adventure</option>
-                        <option value="rpg">🐉 RPG</option>
-                        <option value="puzzle">🧩 Puzzle</option>
-                        <option value="horror">👻 Horror</option>
-                        <option value="open-world">🌍 Open World</option>
-                        <option value="sports">⚽ Sports</option>
-                    </select>
-                </div>
+            <!-- Active Category Filter -->
+            <div class="active-filter mb-4" id="activeFilter" style="display:none;">
+                <span>Filtering by: <strong id="activeFilterName"></strong></span>
+                <button class="btn-clear-filter" onclick="clearFilter()">✕</button>
             </div>
 
             <!-- Games Grid -->
-            <div class="row g-4" id="gamesList">
+            <div class="games-grid" id="gamesList">
                 <!-- Games will be populated by JavaScript -->
             </div>
-        </div>
-    </section>
 
-    <!-- Categories Section -->
-    <section id="categories" class="py-5 bg-light">
-        <div class="container">
-            <h2 class="text-center mb-5">Game Categories</h2>
-            <div class="row text-center g-4">
-                <div class="col-md-4">
-                    <div class="category-card">
-                        <i class="fas fa-fist-raised"></i>
-                        <h4>Action</h4>
-                        <p>Fast-paced and thrilling</p>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="category-card">
-                        <i class="fas fa-dungeon"></i>
-                        <h4>Adventure</h4>
-                        <p>Explore vast worlds</p>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="category-card">
-                        <i class="fas fa-wand-magic-sparkles"></i>
-                        <h4>RPG</h4>
-                        <p>Role-playing adventures</p>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="category-card">
-                        <i class="fas fa-puzzle-piece"></i>
-                        <h4>Puzzle</h4>
-                        <p>Challenge your mind</p>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="category-card">
-                        <i class="fas fa-football"></i>
-                        <h4>Sports</h4>
-                        <p>Competitive gaming</p>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="category-card">
-                        <i class="fas fa-ghost"></i>
-                        <h4>Horror</h4>
-                        <p>Spine-chilling experiences</p>
-                    </div>
-                </div>
+            <!-- No Results Message -->
+            <div class="no-results-message" id="noResultsMessage" style="display:none;">
+                <i class="fas fa-search"></i>
+                <p>No games found. Try adjusting your search.</p>
             </div>
         </div>
     </section>
-
     <!-- About Section -->
-    <section id="about" class="py-5">
+    <section id="about" class="about-section py-5">
         <div class="container">
+            <h2 class="section-title text-center mb-5">About Tariq Smile Game Hub</h2>
             <div class="row align-items-center">
                 <div class="col-md-6">
-                    <h2>About Tariq Smile Game Hub</h2>
-                    <p class="mt-4">Tariq Smile Game Hub is your ultimate destination for downloading premium games. We offer a curated collection of the best games across all genres with secure payments and instant delivery.</p>
-                    <ul class="features-list">
-                        <li><i class="fas fa-check-circle"></i> Instant game downloads</li>
-                        <li><i class="fas fa-check-circle"></i> Secure payment processing</li>
-                        <li><i class="fas fa-check-circle"></i> 24/7 customer support</li>
-                        <li><i class="fas fa-check-circle"></i> Regular game updates</li>
-                        <li><i class="fas fa-check-circle"></i> Money-back guarantee</li>
-                    </ul>
+                    <div class="about-content">
+                        <p class="mb-4">Tariq Smile Game Hub is your ultimate destination for premium gaming. We offer a curated collection of the best games across all genres with secure payments and instant delivery.</p>
+                        <ul class="features-list">
+                            <li><i class="fas fa-check-circle"></i> Instant game downloads</li>
+                            <li><i class="fas fa-check-circle"></i> Secure payment processing</li>
+                            <li><i class="fas fa-check-circle"></i> 24/7 customer support</li>
+                            <li><i class="fas fa-check-circle"></i> Regular game updates</li>
+                            <li><i class="fas fa-check-circle"></i> Money-back guarantee</li>
+                        </ul>
+                    </div>
                 </div>
                 <div class="col-md-6">
-                    <img src="https://via.placeholder.com/400x300?text=GameHub" alt="GameHub" class="img-fluid rounded">
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Pricing Section -->
-    <section id="pricing" class="py-5 bg-light">
-        <div class="container">
-            <h2 class="text-center mb-5">Pricing Plans</h2>
-            <div class="row g-4">
-                <div class="col-md-4">
-                    <div class="pricing-card">
-                        <h4>Basic</h4>
-                        <p class="price">Free</p>
-                        <ul>
-                            <li>Access to free games</li>
-                            <li>Basic support</li>
-                        </ul>
-                        <button class="btn btn-outline-primary w-100">Get Started</button>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="pricing-card featured">
-                        <h4>Premium</h4>
-                        <p class="price">$9.99/month</p>
-                        <ul>
-                            <li>All premium games</li>
-                            <li>Priority support</li>
-                            <li>Discounts on new releases</li>
-                            <li>Cloud saves</li>
-                        </ul>
-                        <button class="btn btn-primary w-100" onclick="openPayment('premium')">Subscribe Now</button>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="pricing-card">
-                        <h4>Pro</h4>
-                        <p class="price">$19.99/month</p>
-                        <ul>
-                            <li>Everything in Premium</li>
-                            <li>Exclusive early access</li>
-                            <li>VIP support 24/7</li>
-                            <li>Extra bonus games</li>
-                        </ul>
-                        <button class="btn btn-outline-primary w-100" onclick="openPayment('pro')">Subscribe Now</button>
+                    <div class="about-image-placeholder">
+                        <i class="fas fa-gamepad"></i>
                     </div>
                 </div>
             </div>
@@ -216,47 +120,82 @@
     </section>
 
     <!-- Contact Section -->
-    <section id="contact" class="py-5">
+    <section id="contact" class="contact-section py-5">
         <div class="container">
-            <h2 class="text-center mb-5">Get in Touch</h2>
+            <h2 class="section-title text-center mb-5">Get in Touch</h2>
             <div class="row">
                 <div class="col-md-6 offset-md-3">
-                    <form id="contactForm">
+                    <form id="contactForm" class="glass-form">
                         <div class="mb-3">
-                            <input type="text" class="form-control" placeholder="Your Name" required>
+                            <input type="text" class="form-control glass-input" id="contactName" placeholder="Your Name" required>
                         </div>
                         <div class="mb-3">
-                            <input type="email" class="form-control" placeholder="Your Email" required>
+                            <input type="email" class="form-control glass-input" id="contactEmail" placeholder="Your Email" required>
                         </div>
                         <div class="mb-3">
-                            <textarea class="form-control" rows="5" placeholder="Your Message" required></textarea>
+                            <textarea class="form-control glass-input" id="contactMessage" rows="5" placeholder="Your Message" required></textarea>
                         </div>
-                        <button type="submit" class="btn btn-primary w-100">Send Message</button>
+                        <button type="submit" class="btn btn-neon w-100">Send Message</button>
                     </form>
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- Footer -->
+    <footer class="footer-section">
+        <div class="container">
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <h5><i class="fas fa-gamepad"></i> Tariq Smile</h5>
+                    <p>Your ultimate gaming destination with premium games and instant access.</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Quick Links</h5>
+                    <ul>
+                        <li><a href="#games">Games</a></li>
+                        <li><a href="#categories">Categories</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>Follow Us</h5>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr class="footer-divider">
+            <div class="text-center">
+                <p>&copy; 2024 Tariq Smile Game Hub. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
     <!-- Shopping Cart Modal -->
     <div class="modal fade" id="cartModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Shopping Cart</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            <div class="glass-modal-content">
+                <div class="modal-header glass-header">
+                    <h5 class="modal-title"><i class="fas fa-shopping-cart"></i> Your Shopping Cart</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div id="cartItems">
-                        <!-- Cart items will be populated here -->
-                    </div>
-                    <div class="mt-3">
-                        <h5>Total: $<span id="cartTotal">0.00</span></h5>
+                        <div class="empty-cart-message">
+                            <i class="fas fa-shopping-cart"></i>
+                            <p>Your cart is empty</p>
+                        </div>
                     </div>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer glass-footer">
+                    <div class="cart-total">
+                        <strong>Total: $<span id="cartTotal">0.00</span></strong>
+                    </div>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Continue Shopping</button>
-                    <button type="button" class="btn btn-primary" onclick="proceedToCheckout()">Checkout</button>
+                    <button type="button" class="btn btn-neon" onclick="proceedToCheckout()" id="checkoutBtn" style="display:none;">Proceed to Checkout</button>
                 </div>
             </div>
         </div>
@@ -265,77 +204,197 @@
     <!-- Game Details Modal -->
     <div class="modal fade" id="gameModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
+            <div class="glass-modal-content">
+                <div class="modal-header glass-header">
                     <h5 class="modal-title" id="gameModalTitle"></h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <img id="gameModalImage" src="" alt="" class="img-fluid rounded">
-                    <div class="game-modal-detail mt-3">
+                    <img id="gameModalImage" src="" alt="" class="img-fluid rounded mb-3">
+                    <div class="game-detail-row">
                         <label>Description:</label>
                         <p id="gameModalDescription"></p>
                     </div>
-                    <div class="game-modal-detail">
+                    <div class="game-detail-row">
                         <label>Developer:</label>
                         <p id="gameModalDeveloper"></p>
                     </div>
-                    <div class="game-modal-detail">
+                    <div class="game-detail-row">
                         <label>Genre:</label>
-                        <p><span id="gameModalGenre"></span></p>
+                        <p id="gameModalGenre"></p>
                     </div>
-                    <div class="game-modal-detail">
+                    <div class="game-detail-row">
                         <label>Release Date:</label>
                         <p id="gameModalReleaseDate"></p>
                     </div>
-                    <div class="game-modal-detail">
+                    <div class="game-detail-row">
                         <label>Rating:</label>
                         <div id="gameModalRating"></div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <p class="me-auto"><strong class="text-success">$<span id="gameModalPrice">0.00</span></strong></p>
+                <div class="modal-footer glass-footer">
+                    <p class="me-auto"><strong class="price-display">$<span id="gameModalPrice">0.00</span></strong></p>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="buyButton" onclick="addToCartFromButton()">Add to Cart</button>
+                    <button type="button" class="btn btn-neon" id="buyButton" onclick="addToCartFromModal()">Add to Cart</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Payment Stripe Section (hidden) -->
-    <script src="https://js.stripe.com/v3/"></script>
-
-    <!-- Footer -->
-    <footer class="bg-dark text-white py-4">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4">
-                    <h5>Tariq Smile Game Hub</h5>
-                    <p>Your ultimate gaming destination</p>
+    <!-- Admin Entry Modal (2FA) -->
+    <div class="modal fade" id="adminEntryModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered">
+            <div class="glass-modal-content">
+                <div class="modal-header glass-header">
+                    <h5 class="modal-title"><i class="fas fa-lock"></i> Admin Access</h5>
                 </div>
-                <div class="col-md-4">
-                    <h6>Quick Links</h6>
-                    <ul class="list-unstyled">
-                        <li><a href="#games" class="text-white-50">Games</a></li>
-                        <li><a href="#about" class="text-white-50">About</a></li>
-                        <li><a href="#contact" class="text-white-50">Contact</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-4">
-                    <h6>Follow Us</h6>
-                    <div class="social-links">
-                        <a href="#" class="text-white-50"><i class="fab fa-facebook"></i></a>
-                        <a href="#" class="text-white-50"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="text-white-50"><i class="fab fa-instagram"></i></a>
+                <div class="modal-body">
+                    <div id="adminLoginStep1">
+                        <p class="text-center mb-4">Click below to request a 2FA code. A 6-digit code will be sent to ericmosha676@gmail.com</p>
+                        <button class="btn btn-neon w-100 mb-2" id="sendCodeBtn" onclick="sendAdminCode()">
+                            <i class="fas fa-envelope"></i> Request 2FA Code
+                        </button>
+                        <div id="codeStatus" style="display:none;" class="alert mt-3"></div>
+                    </div>
+                    <div id="adminLoginStep2" style="display:none;">
+                        <p class="text-center mb-4">Enter the 6-digit code sent to your email:</p>
+                        <div class="otp-input-container mb-3">
+                            <input type="text" id="otpInput" class="otp-input" placeholder="000000" maxlength="6" pattern="[0-9]{6}">
+                        </div>
+                        <button class="btn btn-neon w-100" onclick="verifyAdminCode()">Verify & Enter Office</button>
+                        <button class="btn btn-secondary w-100 mt-2" onclick="resetAdminForm()">Back</button>
                     </div>
                 </div>
             </div>
-            <hr>
-            <p class="text-center text-white-50 mb-0">&copy; 2024 Tariq Smile Game Hub. All rights reserved.</p>
         </div>
-    </footer>
+    </div>
+
+    <!-- Admin Office Modal -->
+    <div class="modal fade" id="adminOfficeModal" tabindex="-1" data-bs-backdrop="static">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="glass-modal-content admin-office-modal">
+                <div class="modal-header glass-header admin-header">
+                    <h5 class="modal-title"><i class="fas fa-crown"></i> Manager Office</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" onclick="exitAdminPanel()"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Admin Tabs -->
+                    <ul class="nav nav-tabs admin-tabs" id="adminTabs">
+                        <li class="nav-item">
+                            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#dashboardTab">
+                                <i class="fas fa-chart-bar"></i> Dashboard
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#addGameTab">
+                                <i class="fas fa-plus"></i> Add Game
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#manageGamesTab">
+                                <i class="fas fa-edit"></i> Manage Games
+                            </button>
+                        </li>
+                    </ul>
+
+                    <!-- Tab Content -->
+                    <div class="tab-content admin-tab-content">
+                        <!-- Dashboard Tab -->
+                        <div class="tab-pane fade show active" id="dashboardTab">
+                            <div class="dashboard-stats">
+                                <div class="stat-card">
+                                    <i class="fas fa-gamepad"></i>
+                                    <div>
+                                        <h6>Total Games</h6>
+                                        <p id="totalGamesCount">0</p>
+                                    </div>
+                                </div>
+                                <div class="stat-card">
+                                    <i class="fas fa-tags"></i>
+                                    <div>
+                                        <h6>Categories</h6>
+                                        <p>10</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="admin-actions mt-4">
+                                <h6>Quick Actions</h6>
+                                <button class="btn btn-outline-light" onclick="exportGamesData()">
+                                    <i class="fas fa-download"></i> Export Data
+                                </button>
+                                <button class="btn btn-outline-light" onclick="resetAllData()">
+                                    <i class="fas fa-redo"></i> Reset All Games
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Add Game Tab -->
+                        <div class="tab-pane fade" id="addGameTab">
+                            <form id="addGameForm" class="admin-form">
+                                <div class="form-group mb-3">
+                                    <label>Game Title *</label>
+                                    <input type="text" class="form-control glass-input" id="gameTitle" required>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label>Price ($) *</label>
+                                    <input type="number" class="form-control glass-input" id="gamePrice" min="0" step="0.01" required>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label>Category *</label>
+                                    <select class="form-select glass-input" id="gameCategory" required>
+                                        <option value="">Select Category</option>
+                                        <option value="action">⚡ Action</option>
+                                        <option value="open-world">🌍 Open World</option>
+                                        <option value="adventure">🗺️ Adventure</option>
+                                        <option value="rpg">🐉 RPG</option>
+                                        <option value="horror">👻 Horror</option>
+                                        <option value="sports">⚽ Sports</option>
+                                        <option value="racing">🏎️ Racing</option>
+                                        <option value="strategy">♟️ Strategy</option>
+                                        <option value="simulation">🎮 Simulation</option>
+                                        <option value="puzzle">🧩 Puzzle</option>
+                                    </select>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label>Cloud Link (Download URL) *</label>
+                                    <input type="url" class="form-control glass-input" id="gameLink" required>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label>Description</label>
+                                    <textarea class="form-control glass-input" id="gameDescription" rows="3"></textarea>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label>Developer</label>
+                                    <input type="text" class="form-control glass-input" id="gameDeveloper">
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label>Image URL</label>
+                                    <input type="url" class="form-control glass-input" id="gameImage" placeholder="https://...">
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label>Rating (1-5)</label>
+                                    <input type="number" class="form-control glass-input" id="gameRating" min="1" max="5" step="0.1">
+                                </div>
+                                <button type="submit" class="btn btn-neon w-100">
+                                    <i class="fas fa-plus"></i> Add Game
+                                </button>
+                            </form>
+                        </div>
+
+                        <!-- Manage Games Tab -->
+                        <div class="tab-pane fade" id="manageGamesTab">
+                            <div class="games-management-list" id="gamesList">
+                                <!-- Games list will be populated -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.emailjs.com/sdk/3.11.0/email.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
