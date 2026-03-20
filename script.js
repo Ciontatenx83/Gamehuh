@@ -96,7 +96,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Display featured games
 function displayFeaturedGames() {
-    const featured = games.slice(0, 3);
+    const featured = games.filter(game => !game.hidden).slice(0, 3);
     const featuredContainer = document.getElementById('featuredGames');
     
     featuredContainer.innerHTML = featured.map(game => `
@@ -122,13 +122,14 @@ function displayFeaturedGames() {
 // Display all games with search and filter
 function displayAllGames(filtered = games) {
     const gamesList = document.getElementById('gamesList');
-    
-    if (filtered.length === 0) {
+    const visibleGames = filtered.filter(game => !game.hidden);
+
+    if (visibleGames.length === 0) {
         gamesList.innerHTML = '<div class="col-12"><p class="text-center text-muted">No games found matching your criteria.</p></div>';
         return;
     }
     
-    gamesList.innerHTML = filtered.map(game => `
+    gamesList.innerHTML = visibleGames.map(game => `
         <div class="col-lg-3 col-md-6 col-sm-12">
             <div class="game-card" onclick="openGameModal(${game.id})">
                 <img src="${game.image}" alt="${game.name}" class="game-card-image">
@@ -490,4 +491,153 @@ function updateThemeIcon(theme) {
             themeToggleBtn.title = 'Switch to dark mode';
         }
     }
+}
+
+// ========= ADMIN DASHBOARD =========
+const ADMIN_PASSWORD = 'Ciontaten83x';
+let adminAuthenticated = false;
+
+games.forEach(game => {
+    if (typeof game.hidden === 'undefined') {
+        game.hidden = false;
+    }
+});
+
+function showAdminLogin() {
+    const loginModal = new bootstrap.Modal(document.getElementById('adminLoginModal'));
+    document.getElementById('adminPassword').value = '';
+    document.getElementById('adminLoginError').style.display = 'none';
+    loginModal.show();
+}
+
+function authenticateAdmin() {
+    const password = document.getElementById('adminPassword').value;
+    if (password === ADMIN_PASSWORD) {
+        adminAuthenticated = true;
+        document.getElementById('adminLoginError').style.display = 'none';
+        const loginModal = bootstrap.Modal.getInstance(document.getElementById('adminLoginModal'));
+        if (loginModal) {
+            loginModal.hide();
+        }
+        document.getElementById('adminDashboard').style.display = 'block';
+        renderAdminGameList();
+        showNotification('Admin login successful', 'success');
+    } else {
+        document.getElementById('adminLoginError').style.display = 'block';
+    }
+}
+
+function adminLogout() {
+    adminAuthenticated = false;
+    document.getElementById('adminDashboard').style.display = 'none';
+    showNotification('Admin logged out', 'info');
+}
+
+function renderAdminGameList() {
+    const adminGameList = document.getElementById('adminGameList');
+    adminGameList.innerHTML = '';
+
+    const tableRows = games.map(game => `
+        <tr>
+            <td>${game.id}</td>
+            <td><input type="text" id="name-${game.id}" value="${escapeHtml(game.name)}" class="form-control"></td>
+            <td><input type="text" id="category-${game.id}" value="${escapeHtml(game.category)}" class="form-control"></td>
+            <td><input type="number" step="0.01" id="price-${game.id}" value="${game.price}" class="form-control"></td>
+            <td><textarea id="description-${game.id}" class="form-control" rows="2">${escapeHtml(game.description)}</textarea></td>
+            <td><input type="checkbox" id="hidden-${game.id}" ${game.hidden ? 'checked' : ''} onchange="toggleAdminHide(${game.id})"></td>
+            <td>
+                <button class="btn btn-sm btn-primary" onclick="updateAdminGame(${game.id})">Save</button>
+            </td>
+        </tr>
+    `).join('');
+
+    adminGameList.innerHTML = `
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped table-sm">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Description</th>
+                        <th>Hidden</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${tableRows}
+                </tbody>
+            </table>
+        </div>
+    `;
+}
+
+function updateAdminGame(gameId) {
+    const game = games.find(g => g.id === gameId);
+    if (!game) return;
+
+    const newName = document.getElementById(`name-${gameId}`).value.trim();
+    const newCategory = document.getElementById(`category-${gameId}`).value.trim();
+    const newPrice = parseFloat(document.getElementById(`price-${gameId}`).value);
+    const newDescription = document.getElementById(`description-${gameId}`).value.trim();
+    const hidden = document.getElementById(`hidden-${gameId}`).checked;
+
+    if (newName === '' || newCategory === '' || isNaN(newPrice) || newDescription === '') {
+        showNotification('Please fill all game fields correctly.', 'danger');
+        return;
+    }
+
+    game.name = newName;
+    game.category = newCategory;
+    game.price = newPrice;
+    game.description = newDescription;
+    game.hidden = hidden;
+
+    renderAdminGameList();
+    displayFeaturedGames();
+    displayAllGames();
+    showNotification(`Game ${game.name} updated`, 'success');
+}
+
+function toggleAdminHide(gameId) {
+    const game = games.find(g => g.id === gameId);
+    if (!game) return;
+    game.hidden = !game.hidden;
+    displayFeaturedGames();
+    displayAllGames();
+}
+
+function addGameAsAdmin() {
+    const name = document.getElementById('newGameName').value.trim();
+    const category = document.getElementById('newGameCategory').value.trim();
+    const price = parseFloat(document.getElementById('newGamePrice').value);
+    const rating = parseFloat(document.getElementById('newGameRating').value);
+    const developer = document.getElementById('newGameDeveloper').value.trim();
+    const image = document.getElementById('newGameImage').value.trim();
+    const description = document.getElementById('newGameDescription').value.trim();
+
+    if (!name || !category || isNaN(price) || isNaN(rating) || !developer || !image || !description) {
+        showNotification('Please fill in all fields to add a new game.', 'danger');
+        return;
+    }
+
+    const nextId = games.reduce((max, g) => Math.max(max, g.id), 0) + 1;
+    const newGame = { id: nextId, name, category, price, rating, developer, image, description, hidden: false };
+    games.push(newGame);
+
+    document.getElementById('adminAddGameForm').reset();
+    renderAdminGameList();
+    displayFeaturedGames();
+    displayAllGames();
+    showNotification(`Game ${name} added`, 'success');
+}
+
+function escapeHtml(text) {
+    return String(text)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
 }
