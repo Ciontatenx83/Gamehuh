@@ -24,9 +24,12 @@
                     <li class="nav-item"><a class="nav-link" href="#categories">Categories</a></li>
                     <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
                     <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+                    <li class="nav-item"><a class="nav-link" href="admin.html" target="_blank">
+                        <i class="fas fa-cog"></i> Admin
+                    </a></li>
                     <li class="nav-item">
                         <a class="nav-link cart-link" href="#cart">
-                            <i class="fas fa-shopping-cart"></i> Cart <span class="badge badge-cart">0</span>
+                            <i class="fas fa-shopping-cart"></i> Cart <span class="badge badge-cart" style="display:none;">0</span>
                         </a>
                     </li>
                 </ul>
@@ -62,24 +65,31 @@
         <div class="container">
             <h2 class="mb-5">Browse All Games</h2>
             
+            <!-- Genre Filter -->
+            <div id="genreFilterContainer">
+                <!-- Genre pills will be populated by JavaScript -->
+            </div>
+
             <!-- Search & Filter -->
             <div class="row mb-5">
                 <div class="col-md-6">
                     <input type="text" class="form-control" id="searchInput" placeholder="Search games...">
                 </div>
                 <div class="col-md-6">
-                    <select class="form-select" id="categoryFilter">
-                        <option value="">All Categories</option>
-                        <option value="action">Action</option>
-                        <option value="adventure">Adventure</option>
-                        <option value="rpg">RPG</option>
-                        <option value="puzzle">Puzzle</option>
-                        <option value="sports">Sports</option>
+                    <select class="form-select" id="genreFilter">
+                        <option value="">All Genres</option>
+                        <option value="action">⚡ Action</option>
+                        <option value="adventure">🗺️ Adventure</option>
+                        <option value="rpg">🐉 RPG</option>
+                        <option value="puzzle">🧩 Puzzle</option>
+                        <option value="horror">👻 Horror</option>
+                        <option value="open-world">🌍 Open World</option>
+                        <option value="sports">⚽ Sports</option>
                     </select>
                 </div>
             </div>
 
-            <!-- Games List -->
+            <!-- Games Grid -->
             <div class="row g-4" id="gamesList">
                 <!-- Games will be populated by JavaScript -->
             </div>
@@ -261,20 +271,32 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <img id="gameModalImage" src="" alt="" class="img-fluid mb-3 rounded">
-                    <h6>Description:</h6>
-                    <p id="gameModalDescription"></p>
-                    <h6>Developer:</h6>
-                    <p id="gameModalDeveloper"></p>
-                    <h6>Category:</h6>
-                    <p id="gameModalCategory"></p>
-                    <h6>Rating:</h6>
-                    <div id="gameModalRating"></div>
+                    <img id="gameModalImage" src="" alt="" class="img-fluid rounded">
+                    <div class="game-modal-detail mt-3">
+                        <label>Description:</label>
+                        <p id="gameModalDescription"></p>
+                    </div>
+                    <div class="game-modal-detail">
+                        <label>Developer:</label>
+                        <p id="gameModalDeveloper"></p>
+                    </div>
+                    <div class="game-modal-detail">
+                        <label>Genre:</label>
+                        <p><span id="gameModalGenre"></span></p>
+                    </div>
+                    <div class="game-modal-detail">
+                        <label>Release Date:</label>
+                        <p id="gameModalReleaseDate"></p>
+                    </div>
+                    <div class="game-modal-detail">
+                        <label>Rating:</label>
+                        <div id="gameModalRating"></div>
+                    </div>
                 </div>
                 <div class="modal-footer">
-                    <p class="me-auto"><strong>$<span id="gameModalPrice">0.00</span></strong></p>
+                    <p class="me-auto"><strong class="text-success">$<span id="gameModalPrice">0.00</span></strong></p>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="buyButton" onclick="addToCart()">Add to Cart</button>
+                    <button type="button" class="btn btn-primary" id="buyButton" onclick="addToCartFromButton()">Add to Cart</button>
                 </div>
             </div>
         </div>

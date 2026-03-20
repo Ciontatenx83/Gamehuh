@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Admin Dashboard - Tariq Smile Game Hub</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
+    <link href="admin-styles.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-dark navbar-expand-lg sticky-top admin-navbar">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-gamepad"></i> Tariq Smile - Admin Panel
+            </a>
+            <div class="d-flex">
+                <a href="index.html" class="btn btn-outline-light btn-sm me-2">
+                    <i class="fas fa-arrow-left"></i> Back to Store
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container-fluid admin-container py-5">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-3 mb-4">
+                <div class="admin-sidebar">
+                    <div class="sidebar-header">
+                        <h5><i class="fas fa-cog"></i> Admin Tools</h5>
+                    </div>
+                    <nav class="admin-nav">
+                        <a href="#" class="admin-nav-link active" data-tab="add-game">
+                            <i class="fas fa-plus"></i> Add New Game
+                        </a>
+                        <a href="#" class="admin-nav-link" data-tab="manage-games">
+                            <i class="fas fa-list"></i> Manage Games
+                        </a>
+                        <a href="#" class="admin-nav-link" data-tab="game-stats">
+                            <i class="fas fa-chart-bar"></i> Game Statistics
+                        </a>
+                        <a href="#" class="admin-nav-link" data-tab="settings">
+                            <i class="fas fa-sliders-h"></i> Settings
+                        </a>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-lg-9">
+                <!-- Add Game Tab -->
+                <div class="admin-tab-content active" data-tab="add-game">
+                    <div class="admin-card">
+                        <div class="admin-card-header">
+                            <h3><i class="fas fa-plus-circle"></i> Add New Game</h3>
+                            <p class="text-muted mb-0">Create and add a new game to your catalog</p>
+                        </div>
+                        <div class="admin-card-body">
+                            <form id="addGameForm">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="gameName" class="form-label">Game Title *</label>
+                                        <input type="text" class="form-control" id="gameName" placeholder="e.g., Epic Adventure" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="gameDeveloper" class="form-label">Developer *</label>
+                                        <input type="text" class="form-control" id="gameDeveloper" placeholder="e.g., Epic Studios" required>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-4 mb-3">
+                                        <label for="gameGenre" class="form-label">Genre *</label>
+                                        <select class="form-select" id="gameGenre" required>
+                                            <option value="">Select Genre</option>
+                                            <option value="action">⚡ Action</option>
+                                            <option value="adventure">🗺️ Adventure</option>
+                                            <option value="rpg">🐉 RPG</option>
+                                            <option value="puzzle">🧩 Puzzle</option>
+                                            <option value="horror">👻 Horror</option>
+                                            <option value="open-world">🌍 Open World</option>
+                                            <option value="sports">⚽ Sports</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="gamePrice" class="form-label">Price ($) *</label>
+                                        <input type="number" class="form-control" id="gamePrice" step="0.01" min="0" placeholder="29.99" required>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="gameRating" class="form-label">Rating (0-5)</label>
+                                        <input type="number" class="form-control" id="gameRating" step="0.1" min="0" max="5" value="4.5" placeholder="4.5">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="gameDescription" class="form-label">Description *</label>
+                                    <textarea class="form-control" id="gameDescription" rows="4" placeholder="Describe your game..." required></textarea>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="gameImage" class="form-label">Image URL *</label>
+                                        <input type="url" class="form-control" id="gameImage" placeholder="https://example.com/image.jpg" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="gameDownloadLink" class="form-label">Download Link *</label>
+                                        <input type="url" class="form-control" id="gameDownloadLink" placeholder="https://example.com/download" required>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="gameReleaseDate" class="form-label">Release Date</label>
+                                    <input type="date" class="form-control" id="gameReleaseDate">
+                                </div>
+
+                                <div class="form-actions">
+                                    <button type="submit" class="btn btn-primary btn-lg">
+                                        <i class="fas fa-save"></i> Add Game
+                                    </button>
+                                    <button type="reset" class="btn btn-secondary btn-lg">
+                                        <i class="fas fa-redo"></i> Clear
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Manage Games Tab -->
+                <div class="admin-tab-content" data-tab="manage-games">
+                    <div class="admin-card">
+                        <div class="admin-card-header">
+                            <h3><i class="fas fa-gamepad"></i> Manage Games</h3>
+                            <p class="text-muted mb-0">Edit or delete existing games</p>
+                        </div>
+                        <div class="admin-card-body">
+                            <div class="table-responsive">
+                                <table class="table table-dark table-hover" id="gamesTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Title</th>
+                                            <th>Genre</th>
+                                            <th>Price</th>
+                                            <th>Rating</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="gamesTableBody">
+                                        <!-- Populated by JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Game Statistics Tab -->
+                <div class="admin-tab-content" data-tab="game-stats">
+                    <div class="admin-card">
+                        <div class="admin-card-header">
+                            <h3><i class="fas fa-chart-bar"></i> Game Statistics</h3>
+                            <p class="text-muted mb-0">Overview of your game catalog</p>
+                        </div>
+                        <div class="admin-card-body">
+                            <div class="row" id="statsContainer">
+                                <!-- Populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings Tab -->
+                <div class="admin-tab-content" data-tab="settings">
+                    <div class="admin-card">
+                        <div class="admin-card-header">
+                            <h3><i class="fas fa-sliders-h"></i> Settings & Utilities</h3>
+                            <p class="text-muted mb-0">Manage your catalog settings</p>
+                        </div>
+                        <div class="admin-card-body">
+                            <div class="settings-section">
+                                <h5 class="mb-3">Data Management</h5>
+                                <div class="btn-group" role="group">
+                                    <button type="button" class="btn btn-outline-info" onclick="exportGamesData()">
+                                        <i class="fas fa-download"></i> Export Games (JSON)
+                                    </button>
+                                    <button type="button" class="btn btn-outline-warning" id="importBtn" onclick="document.getElementById('importFile').click()">
+                                        <i class="fas fa-upload"></i> Import Games (JSON)
+                                    </button>
+                                    <input type="file" id="importFile" style="display:none;" accept=".json" onchange="importGamesData(event)">
+                                </div>
+                            </div>
+
+                            <div class="settings-section mt-4">
+                                <h5 class="mb-3">Reset Options</h5>
+                                <button type="button" class="btn btn-outline-danger" onclick="resetToDefaults()">
+                                    <i class="fas fa-sync-alt"></i> Reset to Default Games
+                                </button>
+                                <small class="d-block text-muted mt-2">This will restore all default games. Your custom games will be lost.</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Game Modal -->
+    <div class="modal fade" id="editGameModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content modal-dark">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Game</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editGameForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="editGameName" class="form-label">Game Title</label>
+                                <input type="text" class="form-control" id="editGameName" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="editGameDeveloper" class="form-label">Developer</label>
+                                <input type="text" class="form-control" id="editGameDeveloper" required>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="editGameGenre" class="form-label">Genre</label>
+                                <select class="form-select" id="editGameGenre" required>
+                                    <option value="action">⚡ Action</option>
+                                    <option value="adventure">🗺️ Adventure</option>
+                                    <option value="rpg">🐉 RPG</option>
+                                    <option value="puzzle">🧩 Puzzle</option>
+                                    <option value="horror">👻 Horror</option>
+                                    <option value="open-world">🌍 Open World</option>
+                                    <option value="sports">⚽ Sports</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="editGamePrice" class="form-label">Price ($)</label>
+                                <input type="number" class="form-control" id="editGamePrice" step="0.01" min="0" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="editGameRating" class="form-label">Rating (0-5)</label>
+                                <input type="number" class="form-control" id="editGameRating" step="0.1" min="0" max="5" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="editGameDescription" class="form-label">Description</label>
+                            <textarea class="form-control" id="editGameDescription" rows="3" required></textarea>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="editGameImage" class="form-label">Image URL</label>
+                                <input type="url" class="form-control" id="editGameImage" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="editGameDownloadLink" class="form-label">Download Link</label>
+                                <input type="url" class="form-control" id="editGameDownloadLink" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="editGameReleaseDate" class="form-label">Release Date</label>
+                            <input type="date" class="form-control" id="editGameReleaseDate">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="saveEditedGame()">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>

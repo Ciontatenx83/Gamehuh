@@ -480,6 +480,225 @@ footer a:hover {
     animation: fadeIn 0.5s ease-out;
 }
 
+/* ========================================
+   ENHANCED GENRE FILTER & GRID
+   ======================================== */
+
+/* Genre Filter Pills */
+#genreFilterContainer {
+    margin-bottom: 2rem;
+}
+
+.genre-filter-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+}
+
+.genre-pill {
+    background: linear-gradient(135deg, #334155 0%, #1e293b 100%);
+    border: 2px solid #475569;
+    color: #cbd5e1;
+    padding: 0.75rem 1.5rem;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.genre-pill:hover {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+    transform: translateY(-2px);
+}
+
+.genre-pill.active {
+    background: linear-gradient(135deg, var(--accent-color) 0%, #f97316 100%);
+    border-color: var(--accent-color);
+    color: #000;
+    font-weight: 700;
+    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+}
+
+/* Enhanced Game Card */
+.game-card-image-wrapper {
+    position: relative;
+    overflow: hidden;
+    height: 200px;
+    background: linear-gradient(135deg, #334155 0%, #1e293b 100%);
+}
+
+.game-card-image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.game-card:hover .game-card-image-wrapper img {
+    transform: scale(1.1);
+}
+
+.game-genre-badge {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: linear-gradient(135deg, var(--accent-color) 0%, #f97316 100%);
+    color: #000;
+    padding: 0.4rem 0.9rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.game-card:hover .game-genre-badge {
+    transform: scale(1.1);
+}
+
+.game-card-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.9) 100%);
+    padding: 2rem 1rem 1.5rem;
+    display: flex;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    cursor: pointer;
+}
+
+.game-card:hover .game-card-overlay {
+    opacity: 1;
+}
+
+.game-card-overlay .btn {
+    width: 100%;
+    max-width: 150px;
+}
+
+.game-card-developer {
+    color: #94a3b8;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.game-card .rating-value {
+    font-size: 0.85rem;
+    color: #94a3b8;
+}
+
+/* Featured Game Cards */
+.featured-game .game-card-image-wrapper {
+    height: 250px;
+}
+
+.featured-game .game-card-body {
+    padding: 1.5rem;
+}
+
+.featured-game h5 {
+    font-size: 1.2rem;
+}
+
+/* Cart Quantity Input */
+.cart-qty-input {
+    width: 60px;
+    padding: 0.25rem 0.5rem;
+    background-color: #0f172a;
+    border: 1px solid #475569;
+    color: #fff;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.cart-qty-input:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2);
+}
+
+.cart-item-price-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+/* Game Modal Enhancements */
+#gameModal .modal-body {
+    padding: 2rem;
+}
+
+#gameModalImage {
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.game-modal-detail {
+    margin-bottom: 1rem;
+}
+
+.game-modal-detail label {
+    color: #94a3b8;
+    font-weight: 500;
+    font-size: 0.9rem;
+    margin-bottom: 0.25rem;
+}
+
+.game-modal-detail p,
+.game-modal-detail span {
+    color: #fff;
+    font-weight: 500;
+}
+
+#gameModalGenre {
+    display: inline-block;
+    background: rgba(245, 158, 11, 0.2);
+    color: var(--accent-color);
+    padding: 0.4rem 0.9rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+}
+
+#gameModalRating {
+    color: var(--accent-color);
+    margin-bottom: 1rem;
+}
+
+/* Responsive Genre Filter */
+@media (max-width: 768px) {
+    .genre-filter-pills {
+        gap: 0.5rem;
+    }
+
+    .genre-pill {
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+    }
+
+    .game-card-image-wrapper {
+        height: 150px;
+    }
+
+    .featured-game .game-card-image-wrapper {
+        height: 180px;
+    }
+
+    .game-card-overlay {
+        padding: 1.5rem 0.75rem 1rem;
+    }
+
+    .game-card-body {
+        padding: 1rem;
+    }
+}
+
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
     width: 10px;
