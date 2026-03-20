@@ -1,5 +1,5 @@
 // ===== BACKEND SERVER EXAMPLE FOR PRODUCTION =====
-// This is an example Node.js/Express backend for GameHub
+// This is an example Node.js/Express backend for Tariq Smile Game Hub
 // To use this, install: npm install express stripe dotenv cors
 // Then update script.js to call these endpoints
 
@@ -348,7 +348,7 @@ app.use((err, req, res, next) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`GameHub server running on port ${PORT}`);
+    console.log(`Tariq Smile Game Hub server running on port ${PORT}`);
 });
 
 module.exports = app;

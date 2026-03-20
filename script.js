@@ -1,4 +1,4 @@
-// Game Database
+// Tariq Smile Game Hub - Game Database
 const games = [
     {
         id: 1,

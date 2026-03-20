@@ -1,7 +1,7 @@
 {
-  "name": "gamehub",
+  "name": "tariq-smile-game-hub",
   "version": "1.0.0",
-  "description": "Premium gaming website with secure payments",
+  "description": "Tariq Smile Game Hub - Premium gaming website with secure payments",
   "main": "server.example.js",
   "scripts": {
     "start": "node server.js",

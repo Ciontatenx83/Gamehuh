@@ -1,4 +1,4 @@
-# GameHub Configuration
+# Tariq Smile Game Hub Configuration
 
 ## Payment Configuration
 
@@ -88,7 +88,7 @@ PORT=3000
 - Expiry: Any future date (MM/YY)
 - CVC: Any 3 digits
 
-## Production Deployment
+## Production Deployment for Tariq Smile Game Hub
 
 1. Update all configuration for production environment
 2. Switch Stripe keys from test to live

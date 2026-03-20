@@ -1,6 +1,6 @@
-# GameHub - Premium Game Download Platform
+# Tariq Smile Game Hub - Premium Game Download Platform
 
-A modern, attractive gaming website where users can browse, download premium games, and make secure payments. Built with Bootstrap 5 for responsive design and Stripe integration for payment processing.
+Tariq Smile Game Hub is a modern, attractive gaming website where users can browse, download premium games, and make secure payments. Built with Bootstrap 5 for responsive design and Stripe integration for payment processing.
 
 ## Features
 
@@ -36,7 +36,7 @@ A modern, attractive gaming website where users can browse, download premium gam
 ## Project Structure
 
 ```
-GameHub/
+Tariq Smile Game Hub/
 ├── index.html              # Main HTML file with all sections
 ├── styles.css              # Modern CSS styling
 ├── script.js               # JavaScript functionality
@@ -308,10 +308,10 @@ This project is licensed under the MIT License - see LICENSE file for details.
 
 ## Support & Contact
 
-- **Email**: support@gamehub.com
-- **Website**: www.gamehub.com
+- **Email**: support@tariqsmile.com
+- **Website**: www.tariqsmile.com
 - **GitHub Issues**: [Report bugs here]
-- **Twitter**: @GameHubOfficial
+- **Twitter**: @TariqSmileGames
 
 ## Roadmap
 
@@ -339,3 +339,4 @@ Built with:
 **Version**: 1.0.0  
 **Last Updated**: 2024  
 **Status**: ✅ Ready for Deployment
+**Brand**: Tariq Smile Game Hub
