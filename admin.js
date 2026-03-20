@@ -72,6 +72,15 @@ function setupAdminEventListeners() {
             handleAddGame();
         });
     }
+
+    // Send Code Form
+    const sendCodeForm = document.getElementById('sendCodeForm');
+    if (sendCodeForm) {
+        sendCodeForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            handleSendLicenseCode();
+        });
+    }
 }
 
 // ========================================
@@ -107,6 +116,8 @@ function switchTab(tabName) {
         loadGamesIntoTable();
     } else if (tabName === 'game-stats') {
         displayGameStatistics();
+    } else if (tabName === 'settings') {
+        populateGameDropdown();
     }
 }
 
@@ -443,7 +454,120 @@ function resetToDefaults() {
         }
     }
 }
+// ========================================
+// LICENSE CODE & EMAIL FUNCTIONS
+// ========================================
 
+function generateLicenseCode() {
+    // Generate format: AUTO-XXXX-XXXX-XXXX
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    const segments = [];
+    
+    for (let i = 0; i < 3; i++) {
+        let segment = '';
+        for (let j = 0; j < 4; j++) {
+            segment += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        segments.push(segment);
+    }
+    
+    const licenseCode = 'AUTO-' + segments.join('-');
+    document.getElementById('codeAmount').value = licenseCode;
+    showAdminNotification('✓ License code generated!', 'success');
+}
+
+function populateGameDropdown() {
+    const gameSelect = document.getElementById('codeGame');
+    if (!gameSelect) return;
+    
+    gameSelect.innerHTML = '<option value="">Choose a game...</option>';
+    games.forEach(game => {
+        const option = document.createElement('option');
+        option.value = game.id;
+        option.textContent = game.name;
+        gameSelect.appendChild(option);
+    });
+}
+
+function handleSendLicenseCode() {
+    const email = document.getElementById('codeEmail').value;
+    const gameId = document.getElementById('codeGame').value;
+    const licenseCode = document.getElementById('codeAmount').value;
+    const customMessage = document.getElementById('codeMessage').value;
+
+    // Validation
+    if (!email || !gameId || !licenseCode) {
+        showAdminNotification('Please fill in all required fields!', 'danger');
+        return;
+    }
+
+    if (!licenseCode.match(/^AUTO-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/)) {
+        showAdminNotification('Please generate a valid license code!', 'danger');
+        return;
+    }
+
+    const game = getGameById(parseInt(gameId));
+    if (!game) {
+        showAdminNotification('Game not found!', 'danger');
+        return;
+    }
+
+    // Send email
+    sendLicenseCodeEmail(email, game, licenseCode, customMessage);
+}
+
+function sendLicenseCodeEmail(email, game, licenseCode, customMessage) {
+    // Prepare email data
+    const emailData = {
+        to: email,
+        subject: `Your License Code for ${game.name}`,
+        game: game.name,
+        price: game.price,
+        licenseCode: licenseCode,
+        customMessage: customMessage,
+        timestamp: new Date().toISOString()
+    };
+
+    // Show loading state
+    const submitBtn = event.target.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+
+    // Send to backend API
+    fetch('/api/send-license-code', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(emailData)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`Server error: ${response.statusText}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            showAdminNotification(`✓ License code sent to ${email}!`, 'success');
+            // Clear form
+            document.getElementById('sendCodeForm').reset();
+            document.getElementById('codeAmount').value = '';
+        } else {
+            throw new Error(data.message || 'Failed to send email');
+        }
+    })
+    .catch(error => {
+        console.error('Email send error:', error);
+        showAdminNotification(`Error: ${error.message}`, 'danger');
+    })
+    .finally(() => {
+        // Restore button
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalText;
+    });
+}
 // ========================================
 // HELPER FUNCTIONS
 // ========================================

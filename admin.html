@@ -191,6 +191,48 @@
                         </div>
                         <div class="admin-card-body">
                             <div class="settings-section">
+                                <h5 class="mb-3">📧 Send License Codes to Customers</h5>
+                                <form id="sendCodeForm">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="codeEmail" class="form-label">Customer Email *</label>
+                                            <input type="email" class="form-control" id="codeEmail" placeholder="customer@example.com" required>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="codeGame" class="form-label">Select Game *</label>
+                                            <select class="form-select" id="codeGame" required>
+                                                <option value="">Choose a game...</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="codeAmount" class="form-label">License Code *</label>
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" id="codeAmount" placeholder="AUTO-GEN-1234-5678" readonly>
+                                                <button class="btn btn-info" type="button" onclick="generateLicenseCode()">
+                                                    <i class="fas fa-cog"></i> Generate
+                                                </button>
+                                            </div>
+                                            <small class="text-muted">Click 'Generate' to create a unique license code</small>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="codeMessage" class="form-label">Custom Message (Optional)</label>
+                                            <textarea class="form-control" id="codeMessage" rows="3" placeholder="Thank you for your purchase!"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="form-actions">
+                                        <button type="submit" class="btn btn-primary btn-lg">
+                                            <i class="fas fa-envelope"></i> Send License Code
+                                        </button>
+                                        <button type="reset" class="btn btn-secondary btn-lg">
+                                            <i class="fas fa-redo"></i> Clear
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <div class="settings-section mt-4">
                                 <h5 class="mb-3">Data Management</h5>
                                 <div class="btn-group" role="group">
                                     <button type="button" class="btn btn-outline-info" onclick="exportGamesData()">

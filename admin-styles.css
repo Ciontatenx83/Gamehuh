@@ -478,6 +478,62 @@
 }
 
 /* ========================================
+   EMAIL FORM STYLING
+   ======================================== */
+
+#sendCodeForm {
+    background: linear-gradient(135deg, rgba(13, 110, 253, 0.08) 0%, rgba(13, 110, 253, 0.02) 100%);
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid var(--admin-border);
+}
+
+.input-group {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.input-group .form-control {
+    flex: 1;
+}
+
+.input-group .btn {
+    white-space: nowrap;
+    padding: 0.75rem 1rem;
+}
+
+#codeAmount {
+    font-family: 'Courier New', monospace;
+    font-weight: 600;
+    font-size: 0.95rem;
+    letter-spacing: 1px;
+    background-color: rgba(13, 110, 253, 0.1) !important;
+    color: var(--admin-accent) !important;
+    border-color: var(--admin-primary) !important;
+}
+
+#codeAmount:focus {
+    background-color: rgba(13, 110, 253, 0.15) !important;
+    border-color: var(--admin-accent) !important;
+    box-shadow: 0 0 0 0.2rem rgba(245, 158, 11, 0.25) !important;
+}
+
+/* License code display */
+.license-code-display {
+    background: #0f172a;
+    color: #f59e0b;
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+    font-family: 'Courier New', monospace;
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    border: 2px solid var(--admin-primary);
+    margin: 1rem 0;
+}
+
+/* ========================================
    MODAL STYLING
    ======================================== */
 
