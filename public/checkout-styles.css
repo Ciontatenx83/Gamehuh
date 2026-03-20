@@ -1,0 +1,136 @@
+/* Checkout Form Styles */
+
+.checkout-styles {
+  --gold: #ffd700;
+  --dark-bg: #0a0e27;
+  --card-bg: rgba(20, 20, 40, 0.7);
+  --accent: #667eea;
+  --error: #ff6b6b;
+  --success: #28a745;
+}
+
+/* Form Control Styles */
+.form-control, textarea {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 215, 0, 0.3) !important;
+  color: #fff !important;
+  transition: all 0.3s ease;
+}
+
+.form-control:focus, textarea:focus {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: #ffd700 !important;
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.2) !important;
+}
+
+.form-control::placeholder, textarea::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* Valid input state */
+.form-control.is-valid {
+  border-color: #28a745 !important;
+  background: rgba(40, 167, 69, 0.05) !important;
+  box-shadow: 0 0 20px rgba(40, 167, 69, 0.2) !important;
+}
+
+/* Invalid input state */
+.form-control.is-invalid {
+  border-color: #ff6b6b !important;
+  background: rgba(220, 53, 69, 0.05) !important;
+  box-shadow: 0 0 20px rgba(255, 107, 107, 0.2) !important;
+}
+
+/* Error message styling */
+.error-message {
+  color: #ff6b6b;
+  font-size: 0.85rem;
+  margin-top: 5px;
+  display: none;
+  animation: slideDown 0.3s ease-out;
+}
+
+.error-message.show {
+  display: block;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Success message styling */
+.success-message {
+  color: #28a745;
+  font-size: 0.85rem;
+  margin-top: 5px;
+  display: none;
+  animation: slideDown 0.3s ease-out;
+}
+
+.success-message.show {
+  display: block;
+}
+
+/* Button states */
+button[type="submit"]:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+button[type="submit"]:hover:not(:disabled) {
+  transform: translateY(-3px);
+}
+
+/* Responsive adjustments for mobile */
+@media (max-width: 480px) {
+  .form-control, textarea {
+    font-size: 16px; /* Prevents zoom on iOS Safari */
+  }
+
+  .checkout-container {
+    padding: 20px;
+  }
+}
+
+/* Loading spinner for buttons */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.btn-loading::after {
+  content: '⏳';
+  margin-left: 8px;
+  animation: spin 1s linear infinite;
+}
+
+/* Accessibility improvements */
+.form-control:focus,
+textarea:focus,
+button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.2) !important;
+}
+
+/* Print styles for receipt */
+@media print {
+  .checkout-button,
+  .back-link,
+  .security-badge {
+    display: none;
+  }
+
+  .checkout-container {
+    box-shadow: none;
+    border: 1px solid #ccc;
+  }
+}
