@@ -1,86 +1,109 @@
-// Game Database
-const games = [
-    {
-        id: 1,
-        name: 'Dragon Quest',
-        category: 'rpg',
-        price: 29.99,
-        rating: 4.8,
-        image: 'https://via.placeholder.com/300x200?text=Dragon+Quest',
-        developer: 'Epic Studios',
-        description: 'Embark on an epic adventure in a fantasy world filled with dragons, magic, and treasures.'
-    },
-    {
-        id: 2,
-        name: 'Cyber Storm',
-        category: 'action',
-        price: 39.99,
-        rating: 4.5,
-        image: 'https://via.placeholder.com/300x200?text=Cyber+Storm',
-        developer: 'Vertex Games',
-        description: 'Experience intense action in a cyberpunk world with stunning visuals and fast-paced gameplay.'
-    },
-    {
-        id: 3,
-        name: 'Lost Temple',
-        category: 'adventure',
-        price: 24.99,
-        rating: 4.6,
-        image: 'https://via.placeholder.com/300x200?text=Lost+Temple',
-        developer: 'Adventure Inc',
-        description: 'Explore ancient ruins and solve puzzles to find the legendary Lost Temple.'
-    },
-    {
-        id: 4,
-        name: 'Brain Master',
-        category: 'puzzle',
-        price: 9.99,
-        rating: 4.4,
-        image: 'https://via.placeholder.com/300x200?text=Brain+Master',
-        developer: 'Mind Games Co',
-        description: 'Challenge your mind with hundreds of brain-teasing puzzles and logic challenges.'
-    },
-    {
-        id: 5,
-        name: 'Championship Racing',
-        category: 'sports',
-        price: 34.99,
-        rating: 4.7,
-        image: 'https://via.placeholder.com/300x200?text=Championship+Racing',
-        developer: 'Racing Masters',
-        description: 'Race against the world in realistic car racing with multiple tracks and vehicles.'
-    },
-    {
-        id: 6,
-        name: 'Night Hunter',
-        category: 'action',
-        price: 44.99,
-        rating: 4.9,
-        image: 'https://via.placeholder.com/300x200?text=Night+Hunter',
-        developer: 'Dark Games LLC',
-        description: 'Hunt supernatural creatures in a dark, atmospheric world filled with mystery.'
-    },
-    {
-        id: 7,
-        name: 'Fantasy Quest',
-        category: 'rpg',
-        price: 49.99,
-        rating: 4.8,
-        image: 'https://via.placeholder.com/300x200?text=Fantasy+Quest',
-        developer: 'Quest Studios',
-        description: 'Create your character and explore a vast fantasy world with thousands of quests.'
-    },
-    {
-        id: 8,
-        name: 'Puzzle Paradise',
-        category: 'puzzle',
-        price: 14.99,
-        rating: 4.3,
-        image: 'https://via.placeholder.com/300x200?text=Puzzle+Paradise',
-        developer: 'Paradise Games',
-        description: 'Colorful puzzle game with beautiful graphics and addictive gameplay.'
+// ============ GAMES DATABASE WITH LOCALSTORAGE ============
+function loadGamesFromStorage() {
+    const savedGames = localStorage.getItem('gameHubGames');
+    if (savedGames) {
+        return JSON.parse(savedGames);
     }
-];
+    // Default games if no saved data
+    return [
+        {
+            id: 1,
+            name: 'Dragon Quest',
+            category: 'rpg',
+            price: 29.99,
+            rating: 4.8,
+            image: 'https://via.placeholder.com/300x200?text=Dragon+Quest',
+            developer: 'Epic Studios',
+            description: 'Embark on an epic adventure in a fantasy world filled with dragons, magic, and treasures.',
+            hidden: false
+        },
+        {
+            id: 2,
+            name: 'Cyber Storm',
+            category: 'action',
+            price: 39.99,
+            rating: 4.5,
+            image: 'https://via.placeholder.com/300x200?text=Cyber+Storm',
+            developer: 'Vertex Games',
+            description: 'Experience intense action in a cyberpunk world with stunning visuals and fast-paced gameplay.',
+            hidden: false
+        },
+        {
+            id: 3,
+            name: 'Lost Temple',
+            category: 'adventure',
+            price: 24.99,
+            rating: 4.6,
+            image: 'https://via.placeholder.com/300x200?text=Lost+Temple',
+            developer: 'Adventure Inc',
+            description: 'Explore ancient ruins and solve puzzles to find the legendary Lost Temple.',
+            hidden: false
+        },
+        {
+            id: 4,
+            name: 'Brain Master',
+            category: 'puzzle',
+            price: 9.99,
+            rating: 4.4,
+            image: 'https://via.placeholder.com/300x200?text=Brain+Master',
+            developer: 'Mind Games Co',
+            description: 'Challenge your mind with hundreds of brain-teasing puzzles and logic challenges.',
+            hidden: false
+        },
+        {
+            id: 5,
+            name: 'Championship Racing',
+            category: 'sports',
+            price: 34.99,
+            rating: 4.7,
+            image: 'https://via.placeholder.com/300x200?text=Championship+Racing',
+            developer: 'Racing Masters',
+            description: 'Race against the world in realistic car racing with multiple tracks and vehicles.',
+            hidden: false
+        },
+        {
+            id: 6,
+            name: 'Night Hunter',
+            category: 'action',
+            price: 44.99,
+            rating: 4.9,
+            image: 'https://via.placeholder.com/300x200?text=Night+Hunter',
+            developer: 'Dark Games LLC',
+            description: 'Hunt supernatural creatures in a dark, atmospheric world filled with mystery.',
+            hidden: false
+        },
+        {
+            id: 7,
+            name: 'Fantasy Quest',
+            category: 'rpg',
+            price: 49.99,
+            rating: 4.8,
+            image: 'https://via.placeholder.com/300x200?text=Fantasy+Quest',
+            developer: 'Quest Studios',
+            description: 'Create your character and explore a vast fantasy world with thousands of quests.',
+            hidden: false
+        },
+        {
+            id: 8,
+            name: 'Puzzle Paradise',
+            category: 'puzzle',
+            price: 14.99,
+            rating: 4.3,
+            image: 'https://via.placeholder.com/300x200?text=Puzzle+Paradise',
+            developer: 'Paradise Games',
+            description: 'Colorful puzzle game with beautiful graphics and addictive gameplay.',
+            hidden: false
+        }
+    ];
+}
+
+function saveGamesToStorage() {
+    localStorage.setItem('gameHubGames', JSON.stringify(games));
+}
+
+// Initialize games from localStorage
+let games = loadGamesFromStorage();
+
 
 let cart = [];
 let currentGameForModal = null;
@@ -496,111 +519,6 @@ function updateThemeIcon(theme) {
 // ========= ADMIN DASHBOARD =========
 const ADMIN_PASSWORD = 'Ciontaten83x';
 let adminAuthenticated = false;
-
-// Initialize games from localStorage or use defaults
-let games = loadGamesFromStorage();
-
-function loadGamesFromStorage() {
-    const savedGames = localStorage.getItem('gameHubGames');
-    if (savedGames) {
-        return JSON.parse(savedGames);
-    }
-    // Default games if no saved data
-    return [
-        {
-            id: 1,
-            name: 'Dragon Quest',
-            category: 'rpg',
-            price: 29.99,
-            rating: 4.8,
-            image: 'https://via.placeholder.com/300x200?text=Dragon+Quest',
-            developer: 'Epic Studios',
-            description: 'Embark on an epic adventure in a fantasy world filled with dragons, magic, and treasures.',
-            hidden: false
-        },
-        {
-            id: 2,
-            name: 'Cyber Storm',
-            category: 'action',
-            price: 39.99,
-            rating: 4.5,
-            image: 'https://via.placeholder.com/300x200?text=Cyber+Storm',
-            developer: 'Vertex Games',
-            description: 'Experience intense action in a cyberpunk world with stunning visuals and fast-paced gameplay.',
-            hidden: false
-        },
-        {
-            id: 3,
-            name: 'Lost Temple',
-            category: 'adventure',
-            price: 24.99,
-            rating: 4.6,
-            image: 'https://via.placeholder.com/300x200?text=Lost+Temple',
-            developer: 'Adventure Inc',
-            description: 'Explore ancient ruins and solve puzzles to find the legendary Lost Temple.',
-            hidden: false
-        },
-        {
-            id: 4,
-            name: 'Brain Master',
-            category: 'puzzle',
-            price: 9.99,
-            rating: 4.4,
-            image: 'https://via.placeholder.com/300x200?text=Brain+Master',
-            developer: 'Mind Games Co',
-            description: 'Challenge your mind with hundreds of brain-teasing puzzles and logic challenges.',
-            hidden: false
-        },
-        {
-            id: 5,
-            name: 'Championship Racing',
-            category: 'sports',
-            price: 34.99,
-            rating: 4.7,
-            image: 'https://via.placeholder.com/300x200?text=Championship+Racing',
-            developer: 'Racing Masters',
-            description: 'Race against the world in realistic car racing with multiple tracks and vehicles.',
-            hidden: false
-        },
-        {
-            id: 6,
-            name: 'Night Hunter',
-            category: 'action',
-            price: 44.99,
-            rating: 4.9,
-            image: 'https://via.placeholder.com/300x200?text=Night+Hunter',
-            developer: 'Dark Games LLC',
-            description: 'Hunt supernatural creatures in a dark, atmospheric world filled with mystery.',
-            hidden: false
-        },
-        {
-            id: 7,
-            name: 'Fantasy Quest',
-            category: 'rpg',
-            price: 49.99,
-            rating: 4.8,
-            image: 'https://via.placeholder.com/300x200?text=Fantasy+Quest',
-            developer: 'Quest Studios',
-            description: 'Create your character and explore a vast fantasy world with thousands of quests.',
-            hidden: false
-        },
-        {
-            id: 8,
-            name: 'Puzzle Paradise',
-            category: 'puzzle',
-            price: 14.99,
-            rating: 4.3,
-            image: 'https://via.placeholder.com/300x200?text=Puzzle+Paradise',
-            developer: 'Paradise Games',
-            description: 'Colorful puzzle game with beautiful graphics and addictive gameplay.',
-            hidden: false
-        }
-    ];
-}
-
-function saveGamesToStorage() {
-    localStorage.setItem('gameHubGames', JSON.stringify(games));
-}
 
 function showAdminLogin() {
     const loginModal = new bootstrap.Modal(document.getElementById('adminLoginModal'));
