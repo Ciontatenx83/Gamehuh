@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // =============================================
 // TARIQ SMILE GAME HUB - COMPLETE SYSTEM
 // =============================================
@@ -65,8 +66,114 @@ const defaultGames = [
         developer: 'Adventure Inc',
         description: 'Explore ancient ruins and solve puzzles to find the legendary Lost Temple.',
         link: 'https://example.com/download/lost-temple'
+=======
+// ============ GAMES DATABASE WITH LOCALSTORAGE ============
+function loadGamesFromStorage() {
+    const savedGames = localStorage.getItem('gameHubGames');
+    if (savedGames) {
+        return JSON.parse(savedGames);
+>>>>>>> temp-fix
     }
-];
+    // Default games if no saved data
+    return [
+        {
+            id: 1,
+            name: 'Dragon Quest',
+            category: 'rpg',
+            price: 29.99,
+            rating: 4.8,
+            image: 'https://via.placeholder.com/300x200?text=Dragon+Quest',
+            developer: 'Epic Studios',
+            description: 'Embark on an epic adventure in a fantasy world filled with dragons, magic, and treasures.',
+            hidden: false
+        },
+        {
+            id: 2,
+            name: 'Cyber Storm',
+            category: 'action',
+            price: 39.99,
+            rating: 4.5,
+            image: 'https://via.placeholder.com/300x200?text=Cyber+Storm',
+            developer: 'Vertex Games',
+            description: 'Experience intense action in a cyberpunk world with stunning visuals and fast-paced gameplay.',
+            hidden: false
+        },
+        {
+            id: 3,
+            name: 'Lost Temple',
+            category: 'adventure',
+            price: 24.99,
+            rating: 4.6,
+            image: 'https://via.placeholder.com/300x200?text=Lost+Temple',
+            developer: 'Adventure Inc',
+            description: 'Explore ancient ruins and solve puzzles to find the legendary Lost Temple.',
+            hidden: false
+        },
+        {
+            id: 4,
+            name: 'Brain Master',
+            category: 'puzzle',
+            price: 9.99,
+            rating: 4.4,
+            image: 'https://via.placeholder.com/300x200?text=Brain+Master',
+            developer: 'Mind Games Co',
+            description: 'Challenge your mind with hundreds of brain-teasing puzzles and logic challenges.',
+            hidden: false
+        },
+        {
+            id: 5,
+            name: 'Championship Racing',
+            category: 'sports',
+            price: 34.99,
+            rating: 4.7,
+            image: 'https://via.placeholder.com/300x200?text=Championship+Racing',
+            developer: 'Racing Masters',
+            description: 'Race against the world in realistic car racing with multiple tracks and vehicles.',
+            hidden: false
+        },
+        {
+            id: 6,
+            name: 'Night Hunter',
+            category: 'action',
+            price: 44.99,
+            rating: 4.9,
+            image: 'https://via.placeholder.com/300x200?text=Night+Hunter',
+            developer: 'Dark Games LLC',
+            description: 'Hunt supernatural creatures in a dark, atmospheric world filled with mystery.',
+            hidden: false
+        },
+        {
+            id: 7,
+            name: 'Fantasy Quest',
+            category: 'rpg',
+            price: 49.99,
+            rating: 4.8,
+            image: 'https://via.placeholder.com/300x200?text=Fantasy+Quest',
+            developer: 'Quest Studios',
+            description: 'Create your character and explore a vast fantasy world with thousands of quests.',
+            hidden: false
+        },
+        {
+            id: 8,
+            name: 'Puzzle Paradise',
+            category: 'puzzle',
+            price: 14.99,
+            rating: 4.3,
+            image: 'https://via.placeholder.com/300x200?text=Puzzle+Paradise',
+            developer: 'Paradise Games',
+            description: 'Colorful puzzle game with beautiful graphics and addictive gameplay.',
+            hidden: false
+        }
+    ];
+}
+
+function saveGamesToStorage() {
+    localStorage.setItem('gameHubGames', JSON.stringify(games));
+}
+
+// Initialize games from localStorage
+let games = loadGamesFromStorage();
+
 
 // ===========================================
 // STATE MANAGEMENT
@@ -77,6 +184,7 @@ let currentFilter = null;
 let adminVerified = false;
 let generatedOTP = null;
 
+<<<<<<< HEAD
 // ===========================================
 // INITIALIZATION
 // ===========================================
@@ -84,9 +192,17 @@ document.addEventListener('DOMContentLoaded', function () {
     initializeCategories();
     renderGames(games);
     updateCartBadge();
+=======
+// Initialize the page
+document.addEventListener('DOMContentLoaded', function() {
+    initializeTheme();
+    displayFeaturedGames();
+    displayAllGames();
+>>>>>>> temp-fix
     setupEventListeners();
 });
 
+<<<<<<< HEAD
 // ===========================================
 // CATEGORIES INITIALIZATION
 // ===========================================
@@ -125,12 +241,64 @@ function renderGames(gamesToRender = games) {
                 <div class="game-card-footer">
                     <span class="game-price">$${game.price.toFixed(2)}</span>
                     <span class="game-rating">⭐ ${game.rating || 4.5}</span>
+=======
+// Display featured games
+function displayFeaturedGames() {
+    const featured = games.filter(game => !game.hidden).slice(0, 3);
+    const featuredContainer = document.getElementById('featuredGames');
+    
+    featuredContainer.innerHTML = featured.map(game => `
+        <div class="col-md-4">
+            <div class="game-card" onclick="openGameModal(${game.id})">
+                <img src="${game.image}" alt="${game.name}" class="game-card-image">
+                <div class="game-card-body">
+                    <h5 class="game-card-title">${game.name}</h5>
+                    <span class="game-card-category">${game.category.toUpperCase()}</span>
+                    <p class="game-card-description">${game.description}</p>
+                    <div class="game-card-footer">
+                        <span class="game-price">$${game.price}</span>
+                        <div class="game-rating">
+                            <i class="fas fa-star"></i> ${game.rating}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     `).join('');
 }
 
+// Display all games with search and filter
+function displayAllGames(filtered = games) {
+    const gamesList = document.getElementById('gamesList');
+    const visibleGames = filtered.filter(game => !game.hidden);
+
+    if (visibleGames.length === 0) {
+        gamesList.innerHTML = '<div class="col-12"><p class="text-center text-muted">No games found matching your criteria.</p></div>';
+        return;
+    }
+    
+    gamesList.innerHTML = visibleGames.map(game => `
+        <div class="col-lg-3 col-md-6 col-sm-12">
+            <div class="game-card" onclick="openGameModal(${game.id})">
+                <img src="${game.image}" alt="${game.name}" class="game-card-image">
+                <div class="game-card-body">
+                    <h5 class="game-card-title">${game.name}</h5>
+                    <span class="game-card-category">${game.category.toUpperCase()}</span>
+                    <p class="game-card-description">${game.description}</p>
+                    <div class="game-card-footer">
+                        <span class="game-price">$${game.price}</span>
+                        <div class="game-rating">
+                            <i class="fas fa-star"></i> ${game.rating}
+                        </div>
+                    </div>
+>>>>>>> temp-fix
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+<<<<<<< HEAD
 // ===========================================
 // CATEGORY FILTERING
 // ===========================================
@@ -142,6 +310,26 @@ function filterByCategory(categoryId, categoryName) {
     document.getElementById('activeFilterName').textContent = categoryName;
     
     renderGames(filtered);
+=======
+// Setup event listeners for search and filter
+function setupEventListeners() {
+    const searchInput = document.getElementById('searchInput');
+    const categoryFilter = document.getElementById('categoryFilter');
+    const cartLink = document.querySelector('.cart-link');
+    const contactForm = document.getElementById('contactForm');
+    const themeToggleBtn = document.getElementById('themeToggle');
+
+    searchInput.addEventListener('input', filterGames);
+    categoryFilter.addEventListener('change', filterGames);
+    cartLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        showCart();
+    });
+    contactForm.addEventListener('submit', handleContactSubmit);
+    if (themeToggleBtn) {
+        themeToggleBtn.addEventListener('click', toggleTheme);
+    }
+>>>>>>> temp-fix
 }
 
 function clearFilter() {
@@ -531,6 +719,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+<<<<<<< HEAD
 // ===========================================
 // UTILITY FUNCTIONS
 // ===========================================
@@ -558,3 +747,244 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Store current game being edited
 let currentEditingGameId = null;
+=======
+// ============ THEME SWITCHING ============
+// Initialize theme on page load
+function initializeTheme() {
+    const savedTheme = localStorage.getItem('gameHubTheme') || 'dark';
+    setTheme(savedTheme);
+}
+
+// Set theme
+function setTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('gameHubTheme', theme);
+    updateThemeIcon(theme);
+}
+
+// Toggle theme
+function toggleTheme() {
+    const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    setTheme(newTheme);
+}
+
+// Update theme toggle icon
+function updateThemeIcon(theme) {
+    const themeToggleBtn = document.getElementById('themeToggle');
+    if (themeToggleBtn) {
+        if (theme === 'dark') {
+            themeToggleBtn.innerHTML = '<i class="fas fa-moon"></i>';
+            themeToggleBtn.title = 'Switch to light mode';
+        } else {
+            themeToggleBtn.innerHTML = '<i class="fas fa-sun"></i>';
+            themeToggleBtn.title = 'Switch to dark mode';
+        }
+    }
+}
+
+// ========= ADMIN DASHBOARD =========
+const ADMIN_PASSWORD = 'Ciontaten83x';
+let adminAuthenticated = false;
+
+function showAdminLogin() {
+    const loginModal = new bootstrap.Modal(document.getElementById('adminLoginModal'));
+    document.getElementById('adminPassword').value = '';
+    document.getElementById('adminLoginError').style.display = 'none';
+    loginModal.show();
+}
+
+function authenticateAdmin() {
+    const password = document.getElementById('adminPassword').value;
+    if (password === ADMIN_PASSWORD) {
+        adminAuthenticated = true;
+        document.getElementById('adminLoginError').style.display = 'none';
+        const loginModal = bootstrap.Modal.getInstance(document.getElementById('adminLoginModal'));
+        if (loginModal) {
+            loginModal.hide();
+        }
+        document.getElementById('adminDashboard').style.display = 'block';
+        renderAdminGameList();
+        showNotification('Admin login successful', 'success');
+    } else {
+        document.getElementById('adminLoginError').style.display = 'block';
+    }
+}
+
+function adminLogout() {
+    adminAuthenticated = false;
+    document.getElementById('adminDashboard').style.display = 'none';
+    showNotification('Admin logged out', 'info');
+}
+
+function renderAdminGameList() {
+    const adminGameList = document.getElementById('adminGameList');
+    adminGameList.innerHTML = '';
+
+    const tableRows = games.map(game => `
+        <tr>
+            <td>${game.id}</td>
+            <td><input type="text" id="name-${game.id}" value="${escapeHtml(game.name)}" class="form-control"></td>
+            <td><input type="text" id="category-${game.id}" value="${escapeHtml(game.category)}" class="form-control"></td>
+            <td><input type="number" step="0.01" id="price-${game.id}" value="${game.price}" class="form-control"></td>
+            <td><textarea id="description-${game.id}" class="form-control" rows="2">${escapeHtml(game.description)}</textarea></td>
+            <td><div class="d-flex align-items-center gap-2">
+                    <img src="${escapeHtml(game.image)}" alt="${escapeHtml(game.name)}" style="width: 70px; height: 40px; object-fit: cover; border-radius: 4px;">
+                    <input type="file" id="imageFile-${game.id}" class="form-control form-control-sm" accept="image/*" onchange="handleAdminImageUpload(${game.id})">
+                </div></td>
+            <td><input type="checkbox" id="hidden-${game.id}" ${game.hidden ? 'checked' : ''} onchange="toggleAdminHide(${game.id})"></td>
+            <td>
+                <button class="btn btn-sm btn-primary" onclick="updateAdminGame(${game.id})">Save</button>
+            </td>
+        </tr>
+    `).join('');
+
+    adminGameList.innerHTML = `
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped table-sm">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Description</th>
+                        <th>Image</th>
+                        <th>Hidden</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${tableRows}
+                </tbody>
+            </table>
+        </div>
+    `;
+}
+
+async function updateAdminGame(gameId) {
+    const game = games.find(g => g.id === gameId);
+    if (!game) return;
+
+    const newName = document.getElementById(`name-${gameId}`).value.trim();
+    const newCategory = document.getElementById(`category-${gameId}`).value.trim();
+    const newPrice = parseFloat(document.getElementById(`price-${gameId}`).value);
+    const newDescription = document.getElementById(`description-${gameId}`).value.trim();
+    const hidden = document.getElementById(`hidden-${gameId}`).checked;
+    const imageFileInput = document.getElementById(`imageFile-${gameId}`);
+
+    if (newName === '' || newCategory === '' || isNaN(newPrice) || newDescription === '') {
+        showNotification('Please fill all game fields correctly.', 'danger');
+        return;
+    }
+
+    game.name = newName;
+    game.category = newCategory;
+    game.price = newPrice;
+    game.description = newDescription;
+    game.hidden = hidden;
+
+    if (imageFileInput && imageFileInput.files && imageFileInput.files[0]) {
+        try {
+            const imageData = await readFileAsDataURL(imageFileInput.files[0]);
+            game.image = imageData;
+        } catch (error) {
+            showNotification('Failed to upload image.', 'danger');
+            return;
+        }
+    }
+
+    renderAdminGameList();
+    displayFeaturedGames();
+    displayAllGames();
+    showNotification(`Game ${game.name} updated`, 'success');
+}
+
+function toggleAdminHide(gameId) {
+    const game = games.find(g => g.id === gameId);
+    if (!game) return;
+    game.hidden = !game.hidden;
+    saveGamesToStorage();
+    displayFeaturedGames();
+    displayAllGames();
+}
+
+async function addGameAsAdmin() {
+    const name = document.getElementById('newGameName').value.trim();
+    const category = document.getElementById('newGameCategory').value.trim();
+    const price = parseFloat(document.getElementById('newGamePrice').value);
+    const rating = parseFloat(document.getElementById('newGameRating').value);
+    const developer = document.getElementById('newGameDeveloper').value.trim();
+    const imageUrl = document.getElementById('newGameImage').value.trim();
+    const imageFileInput = document.getElementById('newGameImageFile');
+    const description = document.getElementById('newGameDescription').value.trim();
+
+    if (!name || !category || isNaN(price) || isNaN(rating) || !developer || !description) {
+        showNotification('Please fill in all required fields to add a new game.', 'danger');
+        return;
+    }
+
+    let image = imageUrl;
+    if (imageFileInput && imageFileInput.files && imageFileInput.files[0]) {
+        try {
+            image = await readFileAsDataURL(imageFileInput.files[0]);
+        } catch (error) {
+            showNotification('Failed to load image file.', 'danger');
+            return;
+        }
+    }
+
+    if (!image) {
+        showNotification('Please provide an image URL or upload a file.', 'danger');
+        return;
+    }
+
+    const nextId = games.reduce((max, g) => Math.max(max, g.id), 0) + 1;
+    const newGame = { id: nextId, name, category, price, rating, developer, image, description, hidden: false };
+    games.push(newGame);
+
+    saveGamesToStorage();
+    document.getElementById('adminAddGameForm').reset();
+    renderAdminGameList();
+    displayFeaturedGames();
+    displayAllGames();
+    showNotification(`Game ${name} added`, 'success');
+}
+
+function handleAdminImageUpload(gameId) {
+    const fileInput = document.getElementById(`imageFile-${gameId}`);
+    if (!fileInput || !fileInput.files || !fileInput.files[0]) return;
+    const file = fileInput.files[0];
+
+    readFileAsDataURL(file)
+        .then(dataUrl => {
+            const game = games.find(g => g.id === gameId);
+            if (!game) return;
+            game.image = dataUrl;
+            saveGamesToStorage();
+            renderAdminGameList();
+            displayFeaturedGames();
+            displayAllGames();
+            showNotification(`Image for ${game.name} updated`, 'success');
+        })
+        .catch(() => showNotification('Failed to upload image. Please try another file.', 'danger'));
+}
+
+function readFileAsDataURL(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (event) => resolve(event.target.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
+}
+
+function escapeHtml(text) {
+    return String(text)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+}
+>>>>>>> temp-fix

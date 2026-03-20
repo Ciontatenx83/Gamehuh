@@ -30,6 +30,16 @@
                             <i class="fas fa-shopping-cart"></i> Cart <span class="badge badge-cart" style="display:none;">0</span>
                         </a>
                     </li>
+                    <li class="nav-item ms-2">
+                        <button class="btn btn-sm btn-outline-light" id="adminLoginBtn" onclick="showAdminLogin()" aria-label="Admin login">
+                            <i class="fas fa-user-shield"></i> Admin
+                        </button>
+                    </li>
+                    <li class="nav-item ms-2">
+                        <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark/light mode">
+                            <i class="fas fa-moon"></i>
+                        </button>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -69,10 +79,34 @@
         <div class="container">
             <h2 class="section-title mb-4">Browse All Games</h2>
             
+<<<<<<< HEAD
             <!-- Search Bar -->
             <div class="search-container mb-4">
                 <input type="text" class="form-control search-input" id="searchInput" placeholder="Search games...">
                 <i class="fas fa-search search-icon"></i>
+=======
+            <!-- Search & Filter -->
+            <div class="row mb-5">
+                <div class="col-md-6">
+                    <input type="text" class="form-control" id="searchInput" placeholder="Search games...">
+                </div>
+                <div class="col-md-6">
+                    <select class="form-select" id="categoryFilter">
+                        <option value="">All Categories</option>
+                        <option value="action">Action</option>
+                        <option value="adventure">Adventure</option>
+                        <option value="anime">Anime</option>
+                        <option value="horror">Horror</option>
+                        <option value="multiplayer">Multiplayer</option>
+                        <option value="open world">Open World</option>
+                        <option value="racing">Racing</option>
+                        <option value="shooting">Shooting</option>
+                        <option value="simulation">Simulation</option>
+                        <option value="sports">Sports</option>
+                        <option value="strategy">Strategy</option>
+                    </select>
+                </div>
+>>>>>>> temp-fix
             </div>
 
             <!-- Active Category Filter -->
@@ -86,10 +120,73 @@
                 <!-- Games will be populated by JavaScript -->
             </div>
 
+<<<<<<< HEAD
             <!-- No Results Message -->
             <div class="no-results-message" id="noResultsMessage" style="display:none;">
                 <i class="fas fa-search"></i>
                 <p>No games found. Try adjusting your search.</p>
+=======
+    <!-- Categories Section -->
+    <section id="categories" class="py-5">
+        <div class="container">
+            <h2 class="text-center mb-5">Game Categories</h2>
+            <div class="categories-grid">
+                <div class="category-card">
+                    <i class="fas fa-explosion"></i>
+                    <h5>Action</h5>
+                    <p class="game-count">128 Games</p>
+                </div>
+                <div class="category-card">
+                    <i class="fas fa-mountain"></i>
+                    <h5>Adventure</h5>
+                    <p class="game-count">156 Games</p>
+                </div>
+                <div class="category-card">
+                    <i class="fas fa-image"></i>
+                    <h5>Anime</h5>
+                    <p class="game-count">87 Games</p>
+                </div>
+                <div class="category-card">
+                    <i class="fas fa-ghost"></i>
+                    <h5>Horror</h5>
+                    <p class="game-count">67 Games</p>
+                </div>
+                <div class="category-card">
+                    <i class="fas fa-users"></i>
+                    <h5>Multiplayer</h5>
+                    <p class="game-count">142 Games</p>
+                </div>
+                <div class="category-card">
+                    <i class="fas fa-map"></i>
+                    <h5>Open World</h5>
+                    <p class="game-count">94 Games</p>
+                </div>
+                <div class="category-card">
+                    <i class="fas fa-car"></i>
+                    <h5>Racing</h5>
+                    <p class="game-count">89 Games</p>
+                </div>
+                <div class="category-card">
+                    <i class="fas fa-crosshairs"></i>
+                    <h5>Shooting</h5>
+                    <p class="game-count">175 Games</p>
+                </div>
+                <div class="category-card">
+                    <i class="fas fa-plane"></i>
+                    <h5>Simulation</h5>
+                    <p class="game-count">76 Games</p>
+                </div>
+                <div class="category-card">
+                    <i class="fas fa-football"></i>
+                    <h5>Sports</h5>
+                    <p class="game-count">112 Games</p>
+                </div>
+                <div class="category-card">
+                    <i class="fas fa-chess"></i>
+                    <h5>Strategy</h5>
+                    <p class="game-count">134 Games</p>
+                </div>
+>>>>>>> temp-fix
             </div>
         </div>
     </section>
@@ -119,6 +216,76 @@
         </div>
     </section>
 
+    <!-- Admin Login & Dashboard -->
+    <div class="modal fade" id="adminLoginModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Admin Login</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label class="form-label">Password</label>
+              <input type="password" id="adminPassword" class="form-control" placeholder="Enter admin password">
+            </div>
+            <div id="adminLoginError" class="text-danger" style="display:none;">Invalid password</div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-primary" onclick="authenticateAdmin()">Login</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section id="adminDashboard" class="py-5" style="display:none;">
+        <div class="container">
+            <h2 class="mb-4">Admin Dashboard</h2>
+            <p>Logged in as admin. Password-protected controls for game management.</p>
+            <div class="mb-4">
+                <button class="btn btn-danger" onclick="adminLogout()">Log out</button>
+            </div>
+
+            <h4>Game List</h4>
+            <div id="adminGameList"></div>
+
+            <h4 class="mt-5">Add New Game</h4>
+            <form id="adminAddGameForm" onsubmit="event.preventDefault(); addGameAsAdmin();">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <input type="text" id="newGameName" class="form-control" placeholder="Name" required>
+                    </div>
+                    <div class="col-md-6">
+                        <input type="text" id="newGameCategory" class="form-control" placeholder="Category" required>
+                    </div>
+                    <div class="col-md-4">
+                        <input type="number" step="0.01" id="newGamePrice" class="form-control" placeholder="Price" required>
+                    </div>
+                    <div class="col-md-4">
+                        <input type="number" step="0.1" min="0" max="5" id="newGameRating" class="form-control" placeholder="Rating" required>
+                    </div>
+                    <div class="col-md-4">
+                        <input type="text" id="newGameDeveloper" class="form-control" placeholder="Developer" required>
+                    </div>
+                    <div class="col-12">
+                        <input type="text" id="newGameImage" class="form-control" placeholder="Image URL (optional if using upload)">
+                    </div>
+                    <div class="col-md-6">
+                        <input type="file" id="newGameImageFile" class="form-control" accept="image/*">
+                    </div>
+                    <div class="col-12">
+                        <textarea id="newGameDescription" class="form-control" placeholder="Description" rows="2" required></textarea>
+                    </div>
+                    <div class="col-12">
+                        <button class="btn btn-success" type="submit">Add Game</button>
+                    </div>
+                </div>
+            </form>
+            <div id="adminMessage" class="mt-3"></div>
+        </div>
+    </section>
+
     <!-- Contact Section -->
     <section id="contact" class="contact-section py-5">
         <div class="container">
@@ -142,6 +309,7 @@
         </div>
     </section>
 
+<<<<<<< HEAD
     <!-- Footer -->
     <footer class="footer-section">
         <div class="container">
@@ -173,6 +341,142 @@
             </div>
         </div>
     </footer>
+=======
+    <!-- FAQ Section -->
+    <section id="faq" class="py-5">
+        <div class="container">
+            <h2 class="text-center mb-5">Frequently Asked Questions</h2>
+            <div class="row g-4">
+                <div class="col-lg-8 offset-lg-2">
+                    <div class="accordion" id="faqAccordion">
+                        <!-- General Information -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                                    What is GameHub?
+                                </button>
+                            </h2>
+                            <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    GameHub is a digital storefront and subscription service where users can browse, purchase, and download premium video games across various genres, including Action, RPG, Horror, and Simulation.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                                    How do I download games?
+                                </button>
+                            </h2>
+                            <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Once you have purchased a game or subscribed to a plan, you can access instant downloads directly from the platform.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Subscription & Pricing -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                                    What are the different membership plans?
+                                </button>
+                            </h2>
+                            <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    <strong>Basic (Free):</strong> Access to free games and standard customer support.<br><br>
+                                    <strong>Premium ($9.99/month):</strong> Access to all premium games, priority support, discounts on new releases, and cloud save functionality.<br><br>
+                                    <strong>Pro ($19.99/month):</strong> All Premium benefits plus exclusive early access, 24/7 VIP support, and extra bonus games.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                                    Is there a money-back guarantee?
+                                </button>
+                            </h2>
+                            <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Yes. GameHub offers a money-back guarantee to ensure customer satisfaction with their purchases.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Account & Security -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq5">
+                                    How are payments handled?
+                                </button>
+                            </h2>
+                            <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    The platform uses secure payment processing to ensure that your financial data and transactions are protected.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq6">
+                                    What is the "Admin" section?
+                                </button>
+                            </h2>
+                            <div id="faq6" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    The Admin section is a password-protected dashboard intended for site developers and managers. It allows them to add new games, manage the existing library, and oversee the platform's content.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Support & Technical -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq7">
+                                    What genres are available on GameHub?
+                                </button>
+                            </h2>
+                            <div id="faq7" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    We offer a wide variety of categories including: Action, Adventure, Anime, Horror, Multiplayer, Open World, Racing, Shooting, Simulation, Sports, and Strategy.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq8">
+                                    How do I contact customer support?
+                                </button>
+                            </h2>
+                            <div id="faq8" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    You can reach out to us through the "Get in Touch" section at the bottom of the website by filling out the contact form with your name, email, and message. Pro members have access to 24/7 VIP support.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq9">
+                                    Can I use a Shopping Cart?
+                                </button>
+                            </h2>
+                            <div id="faq9" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Yes, you can add multiple games to your cart by clicking the "Add to Cart" button on any game profile. You can view your total and checkout by clicking the Cart icon in the navigation menu.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+>>>>>>> temp-fix
 
     <!-- Shopping Cart Modal -->
     <div class="modal fade" id="cartModal" tabindex="-1">
@@ -241,6 +545,7 @@
         </div>
     </div>
 
+<<<<<<< HEAD
     <!-- Admin Entry Modal (2FA) -->
     <div class="modal fade" id="adminEntryModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered">
@@ -266,6 +571,45 @@
                     </div>
                 </div>
             </div>
+=======
+    <!-- Payment Stripe Section (hidden) -->
+    <script src="https://js.stripe.com/v3/"></script>
+
+    <!-- Footer -->
+    <footer class="footer-section">
+        <div class="container">
+            <div class="row mb-5">
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <h5 class="footer-title">GameHub</h5>
+                    <p class="footer-text">Your ultimate gaming destination for premium games and exclusive content.</p>
+                </div>
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <h6 class="footer-title">Quick Links</h6>
+                    <ul class="list-unstyled footer-links">
+                        <li><a href="#games">Browse Games</a></li>
+                        <li><a href="#categories">Categories</a></li>
+                        <li><a href="#about">About Us</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h6 class="footer-title">Follow Us</h6>
+                    <div class="social-links">
+                        <a href="https://www.instagram.com/bee_thevillan?igsh=NDF3N2hhZDYwMmF2&utm_source=qr" target="_blank" rel="noopener noreferrer" class="social-icon instagram" title="Instagram">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="https://www.tiktok.com/@thecaptaintrq" target="_blank" rel="noopener noreferrer" class="social-icon tiktok" title="TikTok">
+                            <i class="fab fa-tiktok"></i>
+                        </a>
+                        <a href="https://www.facebook.com/share/1FgEX3sSvg/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" class="social-icon facebook" title="Facebook">
+                            <i class="fab fa-facebook"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <hr class="footer-divider">
+            <p class="text-center footer-copyright">&copy; 2024 GameHub. All rights reserved. | Developed with <i class="fas fa-heart"></i> for gamers</p>
+>>>>>>> temp-fix
         </div>
     </div>
 
