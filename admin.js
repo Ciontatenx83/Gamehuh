@@ -7,41 +7,22 @@ let adminEmail = '';
 
 // Initialize admin panel
 document.addEventListener('DOMContentLoaded', async function () {
-    // Verify 2FA token before allowing access
+    // Check for admin token
     const adminToken = localStorage.getItem('adminToken');
+    const savedAdminEmail = localStorage.getItem('adminEmail');
     
     if (!adminToken) {
         window.location.href = '/admin-login.html';
         return;
     }
 
-    try {
-        const response = await fetch('/api/admin/verify-token', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ token: adminToken })
-        });
-
-        if (!response.ok) {
-            localStorage.removeItem('adminToken');
-            window.location.href = '/admin-login.html';
-            return;
-        }
-
-        const data = await response.json();
-        adminEmail = data.email;
-
-        // Update navbar email display
+    // Use email from localStorage
+    if (savedAdminEmail) {
+        adminEmail = savedAdminEmail;
         const adminEmailDisplay = document.getElementById('adminEmailDisplay');
         if (adminEmailDisplay) {
             adminEmailDisplay.textContent = adminEmail;
         }
-
-    } catch (error) {
-        console.error('Token verification error:', error);
-        localStorage.removeItem('adminToken');
-        window.location.href = '/admin-login.html';
-        return;
     }
 
     setupAdminEventListeners();
@@ -636,22 +617,16 @@ async function handleAdminLogout() {
         return;
     }
 
-    const adminToken = localStorage.getItem('adminToken');
-
     try {
-        // Notify server
-        if (adminToken) {
-            await fetch('/api/admin/logout', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ token: adminToken })
-            });
-        }
+        // Clear token and email from storage
+        localStorage.removeItem('adminToken');
+        localStorage.removeItem('adminEmail');
+        window.location.href = '/admin-login.html';
     } catch (error) {
         console.error('Logout error:', error);
+        // Still redirect even if error occurs
+        localStorage.removeItem('adminToken');
+        localStorage.removeItem('adminEmail');
+        window.location.href = '/admin-login.html';
     }
-
-    // Clear token and redirect
-    localStorage.removeItem('adminToken');
-    window.location.href = '/admin-login.html';
 }
