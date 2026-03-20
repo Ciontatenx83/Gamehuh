@@ -544,6 +544,10 @@ function renderAdminGameList() {
             <td><input type="text" id="category-${game.id}" value="${escapeHtml(game.category)}" class="form-control"></td>
             <td><input type="number" step="0.01" id="price-${game.id}" value="${game.price}" class="form-control"></td>
             <td><textarea id="description-${game.id}" class="form-control" rows="2">${escapeHtml(game.description)}</textarea></td>
+            <td><div class="d-flex align-items-center gap-2">
+                    <img src="${escapeHtml(game.image)}" alt="${escapeHtml(game.name)}" style="width: 70px; height: 40px; object-fit: cover; border-radius: 4px;">
+                    <input type="file" id="imageFile-${game.id}" class="form-control form-control-sm" accept="image/*" onchange="handleAdminImageUpload(${game.id})">
+                </div></td>
             <td><input type="checkbox" id="hidden-${game.id}" ${game.hidden ? 'checked' : ''} onchange="toggleAdminHide(${game.id})"></td>
             <td>
                 <button class="btn btn-sm btn-primary" onclick="updateAdminGame(${game.id})">Save</button>
@@ -561,6 +565,7 @@ function renderAdminGameList() {
                         <th>Category</th>
                         <th>Price</th>
                         <th>Description</th>
+                        <th>Image</th>
                         <th>Hidden</th>
                         <th>Action</th>
                     </tr>
@@ -573,7 +578,7 @@ function renderAdminGameList() {
     `;
 }
 
-function updateAdminGame(gameId) {
+async function updateAdminGame(gameId) {
     const game = games.find(g => g.id === gameId);
     if (!game) return;
 
@@ -582,6 +587,7 @@ function updateAdminGame(gameId) {
     const newPrice = parseFloat(document.getElementById(`price-${gameId}`).value);
     const newDescription = document.getElementById(`description-${gameId}`).value.trim();
     const hidden = document.getElementById(`hidden-${gameId}`).checked;
+    const imageFileInput = document.getElementById(`imageFile-${gameId}`);
 
     if (newName === '' || newCategory === '' || isNaN(newPrice) || newDescription === '') {
         showNotification('Please fill all game fields correctly.', 'danger');
@@ -593,6 +599,16 @@ function updateAdminGame(gameId) {
     game.price = newPrice;
     game.description = newDescription;
     game.hidden = hidden;
+
+    if (imageFileInput && imageFileInput.files && imageFileInput.files[0]) {
+        try {
+            const imageData = await readFileAsDataURL(imageFileInput.files[0]);
+            game.image = imageData;
+        } catch (error) {
+            showNotification('Failed to upload image.', 'danger');
+            return;
+        }
+    }
 
     renderAdminGameList();
     displayFeaturedGames();
@@ -608,17 +624,33 @@ function toggleAdminHide(gameId) {
     displayAllGames();
 }
 
-function addGameAsAdmin() {
+async function addGameAsAdmin() {
     const name = document.getElementById('newGameName').value.trim();
     const category = document.getElementById('newGameCategory').value.trim();
     const price = parseFloat(document.getElementById('newGamePrice').value);
     const rating = parseFloat(document.getElementById('newGameRating').value);
     const developer = document.getElementById('newGameDeveloper').value.trim();
-    const image = document.getElementById('newGameImage').value.trim();
+    const imageUrl = document.getElementById('newGameImage').value.trim();
+    const imageFileInput = document.getElementById('newGameImageFile');
     const description = document.getElementById('newGameDescription').value.trim();
 
-    if (!name || !category || isNaN(price) || isNaN(rating) || !developer || !image || !description) {
-        showNotification('Please fill in all fields to add a new game.', 'danger');
+    if (!name || !category || isNaN(price) || isNaN(rating) || !developer || !description) {
+        showNotification('Please fill in all required fields to add a new game.', 'danger');
+        return;
+    }
+
+    let image = imageUrl;
+    if (imageFileInput && imageFileInput.files && imageFileInput.files[0]) {
+        try {
+            image = await readFileAsDataURL(imageFileInput.files[0]);
+        } catch (error) {
+            showNotification('Failed to load image file.', 'danger');
+            return;
+        }
+    }
+
+    if (!image) {
+        showNotification('Please provide an image URL or upload a file.', 'danger');
         return;
     }
 
@@ -631,6 +663,33 @@ function addGameAsAdmin() {
     displayFeaturedGames();
     displayAllGames();
     showNotification(`Game ${name} added`, 'success');
+}
+
+function handleAdminImageUpload(gameId) {
+    const fileInput = document.getElementById(`imageFile-${gameId}`);
+    if (!fileInput || !fileInput.files || !fileInput.files[0]) return;
+    const file = fileInput.files[0];
+
+    readFileAsDataURL(file)
+        .then(dataUrl => {
+            const game = games.find(g => g.id === gameId);
+            if (!game) return;
+            game.image = dataUrl;
+            renderAdminGameList();
+            displayFeaturedGames();
+            displayAllGames();
+            showNotification(`Image for ${game.name} updated`, 'success');
+        })
+        .catch(() => showNotification('Failed to upload image. Please try another file.', 'danger'));
+}
+
+function readFileAsDataURL(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (event) => resolve(event.target.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
 }
 
 function escapeHtml(text) {
