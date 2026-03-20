@@ -16,8 +16,14 @@
             <a class="navbar-brand" href="index.html">
                 <i class="fas fa-gamepad"></i> Tariq Smile - Admin Panel
             </a>
-            <div class="d-flex">
-                <a href="index.html" class="btn btn-outline-light btn-sm me-2">
+            <div class="d-flex gap-2">
+                <div class="navbar-text text-light me-3" style="font-size: 14px;">
+                    <i class="fas fa-user-shield"></i> <span id="adminEmailDisplay">Admin</span>
+                </div>
+                <button class="btn btn-outline-danger btn-sm me-2" onclick="handleAdminLogout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+                <a href="index.html" class="btn btn-outline-light btn-sm">
                     <i class="fas fa-arrow-left"></i> Back to Store
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">

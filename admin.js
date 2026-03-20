@@ -3,9 +3,47 @@
 // ========================================
 
 let editingGameId = null;
+let adminEmail = '';
 
 // Initialize admin panel
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', async function () {
+    // Verify 2FA token before allowing access
+    const adminToken = localStorage.getItem('adminToken');
+    
+    if (!adminToken) {
+        window.location.href = '/admin-login.html';
+        return;
+    }
+
+    try {
+        const response = await fetch('/api/admin/verify-token', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token: adminToken })
+        });
+
+        if (!response.ok) {
+            localStorage.removeItem('adminToken');
+            window.location.href = '/admin-login.html';
+            return;
+        }
+
+        const data = await response.json();
+        adminEmail = data.email;
+
+        // Update navbar email display
+        const adminEmailDisplay = document.getElementById('adminEmailDisplay');
+        if (adminEmailDisplay) {
+            adminEmailDisplay.textContent = adminEmail;
+        }
+
+    } catch (error) {
+        console.error('Token verification error:', error);
+        localStorage.removeItem('adminToken');
+        window.location.href = '/admin-login.html';
+        return;
+    }
+
     setupAdminEventListeners();
     loadGamesIntoTable();
     displayGameStatistics();
@@ -465,3 +503,31 @@ function showAdminNotification(message, type = 'info') {
 // Make sure games are loaded on page load
 initializeGames();
 loadCartFromStorage();
+
+// ========================================
+// LOGOUT FUNCTIONALITY
+// ========================================
+async function handleAdminLogout() {
+    if (!confirm('Are you sure you want to logout?')) {
+        return;
+    }
+
+    const adminToken = localStorage.getItem('adminToken');
+
+    try {
+        // Notify server
+        if (adminToken) {
+            await fetch('/api/admin/logout', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ token: adminToken })
+            });
+        }
+    } catch (error) {
+        console.error('Logout error:', error);
+    }
+
+    // Clear token and redirect
+    localStorage.removeItem('adminToken');
+    window.location.href = '/admin-login.html';
+}

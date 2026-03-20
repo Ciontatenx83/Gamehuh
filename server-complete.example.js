@@ -25,6 +25,7 @@ const checkoutRoutes = require('./routes/checkout');
 const emailRoutes = require('./routes/emails');
 const contactEmailRoutes = require('./routes/contact-email');
 const paymentRoutes = require('./routes/payment');
+const admin2faRoutes = require('./routes/admin-2fa');
 
 // ============================================
 // REGISTER ALL ROUTES
@@ -33,6 +34,7 @@ app.use(checkoutRoutes);        // Subscription checkout: /api/checkout, /api/pl
 app.use(emailRoutes);            // Subscription emails: /api/send-email
 app.use(contactEmailRoutes);     // Contact form: /api/send-contact-email
 app.use(paymentRoutes);          // Payment processing: /api/process-payment, /api/webhook/payment
+app.use(admin2faRoutes);         // Admin 2FA: /api/admin/request-2fa, /api/admin/verify-2fa, /api/admin/verify-token, /api/admin/logout
 
 // ============================================
 // SERVE STATIC FILES & HTML PAGES
@@ -42,6 +44,16 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Home route
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// Admin login page
+app.get('/admin-login', (req, res) => {
+  res.sendFile(path.join(__dirname, 'admin-login.html'));
+});
+
+// Admin dashboard page
+app.get('/admin', (req, res) => {
+  res.sendFile(path.join(__dirname, 'admin.html'));
 });
 
 // Checkout page

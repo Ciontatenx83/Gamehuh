@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - Tariq Smile Game Hub</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            max-width: 450px;
+            width: 100%;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .login-header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .login-header p {
+            font-size: 14px;
+            opacity: 0.9;
+            margin: 0;
+        }
+
+        .login-body {
+            padding: 40px;
+        }
+
+        /* Stage indicators */
+        .stage-indicator {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            justify-content: center;
+        }
+
+        .stage-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ddd;
+            transition: all 0.3s ease;
+        }
+
+        .stage-dot.active {
+            background: #667eea;
+            transform: scale(1.3);
+        }
+
+        .stage-dot.completed {
+            background: #28a745;
+        }
+
+        /* Form groups */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            display: block;
+            font-size: 14px;
+        }
+
+        .form-control {
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 12px 15px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            outline: none;
+        }
+
+        .form-control.error {
+            border-color: #dc3545;
+        }
+
+        /* 2FA Code Input */
+        .code-input-group {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin: 30px 0;
+        }
+
+        .code-input {
+            width: 50px;
+            height: 50px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .code-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            outline: none;
+        }
+
+        .code-input.filled {
+            background: #f0f2ff;
+            border-color: #667eea;
+        }
+
+        /* Buttons */
+        .btn-login {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .btn-login:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-login:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-back {
+            background: transparent;
+            border: 2px solid #667eea;
+            color: #667eea;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .btn-back:hover {
+            background: #f0f2ff;
+        }
+
+        /* Messages */
+        .alert {
+            border: none;
+            border-radius: 8px;
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert-danger {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        /* Loading state */
+        .spinner-border {
+            width: 20px;
+            height: 20px;
+            margin-right: 8px;
+        }
+
+        .timer {
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .timer.warning {
+            color: #dc3545;
+            font-weight: 600;
+        }
+
+        /* Hidden stages */
+        .stage {
+            display: none;
+        }
+
+        .stage.active {
+            display: block;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .info-text {
+            font-size: 13px;
+            color: #666;
+            text-align: center;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+
+        .icon-success {
+            font-size: 40px;
+            color: #28a745;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <!-- Header -->
+        <div class="login-header">
+            <h1><i class="fas fa-lock"></i> Admin Login</h1>
+            <p>Two-Factor Authentication Required</p>
+        </div>
+
+        <!-- Body -->
+        <div class="login-body">
+            <!-- Stage Indicator -->
+            <div class="stage-indicator">
+                <div class="stage-dot active" id="stage1Dot"></div>
+                <div class="stage-dot" id="stage2Dot"></div>
+                <div class="stage-dot" id="stage3Dot"></div>
+            </div>
+
+            <!-- Alerts -->
+            <div id="alertContainer"></div>
+
+            <!-- Stage 1: Email & Password -->
+            <div class="stage active" id="stage1">
+                <h5 style="margin-bottom: 25px; color: #333;">Step 1: Admin Credentials</h5>
+                
+                <div class="form-group">
+                    <label class="form-label" for="adminEmail">Admin Email</label>
+                    <input type="email" class="form-control" id="adminEmail" placeholder="Enter admin email" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="adminPassword">Password</label>
+                    <input type="password" class="form-control" id="adminPassword" placeholder="Enter password" required>
+                </div>
+
+                <button class="btn-login" onclick="handleRequestCode()">
+                    <i class="fas fa-arrow-right"></i> Send 2FA Code
+                </button>
+
+                <p class="info-text">
+                    <i class="fas fa-info-circle"></i> A verification code will be sent to your email
+                </p>
+            </div>
+
+            <!-- Stage 2: 2FA Code -->
+            <div class="stage" id="stage2">
+                <h5 style="margin-bottom: 10px; color: #333;">Step 2: Enter 2FA Code</h5>
+                <p class="info-text" style="margin-top: 0; margin-bottom: 20px;">
+                    Check your email for the 6-digit code
+                </p>
+
+                <div class="code-input-group">
+                    <input type="text" class="code-input" id="code1" maxlength="1" oninput="handleCodeInput(this)" onkeydown="handleCodeKeyDown(event)">
+                    <input type="text" class="code-input" id="code2" maxlength="1" oninput="handleCodeInput(this)" onkeydown="handleCodeKeyDown(event)">
+                    <input type="text" class="code-input" id="code3" maxlength="1" oninput="handleCodeInput(this)" onkeydown="handleCodeKeyDown(event)">
+                    <input type="text" class="code-input" id="code4" maxlength="1" oninput="handleCodeInput(this)" onkeydown="handleCodeKeyDown(event)">
+                    <input type="text" class="code-input" id="code5" maxlength="1" oninput="handleCodeInput(this)" onkeydown="handleCodeKeyDown(event)">
+                    <input type="text" class="code-input" id="code6" maxlength="1" oninput="handleCodeInput(this)" onkeydown="handleCodeKeyDown(event)">
+                </div>
+
+                <button class="btn-login" onclick="handleVerifyCode()">
+                    <i class="fas fa-check"></i> Verify Code
+                </button>
+
+                <button class="btn-back" onclick="goBackToStage1()">
+                    <i class="fas fa-arrow-left"></i> Back
+                </button>
+
+                <div class="timer">
+                    Code expires in: <span id="countdown">5:00</span>
+                </div>
+            </div>
+
+            <!-- Stage 3: Success -->
+            <div class="stage" id="stage3">
+                <div class="icon-success">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+
+                <h5 style="text-align: center; margin-bottom: 15px; color: #333;">Successfully Authenticated!</h5>
+                <p class="info-text">Welcome back! Redirecting to admin dashboard...</p>
+
+                <button class="btn-login" onclick="goToAdminDashboard()" style="margin-top: 30px;">
+                    <i class="fas fa-sign-in-alt"></i> Go to Dashboard
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========================================
+        // STATE MANAGEMENT
+        // ========================================
+        let appState = {
+            stage: 1,
+            email: '',
+            password: '',
+            sessionId: '',
+            adminToken: '',
+            countdown: 300 // 5 minutes in seconds
+        };
+
+        let countdownInterval = null;
+
+        // ========================================
+        // ALERT MANAGEMENT
+        // ========================================
+        function showAlert(message, type = 'danger') {
+            const alertContainer = document.getElementById('alertContainer');
+            const alertHtml = `
+                <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                    ${type === 'success' ? '<i class="fas fa-check-circle"></i>' : '<i class="fas fa-exclamation-circle"></i>'}
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+            alertContainer.innerHTML = alertHtml;
+
+            // Auto-dismiss success alerts
+            if (type === 'success') {
+                setTimeout(() => {
+                    alertContainer.innerHTML = '';
+                }, 3000);
+            }
+        }
+
+        // ========================================
+        // STAGE TRANSITIONS
+        // ========================================
+        function goToStage(stageNum) {
+            // Hide all stages
+            document.querySelectorAll('.stage').forEach(stage => {
+                stage.classList.remove('active');
+            });
+
+            // Show target stage
+            document.getElementById(`stage${stageNum}`).classList.add('active');
+
+            // Update stage indicator
+            document.querySelectorAll('.stage-dot').forEach((dot, index) => {
+                if (index + 1 < stageNum) {
+                    dot.classList.add('completed');
+                    dot.classList.remove('active');
+                } else if (index + 1 === stageNum) {
+                    dot.classList.add('active');
+                    dot.classList.remove('completed');
+                } else {
+                    dot.classList.remove('active', 'completed');
+                }
+            });
+
+            appState.stage = stageNum;
+
+            // Start countdown for stage 2
+            if (stageNum === 2) {
+                appState.countdown = 300;
+                startCountdown();
+            } else if (countdownInterval) {
+                clearInterval(countdownInterval);
+            }
+        }
+
+        function goBackToStage1() {
+            if (confirm('Are you sure? You\'ll need to request a new code.')) {
+                goToStage(1);
+                document.getElementById('adminEmail').value = appState.email;
+                document.getElementById('adminPassword').value = appState.password;
+            }
+        }
+
+        // ========================================
+        // COUNTDOWN TIMER
+        // ========================================
+        function startCountdown() {
+            if (countdownInterval) clearInterval(countdownInterval);
+
+            countdownInterval = setInterval(() => {
+                appState.countdown--;
+                const minutes = Math.floor(appState.countdown / 60);
+                const seconds = appState.countdown % 60;
+                document.getElementById('countdown').textContent = 
+                    `${minutes}:${seconds.toString().padStart(2, '0')}`;
+
+                if (appState.countdown < 60) {
+                    document.getElementById('countdown').parentElement.classList.add('warning');
+                }
+
+                if (appState.countdown <= 0) {
+                    clearInterval(countdownInterval);
+                    showAlert('Code expired. Please request a new code.', 'danger');
+                    goToStage(1);
+                }
+            }, 1000);
+        }
+
+        // ========================================
+        // STAGE 1: REQUEST 2FA CODE
+        // ========================================
+        async function handleRequestCode() {
+            const email = document.getElementById('adminEmail').value.trim();
+            const password = document.getElementById('adminPassword').value;
+
+            // Validation
+            if (!email || !password) {
+                showAlert('Please fill in all fields', 'danger');
+                return;
+            }
+
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showAlert('Please enter a valid email address', 'danger');
+                return;
+            }
+
+            // Disable button
+            const button = event.target;
+            const originalText = button.innerHTML;
+            button.disabled = true;
+            button.innerHTML = '<span class="spinner-border"></span> Sending...';
+
+            try {
+                const response = await fetch('/api/admin/request-2fa', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    showAlert(data.message || 'Failed to send code', 'danger');
+                    return;
+                }
+
+                // Store session info
+                appState.email = email;
+                appState.password = password;
+                appState.sessionId = data.sessionId;
+
+                // Go to stage 2
+                showAlert('Code sent successfully! Check your email.', 'success');
+                setTimeout(() => goToStage(2), 500);
+
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('Network error. Please try again.', 'danger');
+            } finally {
+                button.disabled = false;
+                button.innerHTML = originalText;
+            }
+        }
+
+        // ========================================
+        // STAGE 2: VERIFY 2FA CODE
+        // ========================================
+        function handleCodeInput(input) {
+            // Only allow numbers
+            input.value = input.value.replace(/[^0-9]/g, '');
+
+            if (input.value) {
+                input.classList.add('filled');
+
+                // Auto-focus to next field
+                const nextInput = input.nextElementSibling;
+                if (nextInput && nextInput.classList.contains('code-input')) {
+                    nextInput.focus();
+                }
+            } else {
+                input.classList.remove('filled');
+            }
+        }
+
+        function handleCodeKeyDown(event) {
+            const input = event.target;
+
+            if (event.key === 'Backspace' && !input.value) {
+                const prevInput = input.previousElementSibling;
+                if (prevInput && prevInput.classList.contains('code-input')) {
+                    prevInput.focus();
+                }
+            }
+        }
+
+        async function handleVerifyCode() {
+            // Get code from inputs
+            const code = Array.from(document.querySelectorAll('.code-input'))
+                .map(input => input.value)
+                .join('');
+
+            // Validation
+            if (code.length !== 6) {
+                showAlert('Please enter a 6-digit code', 'danger');
+                return;
+            }
+
+            // Disable button
+            const button = event.target;
+            const originalText = button.innerHTML;
+            button.disabled = true;
+            button.innerHTML = '<span class="spinner-border"></span> Verifying...';
+
+            try {
+                const response = await fetch('/api/admin/verify-2fa', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        sessionId: appState.sessionId,
+                        code: code
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    showAlert(data.message || 'Verification failed', 'danger');
+                    return;
+                }
+
+                // Store admin token
+                appState.adminToken = data.adminToken;
+                localStorage.setItem('adminToken', data.adminToken);
+
+                // Go to success stage
+                setTimeout(() => goToStage(3), 500);
+
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('Network error. Please try again.', 'danger');
+            } finally {
+                button.disabled = false;
+                button.innerHTML = originalText;
+            }
+        }
+
+        // ========================================
+        // NAVIGATION
+        // ========================================
+        function goToAdminDashboard() {
+            window.location.href = '/admin.html';
+        }
+
+        // ========================================
+        // INIT
+        // ========================================
+        document.addEventListener('DOMContentLoaded', function () {
+            // Check if already authenticated
+            const token = localStorage.getItem('adminToken');
+            if (token) {
+                verifyTokenAndRedirect(token);
+            }
+        });
+
+        async function verifyTokenAndRedirect(token) {
+            try {
+                const response = await fetch('/api/admin/verify-token', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ token })
+                });
+
+                if (response.ok) {
+                    window.location.href = '/admin.html';
+                } else {
+                    localStorage.removeItem('adminToken');
+                }
+            } catch (error) {
+                console.error('Token verification error:', error);
+            }
+        }
+    </script>
+</body>
+</html>
