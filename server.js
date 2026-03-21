@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 // =============================================
 // TARIQ SMILE GAME HUB - MAIN SERVER
 // =============================================
@@ -182,22 +181,7 @@ process.on('SIGTERM', () => {
   server.close(() => {
     console.log('✅ HTTP server closed');
   });
-=======
-// ===== BACKEND SERVER EXAMPLE FOR PRODUCTION =====
-// This is an example Node.js/Express backend for GameHub
-// To use this, install: npm install express stripe dotenv cors
-// Then update script.js to call these endpoints
-
-const express = require('express');
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-const cors = require('cors');
-require('dotenv').config();
-
-const app = express();
-
-// Middleware
-app.use(cors());
-app.use(express.json());
+});
 
 // ===== PAYMENT ENDPOINTS =====
 
@@ -528,13 +512,3 @@ app.use((err, req, res, next) => {
         error: 'Internal server error'
     });
 });
-
-// ===== START SERVER =====
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`GameHub server running on port ${PORT}`);
->>>>>>> temp-fix
-});
-
-module.exports = app;
