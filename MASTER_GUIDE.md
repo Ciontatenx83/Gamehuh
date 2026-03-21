@@ -501,6 +501,10 @@ heroku logs --tail
 
 ### Option 3: Custom Server (DigitalOcean, AWS, etc.)
 
+> ⚠️ Important: `https://ciontatenx83.github.io/Gamehuh/` is served via GitHub Pages as a static site and cannot run the full Gamehuh server functionality (Stripe checkout, webhooks, SendGrid email, admin API, etc.).
+> 
+> Use Option 3 (or Option 1/2 with a server host) to run the complete application.
+
 1. Set up Node.js on your server
 2. Clone your GitHub repo
 3. Create `.env.local` with your keys
