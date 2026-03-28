@@ -457,24 +457,18 @@ body {
 
 /* Game Cards with Zoom Animation */
 .game-card {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid var(--border-color);
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(239, 68, 68, 0.15) 100%); /* Purple-Red gradient */
+    border: 1px solid rgba(139, 92, 246, 0.3);
     border-radius: 15px;
     overflow: hidden;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    backdrop-filter: blur(10px);
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
     backdrop-filter: blur(5px);
 }
 
 .game-card:hover {
-    border-color: var(--neon-blue);
+    border-color: rgba(239, 68, 68, 0.6); /* Red border on hover */
     transform: translateY(-10px);
-    box-shadow: 0 0 30px rgba(0, 212, 255, 0.5), 0 0 60px rgba(139, 92, 246, 0.3);
+    box-shadow: 0 0 30px rgba(139, 92, 246, 0.5), 0 0 60px rgba(239, 68, 68, 0.3);
 }
 
 .game-card-image {
@@ -524,7 +518,7 @@ body {
     align-items: center;
     margin-top: auto;
     padding-top: 1rem;
-    border-top: 1px solid rgba(0, 212, 255, 0.2);
+    border-top: 1px solid rgba(139, 92, 246, 0.3); /* Purple border */
 }
 
 .game-price {
@@ -534,7 +528,7 @@ body {
 }
 
 .game-rating {
-    color: var(--neon-blue);
+    color: rgba(139, 92, 246, 0.9); /* Purple rating */
     font-size: 0.9rem;
 }
 
