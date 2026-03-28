@@ -818,6 +818,236 @@ document.addEventListener('DOMContentLoaded', function() {
     checkRememberedUser();
 });
 
+// ========= BACKGROUND MANAGEMENT SYSTEM =========
+
+let backgroundImages = [];
+let currentBackgroundIndex = 0;
+let rotationInterval = null;
+let rotationEnabled = true;
+
+// Load Background Gallery
+function loadBackgroundGallery() {
+    const saved = localStorage.getItem('backgroundImages');
+    if (saved) {
+        backgroundImages = JSON.parse(saved);
+    } else {
+        // Default backgrounds
+        backgroundImages = [
+            'https://images.unsplash.com/photo-1511512578047-d6360b9846c7?w=1920&h=1080&fit=crop',
+            'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&h=1080&fit=crop',
+            'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=1920&h=1080&fit=crop'
+        ];
+        saveBackgroundImages();
+    }
+    
+    renderBackgroundGallery();
+    startBackgroundRotation();
+}
+
+// Save Background Images
+function saveBackgroundImages() {
+    localStorage.setItem('backgroundImages', JSON.stringify(backgroundImages));
+}
+
+// Render Background Gallery
+function renderBackgroundGallery() {
+    const gallery = document.getElementById('backgroundGallery');
+    if (!gallery) return;
+    
+    if (backgroundImages.length === 0) {
+        gallery.innerHTML = '<p class="text-muted">No background images added yet.</p>';
+        return;
+    }
+    
+    gallery.innerHTML = backgroundImages.map((url, index) => `
+        <div class="background-item ${index === currentBackgroundIndex ? 'active' : ''}" data-index="${index}">
+            <img src="${url}" alt="Background ${index + 1}" class="background-thumb">
+            <div class="background-overlay">
+                <button class="btn btn-sm btn-primary" onclick="setBackgroundImage(${index})">
+                    <i class="fas fa-check"></i>
+                </button>
+                <button class="btn btn-sm btn-danger" onclick="removeBackgroundImage(${index})">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        </div>
+    `).join('');
+}
+
+// Add Background Image
+function addBackgroundImage() {
+    const input = document.getElementById('bgImageUrl');
+    const url = input.value.trim();
+    
+    if (!url) {
+        showNotification('Please enter a valid image URL', 'error');
+        return;
+    }
+    
+    // Validate URL format
+    try {
+        new URL(url);
+    } catch (e) {
+        showNotification('Please enter a valid URL', 'error');
+        return;
+    }
+    
+    // Check if URL already exists
+    if (backgroundImages.includes(url)) {
+        showNotification('This background image already exists', 'warning');
+        return;
+    }
+    
+    // Add to collection
+    backgroundImages.push(url);
+    saveBackgroundImages();
+    renderBackgroundGallery();
+    
+    // Clear input
+    input.value = '';
+    
+    showNotification('Background image added successfully!', 'success');
+    
+    // Auto-switch to new background
+    setBackgroundImage(backgroundImages.length - 1);
+}
+
+// Remove Background Image
+function removeBackgroundImage(index) {
+    if (confirm('Are you sure you want to remove this background image?')) {
+        backgroundImages.splice(index, 1);
+        saveBackgroundImages();
+        renderBackgroundGallery();
+        
+        // Adjust current index if needed
+        if (currentBackgroundIndex >= backgroundImages.length) {
+            currentBackgroundIndex = 0;
+        }
+        
+        // Apply background if images remain
+        if (backgroundImages.length > 0) {
+            setBackgroundImage(currentBackgroundIndex);
+        } else {
+            clearBackground();
+        }
+        
+        showNotification('Background image removed', 'info');
+    }
+}
+
+// Set Background Image
+function setBackgroundImage(index) {
+    if (index < 0 || index >= backgroundImages.length) return;
+    
+    currentBackgroundIndex = index;
+    const url = backgroundImages[index];
+    
+    // Apply to body
+    document.body.style.setProperty('--bg-image', `url('${url}')`);
+    document.body.style.setProperty('--bg-opacity', document.getElementById('bgOpacity').value / 100);
+    
+    // Update active state in gallery
+    renderBackgroundGallery();
+    
+    showNotification(`Background ${index + 1} applied`, 'success');
+}
+
+// Start Background Rotation
+function startBackgroundRotation() {
+    if (rotationInterval) {
+        clearInterval(rotationInterval);
+    }
+    
+    if (rotationEnabled && backgroundImages.length > 1) {
+        rotationInterval = setInterval(() => {
+            currentBackgroundIndex = (currentBackgroundIndex + 1) % backgroundImages.length;
+            setBackgroundImage(currentBackgroundIndex);
+        }, 5000); // 5 seconds
+    }
+}
+
+// Stop Background Rotation
+function stopBackgroundRotation() {
+    if (rotationInterval) {
+        clearInterval(rotationInterval);
+        rotationInterval = null;
+    }
+}
+
+// Setup Background Controls
+function setupBackgroundControls() {
+    // Rotation toggle
+    const rotationToggle = document.getElementById('enableRotation');
+    if (rotationToggle) {
+        rotationToggle.addEventListener('change', function() {
+            rotationEnabled = this.checked;
+            if (rotationEnabled) {
+                startBackgroundRotation();
+            } else {
+                stopBackgroundRotation();
+            }
+        });
+    }
+    
+    // Opacity slider
+    const opacitySlider = document.getElementById('bgOpacity');
+    const opacityValue = document.getElementById('opacityValue');
+    if (opacitySlider && opacityValue) {
+        opacitySlider.addEventListener('input', function() {
+            const opacity = this.value;
+            opacityValue.textContent = opacity + '%';
+            document.body.style.setProperty('--bg-opacity', opacity / 100);
+        });
+    }
+}
+
+// Clear All Backgrounds
+function clearAllBackgrounds() {
+    if (confirm('Are you sure you want to clear all background images?')) {
+        backgroundImages = [];
+        saveBackgroundImages();
+        renderBackgroundGallery();
+        clearBackground();
+        stopBackgroundRotation();
+        showNotification('All backgrounds cleared', 'info');
+    }
+}
+
+// Clear Background
+function clearBackground() {
+    document.body.style.removeProperty('--bg-image');
+    document.body.style.setProperty('--bg-opacity', '0.3');
+}
+
+// Reset to Defaults
+function resetToDefaults() {
+    if (confirm('Reset to default background images?')) {
+        backgroundImages = [
+            'https://images.unsplash.com/photo-1511512578047-d6360b9846c7?w=1920&h=1080&fit=crop',
+            'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&h=1080&fit=crop',
+            'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=1920&h=1080&fit=crop'
+        ];
+        saveBackgroundImages();
+        renderBackgroundGallery();
+        currentBackgroundIndex = 0;
+        setBackgroundImage(0);
+        startBackgroundRotation();
+        showNotification('Reset to default backgrounds', 'success');
+    }
+}
+
+// Update Theme Background (legacy function)
+function updateThemeBackground() {
+    const imageUrl = document.getElementById('bgImageUrl')?.value;
+    const opacity = document.getElementById('bgOpacity')?.value || 60;
+    
+    if (imageUrl) {
+        addBackgroundImage();
+        document.body.style.setProperty('--bg-opacity', opacity / 100);
+        showNotification('Background updated successfully!', 'success');
+    }
+}
+
 // ========= ADMIN DASHBOARD =========
 const ADMIN_PASSWORD = 'Ciontaten83x';
 let adminAuthenticated = false;
@@ -1103,24 +1333,47 @@ function loadAnalyticsContent() {
 
 // Load Theme Settings Content
 function loadThemeSettingsContent() {
-    const themeSettingsTab = document.querySelector('#themeSettingsTab .tab-content');
-    if (themeSettingsTab && !themeSettingsTab.innerHTML.includes('bgImageUrl')) {
+    const themeSettingsTab = document.querySelector('#themeSettingsTab');
+    if (themeSettingsTab && !themeSettingsTab.innerHTML.includes('backgroundGallery')) {
         themeSettingsTab.innerHTML = `
             <div class="row">
-                <div class="col-md-6">
-                    <h5>Background Settings</h5>
+                <div class="col-md-8">
+                    <h5><i class="fas fa-images"></i> Background Gallery</h5>
                     <div class="mb-3">
-                        <label for="bgImageUrl" class="form-label">Background Image URL</label>
-                        <input type="url" class="form-control" id="bgImageUrl">
+                        <label for="bgImageUrl" class="form-label">Add Background Image URL</label>
+                        <div class="input-group">
+                            <input type="url" class="form-control" id="bgImageUrl" placeholder="Enter image URL">
+                            <button class="btn btn-primary" onclick="addBackgroundImage()">
+                                <i class="fas fa-plus"></i> Add
+                            </button>
+                        </div>
                     </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Current Background Images</label>
+                        <div id="backgroundGallery" class="background-gallery">
+                            <!-- Background images will be loaded here -->
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="enableRotation" checked>
+                            <label class="form-check-label" for="enableRotation">
+                                Enable Auto-Rotation (5 seconds)
+                            </label>
+                        </div>
+                    </div>
+                    
                     <div class="mb-3">
                         <label for="bgOpacity" class="form-label">Background Opacity</label>
                         <input type="range" class="form-range" id="bgOpacity" min="0" max="100" value="60">
+                        <small class="text-muted">Current: <span id="opacityValue">60%</span></small>
                     </div>
-                    <button class="btn btn-primary" onclick="updateThemeBackground()">Update Background</button>
                 </div>
-                <div class="col-md-6">
-                    <h5>Color Settings</h5>
+                
+                <div class="col-md-4">
+                    <h5><i class="fas fa-palette"></i> Color Settings</h5>
                     <div class="mb-3">
                         <label for="primaryColor" class="form-label">Primary Color</label>
                         <input type="color" class="form-control form-control-color" id="primaryColor" value="#ff6b35">
@@ -1129,10 +1382,26 @@ function loadThemeSettingsContent() {
                         <label for="secondaryColor" class="form-label">Secondary Color</label>
                         <input type="color" class="form-control form-control-color" id="secondaryColor" value="#1e3a8a">
                     </div>
-                    <button class="btn btn-primary" onclick="updateThemeColors()">Update Colors</button>
+                    <button class="btn btn-primary w-100" onclick="updateThemeColors()">
+                        <i class="fas fa-paint-brush"></i> Update Colors
+                    </button>
+                    
+                    <hr class="my-4">
+                    
+                    <h6><i class="fas fa-cog"></i> Quick Actions</h6>
+                    <button class="btn btn-outline-danger w-100 mb-2" onclick="clearAllBackgrounds()">
+                        <i class="fas fa-trash"></i> Clear All Backgrounds
+                    </button>
+                    <button class="btn btn-outline-secondary w-100" onclick="resetToDefaults()">
+                        <i class="fas fa-undo"></i> Reset to Defaults
+                    </button>
                 </div>
             </div>
         `;
+        
+        // Load existing backgrounds and setup event listeners
+        loadBackgroundGallery();
+        setupBackgroundControls();
     }
 }
 
