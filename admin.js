@@ -119,19 +119,7 @@ function setupAdminEventListeners() {
     // Add Game Form
     const addGameForm = document.getElementById('addGameForm');
     if (addGameForm) {
-        addGameForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            handleAddGame();
-        });
-    }
-
-    // Send Code Form
-    const sendCodeForm = document.getElementById('sendCodeForm');
-    if (sendCodeForm) {
-        sendCodeForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            handleSendLicenseCode();
-        });
+        addGameForm.addEventListener('submit', handleAddGame);
     }
 }
 
@@ -145,20 +133,14 @@ function switchTab(tabName) {
         tab.classList.remove('active');
     });
 
-    // Remove active class from all nav links
-    document.querySelectorAll('.admin-nav-link').forEach(link => {
-        link.classList.remove('active');
-    });
-
     // Show selected tab
-    const selectedTab = document.querySelector(`[data-tab="${tabName}"]`);
+    const selectedTab = document.getElementById(tabName + 'Tab');
     if (selectedTab) {
         selectedTab.classList.add('active');
     }
 
     // Highlight selected nav link
-    document.querySelector(`[data-tab="${tabName}"]`).closest('.admin-nav-link')?.classList.add('active');
-    const navLink = document.querySelector(`.admin-nav-link[data-tab="${tabName}"]`);
+    const navLink = document.querySelector('.admin-nav-link[data-tab="' + tabName + '"]');
     if (navLink) {
         navLink.classList.add('active');
     }
@@ -168,8 +150,6 @@ function switchTab(tabName) {
         loadGamesIntoTable();
     } else if (tabName === 'game-stats') {
         displayGameStatistics();
-    } else if (tabName === 'settings') {
-        populateGameDropdown();
     }
 }
 
@@ -211,14 +191,13 @@ function handleAddGame() {
     const newGame = { ...gameData, id: newId };
     games.push(newGame);
     saveGamesToStorage();
-    return newGame;
 
     // Clear form
     document.getElementById('addGameForm').reset();
     setTodayDate();
 
     // Show success message
-    showAdminNotification(`✓ "${newGame.name}" added successfully!`, 'success');
+    showAdminNotification('Game "' + newGame.name + '" added successfully!', 'success');
 }
 
 // ========================================
@@ -234,36 +213,36 @@ function loadGamesIntoTable() {
         return;
     }
 
-    tableBody.innerHTML = games.map(game => `
-        <tr>
-            <td>
-                <div class="game-table-title">
-                    <img src="${game.image}" alt="${game.name}" class="game-table-thumb">
-                    <span>${game.name}</span>
-                </div>
-            </td>
-            <td>
-                <span class="badge" style="background-color: ${getGenreColor(game.category || game.genre)}">
-                    ${GENRE_LABELS[game.category || game.genre] || game.category || game.genre}
-                </span>
-            </td>
-            <td>$${game.price.toFixed(2)}</td>
-            <td>
-                <div class="rating-stars">
-                    ${'★'.repeat(Math.floor(game.rating))}${'☆'.repeat(5 - Math.floor(game.rating))}
-                    <span class="text-muted ms-1">${game.rating}</span>
-                </div>
-            </td>
-            <td>
-                <button class="btn btn-sm btn-info" onclick="editGame(${game.id})" title="Edit">
-                    <i class="fas fa-edit"></i>
-                </button>
-                <button class="btn btn-sm btn-danger" onclick="deleteGameConfirm(${game.id})" title="Delete">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </td>
-        </tr>
-    `).join('');
+    tableBody.innerHTML = games.map(game => 
+        '<tr>' +
+            '<td>' +
+                '<div class="game-table-title">' +
+                    '<img src="' + game.image + '" alt="' + game.name + '" class="game-table-thumb">' +
+                    '<span>' + game.name + '</span>' +
+                '</div>' +
+            '</td>' +
+            '<td>' +
+                '<span class="badge" style="background-color: ' + getGenreColor(game.genre || game.category) + '">' +
+                    (GENRE_LABELS[game.genre || game.category] || game.genre || game.category) +
+                '</span>' +
+            '</td>' +
+            '<td>$' + game.price.toFixed(2) + '</td>' +
+            '<td>' +
+                '<div class="rating-stars">' +
+                    '★'.repeat(Math.floor(game.rating)) + '☆'.repeat(5 - Math.floor(game.rating)) +
+                    '<span class="text-muted ms-1">' + game.rating + '</span>' +
+                '</div>' +
+            '</td>' +
+            '<td>' +
+                '<button class="btn btn-sm btn-info" onclick="editGame(' + game.id + ')" title="Edit">' +
+                    '<i class="fas fa-edit"></i>' +
+                '</button>' +
+                '<button class="btn btn-sm btn-danger" onclick="deleteGameConfirm(' + game.id + ')" title="Delete">' +
+                    '<i class="fas fa-trash"></i>' +
+                '</button>' +
+            '</td>' +
+        '</tr>'
+    ).join('');
 }
 
 // ========================================
@@ -328,14 +307,11 @@ function saveEditedGame() {
     if (gameIndex !== -1) {
         games[gameIndex] = { ...gameData, id: editingGameId };
         saveGamesToStorage();
-        const updated = games[gameIndex];
         
-        if (updated) {
-            showAdminNotification(`✓ "${updated.name}" updated successfully!`, 'success');
-            loadGamesIntoTable();
-            bootstrap.Modal.getInstance(document.getElementById('editGameModal')).hide();
-            editingGameId = null;
-        }
+        showAdminNotification('Game "' + gameData.name + '" updated successfully!', 'success');
+        loadGamesIntoTable();
+        bootstrap.Modal.getInstance(document.getElementById('editGameModal')).hide();
+        editingGameId = null;
     }
 }
 
@@ -347,14 +323,14 @@ function deleteGameConfirm(gameId) {
     const game = getGameById(gameId);
     if (!game) return;
 
-    if (confirm(`Are you sure you want to delete "${game.name}"? This action cannot be undone.`)) {
+    if (confirm('Are you sure you want to delete "' + game.name + '"? This action cannot be undone.')) {
         deleteGameFromAdmin(gameId, game.name);
     }
 }
 
 function deleteGameFromAdmin(gameId, gameName) {
     deleteGame(gameId);
-    showAdminNotification(`✓ "${gameName}" deleted successfully!`, 'success');
+    showAdminNotification('"' + gameName + '" deleted successfully!', 'success');
     loadGamesIntoTable();
 }
 
@@ -369,59 +345,28 @@ function displayGameStatistics() {
     const totalGames = games.length;
     const avgPrice = games.length > 0 ? (games.reduce((sum, g) => sum + g.price, 0) / games.length).toFixed(2) : 0;
     const avgRating = games.length > 0 ? (games.reduce((sum, g) => sum + g.rating, 0) / games.length).toFixed(2) : 0;
-    const genreCounts = {};
 
-    // Count games by genre/category
-    games.forEach(game => {
-        const genre = game.category || game.genre;
-        genreCounts[genre] = (genreCounts[genre] || 0) + 1;
-    });
-
-    statsContainer.innerHTML = `
-        <div class="row mb-4">
-            <div class="col-md-4">
-                <div class="stat-card">
-                    <h5>Total Games</h5>
-                    <h3>${totalGames}</h3>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="stat-card">
-                    <h5>Average Price</h5>
-                    <h3>$${avgPrice}</h3>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="stat-card">
-                    <h5>Average Rating</h5>
-                    <h3>${avgRating}</h3>
-                </div>
-            </div>
-        </div>
-
-    // Genre breakdown
-    const genreBreakdown = document.createElement('div');
-    genreBreakdown.className = 'mt-4';
-    genreBreakdown.innerHTML = `
-        <h5 class="mb-3">Games by Genre</h5>
-        <div class="row">
-            ${Object.entries(genreCounts).map(([genre, count]) => `
-                <div class="col-md-6 mb-3">
-                    <div class="genre-stat">
-                        <div class="genre-stat-header">
-                            <label>${GENRE_LABELS[genre] || genre}</label>
-                            <span class="badge bg-primary">${count}</span>
-                        </div>
-                        <div class="progress">
-                            <div class="progress-bar" style="width: ${(count / totalGames) * 100}%"></div>
-                        </div>
-                    </div>
-                </div>
-            `).join('')}
-        </div>
-    `;
-
-    statsContainer.appendChild(genreBreakdown);
+    statsContainer.innerHTML = 
+        '<div class="row mb-4">' +
+            '<div class="col-md-4">' +
+                '<div class="stat-card">' +
+                    '<h5>Total Games</h5>' +
+                    '<h3>' + totalGames + '</h3>' +
+                '</div>' +
+            '</div>' +
+            '<div class="col-md-4">' +
+                '<div class="stat-card">' +
+                    '<h5>Average Price</h5>' +
+                    '<h3>$' + avgPrice + '</h3>' +
+                '</div>' +
+            '</div>' +
+            '<div class="col-md-4">' +
+                '<div class="stat-card">' +
+                    '<h5>Average Rating</h5>' +
+                    '<h3>' + avgRating + '</h3>' +
+                '</div>' +
+            '</div>' +
+        '</div>';
 }
 
 // ========================================
@@ -434,10 +379,10 @@ function exportGamesData() {
     const url = URL.createObjectURL(dataBlob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `games-backup-${new Date().toISOString().split('T')[0]}.json`;
+    link.download = 'games-backup-' + new Date().toISOString().split('T')[0] + '.json';
     link.click();
     URL.revokeObjectURL(url);
-    showAdminNotification('✓ Games exported successfully!', 'success');
+    showAdminNotification('Games exported successfully!', 'success');
 }
 
 function importGamesData(event) {
@@ -463,15 +408,15 @@ function importGamesData(event) {
             }
 
             // Confirm import
-            if (confirm(`Import ${importedGames.length} games? This will replace your current catalog.`)) {
+            if (confirm('Import ' + importedGames.length + ' games? This will replace your current catalog.')) {
                 games = importedGames;
                 saveGamesToStorage();
                 loadGamesIntoTable();
                 displayGameStatistics();
-                showAdminNotification(`✓ Successfully imported ${importedGames.length} games!`, 'success');
+                showAdminNotification('Successfully imported ' + importedGames.length + ' games!', 'success');
             }
         } catch (error) {
-            showAdminNotification(`Error importing games: ${error.message}`, 'danger');
+            showAdminNotification('Error importing games: ' + error.message, 'danger');
         }
     };
     reader.readAsText(file);
@@ -487,124 +432,11 @@ function resetToDefaults() {
             saveGamesToStorage();
             loadGamesIntoTable();
             displayGameStatistics();
-            showAdminNotification('✓ Games reset to defaults!', 'success');
+            showAdminNotification('Games reset to defaults!', 'success');
         }
     }
 }
-// ========================================
-// LICENSE CODE & EMAIL FUNCTIONS
-// ========================================
 
-function generateLicenseCode() {
-    // Generate format: AUTO-XXXX-XXXX-XXXX
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    const segments = [];
-    
-    for (let i = 0; i < 3; i++) {
-        let segment = '';
-        for (let j = 0; j < 4; j++) {
-            segment += chars.charAt(Math.floor(Math.random() * chars.length));
-        }
-        segments.push(segment);
-    }
-    
-    const licenseCode = 'AUTO-' + segments.join('-');
-    document.getElementById('codeAmount').value = licenseCode;
-    showAdminNotification('✓ License code generated!', 'success');
-}
-
-function populateGameDropdown() {
-    const gameSelect = document.getElementById('codeGame');
-    if (!gameSelect) return;
-    
-    gameSelect.innerHTML = '<option value="">Choose a game...</option>';
-    games.forEach(game => {
-        const option = document.createElement('option');
-        option.value = game.id;
-        option.textContent = game.name;
-        gameSelect.appendChild(option);
-    });
-}
-
-function handleSendLicenseCode() {
-    const email = document.getElementById('codeEmail').value;
-    const gameId = document.getElementById('codeGame').value;
-    const licenseCode = document.getElementById('codeAmount').value;
-    const customMessage = document.getElementById('codeMessage').value;
-
-    // Validation
-    if (!email || !gameId || !licenseCode) {
-        showAdminNotification('Please fill in all required fields!', 'danger');
-        return;
-    }
-
-    if (!licenseCode.match(/^AUTO-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/)) {
-        showAdminNotification('Please generate a valid license code!', 'danger');
-        return;
-    }
-
-    const game = getGameById(parseInt(gameId));
-    if (!game) {
-        showAdminNotification('Game not found!', 'danger');
-        return;
-    }
-
-    // Send email
-    sendLicenseCodeEmail(email, game, licenseCode, customMessage);
-}
-
-function sendLicenseCodeEmail(email, game, licenseCode, customMessage) {
-    // Prepare email data
-    const emailData = {
-        to: email,
-        subject: `Your License Code for ${game.name}`,
-        game: game.name,
-        price: game.price,
-        licenseCode: licenseCode,
-        customMessage: customMessage,
-        timestamp: new Date().toISOString()
-    };
-
-    // Show loading state
-    const submitBtn = event.target.querySelector('button[type="submit"]');
-    const originalText = submitBtn.innerHTML;
-    submitBtn.disabled = true;
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-
-    // Send to backend API
-    fetch('/api/send-license-code', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(emailData)
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`Server error: ${response.statusText}`);
-        }
-        return response.json();
-    })
-    .then(data => {
-        if (data.success) {
-            showAdminNotification(`✓ License code sent to ${email}!`, 'success');
-            // Clear form
-            document.getElementById('sendCodeForm').reset();
-            document.getElementById('codeAmount').value = '';
-        } else {
-            throw new Error(data.message || 'Failed to send email');
-        }
-    })
-    .catch(error => {
-        console.error('Email send error:', error);
-        showAdminNotification(`Error: ${error.message}`, 'danger');
-    })
-    .finally(() => {
-        // Restore button
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = originalText;
-    });
-}
 // ========================================
 // HELPER FUNCTIONS
 // ========================================
@@ -630,29 +462,19 @@ function getGenreColor(genre) {
     return colors[genre] || '#6c757d';
 }
 
-function showAdminNotification(message, type = 'info') {
+function showAdminNotification(message, type) {
+    type = type || 'info';
     const alertDiv = document.createElement('div');
     const typeClass = {
         'success': 'alert-success',
         'danger': 'alert-danger',
-        'warning': 'alert-warning',
-        'info': 'alert-info'
-    }[type] || 'alert-info';
-
-    alertDiv.className = `alert ${typeClass} alert-dismissible fade show`;
-    alertDiv.role = 'alert';
-    alertDiv.style.cssText = `
-        position: fixed;
-        top: 80px;
-        right: 20px;
-        z-index: 9999;
-        max-width: 400px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    `;
-    alertDiv.innerHTML = `
-        ${message}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    `;
+        'info': 'alert-info',
+        'warning': 'alert-warning'
+    };
+    
+    alertDiv.className = 'alert ' + typeClass[type] + ' alert-dismissible fade show position-fixed';
+    alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);';
+    alertDiv.innerHTML = message + '<button type="button" class="btn-close" data-bs-dismiss="alert"></button>';
 
     document.body.appendChild(alertDiv);
 
@@ -661,13 +483,10 @@ function showAdminNotification(message, type = 'info') {
     }, 4000);
 }
 
-// Make sure games are loaded on page load
-initializeGames();
-loadCartFromStorage();
-
 // ========================================
 // LOGOUT FUNCTIONALITY
 // ========================================
+
 async function handleAdminLogout() {
     if (!confirm('Are you sure you want to logout?')) {
         return;
