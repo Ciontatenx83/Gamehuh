@@ -611,6 +611,12 @@ function updatePasswordStrength(passwordInput, strengthContainer) {
 
 // ========= USER AUTHENTICATION =========
 
+// Email validation function
+function isValidEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+}
+
 // Show Login Modal
 function showLoginModal() {
     const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
@@ -640,19 +646,45 @@ function switchToLogin() {
 // Handle Login
 function handleLogin(e) {
     e.preventDefault();
-    const email = document.getElementById('loginEmail').value;
+    
+    // Get form values
+    const email = document.getElementById('loginEmail').value.trim();
     const password = document.getElementById('loginPassword').value;
     const rememberMe = document.getElementById('rememberMe').checked;
+    
+    // Basic validation
+    if (!email || !password) {
+        showNotification('Please fill in all fields', 'error');
+        return;
+    }
+    
+    if (!isValidEmail(email)) {
+        showNotification('Please enter a valid email address', 'error');
+        return;
+    }
+    
+    if (password.length < 6) {
+        showNotification('Password must be at least 6 characters', 'error');
+        return;
+    }
     
     // Get users from localStorage
     const users = JSON.parse(localStorage.getItem('users') || '[]');
     const user = users.find(u => u.email === email && u.password === password);
     
     if (user) {
+        // Check if user is active
+        if (user.status !== 'active') {
+            showNotification('Account is not active. Please contact support.', 'error');
+            return;
+        }
+        
         // Set current user
         localStorage.setItem('currentUser', JSON.stringify(user));
         if (rememberMe) {
             localStorage.setItem('rememberUser', 'true');
+        } else {
+            localStorage.removeItem('rememberUser');
         }
         
         // Update navbar
@@ -660,12 +692,14 @@ function handleLogin(e) {
         
         // Close modal
         const loginModal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
-        loginModal.hide();
+        if (loginModal) {
+            loginModal.hide();
+        }
         
         // Reset form
         document.getElementById('loginForm').reset();
         
-        showNotification('Login successful!', 'success');
+        showNotification(`Welcome back, ${user.name}!`, 'success');
     } else {
         showNotification('Invalid email or password', 'error');
     }
@@ -674,15 +708,43 @@ function handleLogin(e) {
 // Handle Signup
 function handleSignup(e) {
     e.preventDefault();
-    const name = document.getElementById('signupName').value;
-    const email = document.getElementById('signupEmail').value;
+    
+    // Get form values
+    const name = document.getElementById('signupName').value.trim();
+    const email = document.getElementById('signupEmail').value.trim();
     const password = document.getElementById('signupPassword').value;
     const confirmPassword = document.getElementById('signupConfirmPassword').value;
     const agreeTerms = document.getElementById('agreeTerms').checked;
     
+    // Comprehensive validation
+    if (!name || !email || !password || !confirmPassword) {
+        showNotification('Please fill in all fields', 'error');
+        return;
+    }
+    
+    if (name.length < 2) {
+        showNotification('Name must be at least 2 characters', 'error');
+        return;
+    }
+    
+    if (!isValidEmail(email)) {
+        showNotification('Please enter a valid email address', 'error');
+        return;
+    }
+    
+    if (password.length < 6) {
+        showNotification('Password must be at least 6 characters', 'error');
+        return;
+    }
+    
     // Validate passwords match
     if (password !== confirmPassword) {
         showNotification('Passwords do not match', 'error');
+        return;
+    }
+    
+    if (!agreeTerms) {
+        showNotification('Please agree to the Terms and Conditions', 'error');
         return;
     }
     
@@ -701,9 +763,11 @@ function handleSignup(e) {
         password: password, // In production, hash this
         role: 'user',
         status: 'active',
-        joined: new Date().toISOString().split('T')[0]
+        joined: new Date().toISOString().split('T')[0],
+        lastLogin: new Date().toISOString()
     };
     
+    // Save user to localStorage
     users.push(newUser);
     localStorage.setItem('users', JSON.stringify(users));
     
@@ -713,18 +777,26 @@ function handleSignup(e) {
     
     // Close modal
     const signupModal = bootstrap.Modal.getInstance(document.getElementById('signupModal'));
-    signupModal.hide();
+    if (signupModal) {
+        signupModal.hide();
+    }
     
     // Reset form
     document.getElementById('signupForm').reset();
+    document.getElementById('signupPasswordStrength').innerHTML = '';
     
-    showNotification('Account created successfully!', 'success');
+    showNotification(`Welcome to GameHub, ${name}! Your account has been created successfully.`, 'success');
 }
 
 // Update User Navbar
 function updateUserNavbar() {
     const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
     const navbar = document.querySelector('.navbar-nav.ms-auto');
+    
+    if (!navbar) {
+        console.warn('Navbar element not found');
+        return;
+    }
     
     if (currentUser) {
         // Show user menu
@@ -743,8 +815,8 @@ function updateUserNavbar() {
                     <i class="fas fa-user"></i> ${currentUser.name}
                 </a>
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="#"><i class="fas fa-user"></i> Profile</a></li>
-                    <li><a class="dropdown-item" href="#"><i class="fas fa-cog"></i> Settings</a></li>
+                    <li><a class="dropdown-item" href="#" onclick="showProfile()"><i class="fas fa-user"></i> Profile</a></li>
+                    <li><a class="dropdown-item" href="#" onclick="showSettings()"><i class="fas fa-cog"></i> Settings</a></li>
                     <li><hr class="dropdown-divider"></li>
                     <li><a class="dropdown-item" href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
                 </ul>
@@ -774,19 +846,46 @@ function updateUserNavbar() {
             </li>
         `;
     }
+    
+    // Update cart badge after navbar update
+    updateCartBadge();
 }
 
 // Logout
 function logout() {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    
+    // Clear session data
     localStorage.removeItem('currentUser');
     localStorage.removeItem('rememberUser');
+    
+    // Update navbar
     updateUserNavbar();
-    showNotification('Logged out successfully', 'info');
+    
+    // Show notification
+    if (currentUser) {
+        showNotification(`Goodbye, ${currentUser.name}! You have been logged out.`, 'info');
+    } else {
+        showNotification('You have been logged out.', 'info');
+    }
 }
 
 // Show Terms
 function showTerms() {
     alert('Terms and Conditions:\n\n1. You must be 13+ years old to use this service.\n2. You are responsible for your account security.\n3. All purchases are final.\n4. We reserve the right to terminate accounts for violations.\n5. Privacy is important to us - see our Privacy Policy.');
+}
+
+// Show Profile
+function showProfile() {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (currentUser) {
+        alert(`Profile Information:\n\nName: ${currentUser.name}\nEmail: ${currentUser.email}\nMember Since: ${currentUser.joined}\nStatus: ${currentUser.status}`);
+    }
+}
+
+// Show Settings
+function showSettings() {
+    alert('Settings panel coming soon! You will be able to:\n- Update your profile\n- Change password\n- Manage notifications\n- Privacy settings');
 }
 
 // Check for remembered user on page load
