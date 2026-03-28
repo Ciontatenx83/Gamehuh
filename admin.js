@@ -5,6 +5,74 @@
 let editingGameId = null;
 let adminEmail = '';
 
+// Games data and constants
+let games = [];
+const GENRE_LABELS = {
+    'action': 'Action',
+    'adventure': 'Adventure',
+    'anime': 'Anime',
+    'horror': 'Horror',
+    'multiplayer': 'Multiplayer',
+    'open world': 'Open World',
+    'racing': 'Racing',
+    'shooting': 'Shooting',
+    'simulation': 'Simulation',
+    'sports': 'Sports',
+    'strategy': 'Strategy',
+    'rpg': 'RPG',
+    'puzzle': 'Puzzle'
+};
+
+const defaultGames = [
+    {
+        id: 1,
+        name: 'Dragon Quest',
+        genre: 'rpg',
+        price: 29.99,
+        rating: 4.8,
+        image: 'https://via.placeholder.com/300x200?text=Dragon+Quest',
+        developer: 'Epic Studios',
+        description: 'Embark on an epic adventure in a fantasy world filled with dragons, magic, and treasures.'
+    },
+    {
+        id: 2,
+        name: 'Cyber Storm',
+        genre: 'action',
+        price: 39.99,
+        rating: 4.5,
+        image: 'https://via.placeholder.com/300x200?text=Cyber+Storm',
+        developer: 'Vertex Games',
+        description: 'Experience intense action in a cyberpunk world with stunning visuals and fast-paced gameplay.'
+    }
+];
+
+// Load games from localStorage
+function loadGamesFromStorage() {
+    const savedGames = localStorage.getItem('adminGames');
+    if (savedGames) {
+        games = JSON.parse(savedGames);
+    } else {
+        games = [...defaultGames];
+        saveGamesToStorage();
+    }
+}
+
+// Save games to localStorage
+function saveGamesToStorage() {
+    localStorage.setItem('adminGames', JSON.stringify(games));
+}
+
+// Get game by ID
+function getGameById(gameId) {
+    return games.find(game => game.id === parseInt(gameId));
+}
+
+// Delete game by ID
+function deleteGame(gameId) {
+    games = games.filter(game => game.id !== parseInt(gameId));
+    saveGamesToStorage();
+}
+
 // Initialize admin panel
 document.addEventListener('DOMContentLoaded', async function () {
     // Check for admin token
@@ -15,6 +83,9 @@ document.addEventListener('DOMContentLoaded', async function () {
         window.location.href = '/admin-login.html';
         return;
     }
+
+    // Load games data
+    loadGamesFromStorage();
 
     // Use email from localStorage
     if (savedAdminEmail) {
@@ -136,7 +207,11 @@ function handleAddGame() {
     }
 
     // Add game to database
-    const newGame = addGame(gameData);
+    const newId = games.length > 0 ? Math.max(...games.map(g => g.id)) + 1 : 1;
+    const newGame = { ...gameData, id: newId };
+    games.push(newGame);
+    saveGamesToStorage();
+    return newGame;
 
     // Clear form
     document.getElementById('addGameForm').reset();
@@ -168,8 +243,8 @@ function loadGamesIntoTable() {
                 </div>
             </td>
             <td>
-                <span class="badge" style="background-color: ${getGenreColor(game.genre)}">
-                    ${GENRE_LABELS[game.genre] || game.genre}
+                <span class="badge" style="background-color: ${getGenreColor(game.category || game.genre)}">
+                    ${GENRE_LABELS[game.category || game.genre] || game.category || game.genre}
                 </span>
             </td>
             <td>$${game.price.toFixed(2)}</td>
@@ -249,13 +324,18 @@ function saveEditedGame() {
     }
 
     // Update game
-    const updated = updateGame(editingGameId, gameData);
-
-    if (updated) {
-        showAdminNotification(`✓ "${updated.name}" updated successfully!`, 'success');
-        loadGamesIntoTable();
-        bootstrap.Modal.getInstance(document.getElementById('editGameModal')).hide();
-        editingGameId = null;
+    const gameIndex = games.findIndex(g => g.id === editingGameId);
+    if (gameIndex !== -1) {
+        games[gameIndex] = { ...gameData, id: editingGameId };
+        saveGamesToStorage();
+        const updated = games[gameIndex];
+        
+        if (updated) {
+            showAdminNotification(`✓ "${updated.name}" updated successfully!`, 'success');
+            loadGamesIntoTable();
+            bootstrap.Modal.getInstance(document.getElementById('editGameModal')).hide();
+            editingGameId = null;
+        }
     }
 }
 
@@ -291,57 +371,33 @@ function displayGameStatistics() {
     const avgRating = games.length > 0 ? (games.reduce((sum, g) => sum + g.rating, 0) / games.length).toFixed(2) : 0;
     const genreCounts = {};
 
+    // Count games by genre/category
     games.forEach(game => {
-        genreCounts[game.genre] = (genreCounts[game.genre] || 0) + 1;
+        const genre = game.category || game.genre;
+        genreCounts[genre] = (genreCounts[genre] || 0) + 1;
     });
 
-    // Stats cards
     statsContainer.innerHTML = `
-        <div class="col-md-3 mb-4">
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <i class="fas fa-gamepad"></i>
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <h5>Total Games</h5>
+                    <h3>${totalGames}</h3>
                 </div>
-                <div class="stat-content">
-                    <h6 class="stat-label">Total Games</h6>
-                    <h3 class="stat-value">${totalGames}</h3>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <h5>Average Price</h5>
+                    <h3>$${avgPrice}</h3>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <h5>Average Rating</h5>
+                    <h3>${avgRating}</h3>
                 </div>
             </div>
         </div>
-        <div class="col-md-3 mb-4">
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <i class="fas fa-dollar-sign"></i>
-                </div>
-                <div class="stat-content">
-                    <h6 class="stat-label">Avg. Price</h6>
-                    <h3 class="stat-value">$${avgPrice}</h3>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 mb-4">
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <i class="fas fa-star"></i>
-                </div>
-                <div class="stat-content">
-                    <h6 class="stat-label">Avg. Rating</h6>
-                    <h3 class="stat-value">${avgRating}</h3>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 mb-4">
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <i class="fas fa-tags"></i>
-                </div>
-                <div class="stat-content">
-                    <h6 class="stat-label">Total Genres</h6>
-                    <h3 class="stat-value">${Object.keys(genreCounts).length}</h3>
-                </div>
-            </div>
-        </div>
-    `;
 
     // Genre breakdown
     const genreBreakdown = document.createElement('div');
@@ -399,7 +455,7 @@ function importGamesData(event) {
 
             // Validate structure
             const isValid = importedGames.every(game =>
-                game.id && game.name && game.genre && game.price && game.description
+                game.id && game.name && (game.genre || game.category) && game.price && game.description
             );
 
             if (!isValid) {
