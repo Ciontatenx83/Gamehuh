@@ -2,7 +2,7 @@
   "name": "tariq-smile-game-hub",
   "version": "1.0.0",
   "description": "Tariq Smile Game Hub - Premium gaming website with secure payments",
-  "main": "server.example.js",
+  "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",

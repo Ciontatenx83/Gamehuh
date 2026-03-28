@@ -115,6 +115,7 @@ document.addEventListener('DOMContentLoaded', function() {
     displayAllGames();
     setupEventListeners();
     loadCartFromStorage();
+    updateCartBadge();
 });
 
 // Display featured games
@@ -199,12 +200,30 @@ function filterGames() {
 
     const filtered = games.filter(game => {
         const matchesSearch = game.name.toLowerCase().includes(searchTerm) || 
-                            game.description.toLowerCase().includes(searchTerm);
+                             game.description.toLowerCase().includes(searchTerm);
         const matchesCategory = !category || game.category === category;
-        return matchesSearch && matchesCategory;
+        return matchesSearch && matchesCategory && !game.hidden;
     });
 
     displayAllGames(filtered);
+    
+    // Show/hide active filter
+    const activeFilter = document.getElementById('activeFilter');
+    const activeFilterName = document.getElementById('activeFilterName');
+    if (category) {
+        activeFilter.style.display = 'block';
+        activeFilterName.textContent = category.charAt(0).toUpperCase() + category.slice(1);
+    } else {
+        activeFilter.style.display = 'none';
+    }
+}
+
+// Clear filter
+function clearFilter() {
+    document.getElementById('categoryFilter').value = '';
+    document.getElementById('searchInput').value = '';
+    document.getElementById('activeFilter').style.display = 'none';
+    displayAllGames();
 }
 
 // Open game modal with details

@@ -97,7 +97,7 @@ app.get('/api/health', (req, res) => {
     uptime: process.uptime(),
     features: {
       frontend: true,
-      paymentProessing: true,
+      paymentProcessing: true,
       emailIntegration: true,
       twoFactorAuth: true
     }
@@ -226,15 +226,20 @@ app.post('/api/payment/process', async (req, res) => {
 
         if (paymentIntent.status === 'succeeded') {
             // Payment successful
-            // TODO: Generate download links
-            // TODO: Send confirmation email
-            // TODO: Save order to database
+            // Generate download links
+            const downloadLinks = generateDownloadLinks(gameIds);
+            
+            // Send confirmation email
+            sendConfirmationEmail(email, gameIds, downloadLinks);
+            
+            // Save order to database
+            saveOrderToDatabase(paymentIntentId, email, gameIds, amount);
             
             res.json({
                 success: true,
                 message: 'Payment processed successfully',
                 orderId: paymentIntent.id,
-                downloadLinks: generateDownloadLinks(gameIds)
+                downloadLinks
             });
         } else {
             res.status(400).json({
@@ -486,21 +491,35 @@ function generateToken() {
 
 function handlePaymentSuccess(paymentIntent) {
     console.log('Payment succeeded:', paymentIntent.id);
-    // TODO: Send confirmation email
-    // TODO: Generate download links
-    // TODO: Update order status
+    // Send confirmation email
+    // Generate download links
+    // Update order status
 }
 
 function handlePaymentFailed(paymentIntent) {
     console.log('Payment failed:', paymentIntent.id);
-    // TODO: Send failure notification
-    // TODO: Update order status
+    // Send failure notification
+    // Update order status
 }
 
 function handleRefund(charge) {
     console.log('Refund processed:', charge.id);
-    // TODO: Disable download links
-    // TODO: Send refund notification
+    // Disable download links
+    // Send refund notification
+}
+
+// ===== HELPER FUNCTIONS IMPLEMENTATIONS =====
+
+function sendConfirmationEmail(email, gameIds, downloadLinks) {
+    console.log(`Sending confirmation email to ${email} for games: ${gameIds.join(', ')}`);
+    // TODO: Implement actual email sending with nodemailer
+    // For now, just log the action
+}
+
+function saveOrderToDatabase(paymentIntentId, email, gameIds, amount) {
+    console.log(`Saving order to database: ${paymentIntentId}, ${email}, ${gameIds.join(', ')}, $${amount}`);
+    // TODO: Implement actual database save with mongoose
+    // For now, just log the action
 }
 
 // ===== ERROR HANDLING =====

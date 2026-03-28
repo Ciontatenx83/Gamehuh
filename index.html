@@ -64,6 +64,16 @@
         </div>
     </section>
 
+    <!-- Featured Games Section -->
+    <section id="featured" class="featured-section py-5">
+        <div class="container">
+            <h2 class="section-title text-center mb-5">Featured Games</h2>
+            <div class="row" id="featuredGames">
+                <!-- Featured games will be populated by JavaScript -->
+            </div>
+        </div>
+    </section>
+
     <!-- Categories Grid Section (Premium Visual) -->
     <section id="categories" class="categories-section py-5">
         <div class="container">
@@ -271,9 +281,7 @@
                 <p>&copy; 2024 Tariq Smile Game Hub. All rights reserved.</p>
             </div>
         </div>
-    </footer>
-=======
-    <!-- FAQ Section -->
+    </section>
     <section id="faq" class="py-5">
         <div class="container">
             <h2 class="text-center mb-5">Frequently Asked Questions</h2>
@@ -455,7 +463,7 @@
                     </div>
                     <div class="game-detail-row">
                         <label>Genre:</label>
-                        <p id="gameModalGenre"></p>
+                        <p id="gameModalCategory"></p>
                     </div>
                     <div class="game-detail-row">
                         <label>Release Date:</label>
@@ -469,13 +477,12 @@
                 <div class="modal-footer glass-footer">
                     <p class="me-auto"><strong class="price-display">$<span id="gameModalPrice">0.00</span></strong></p>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-neon" id="buyButton" onclick="addToCartFromModal()">Add to Cart</button>
+                    <button type="button" class="btn btn-neon" id="buyButton" onclick="addToCart()">Add to Cart</button>
                 </div>
             </div>
         </div>
     </div>
 
-<<<<<<< HEAD
     <!-- Admin Entry Modal (2FA) -->
     <div class="modal fade" id="adminEntryModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered">
@@ -501,7 +508,9 @@
                     </div>
                 </div>
             </div>
-=======
+        </div>
+    </div>
+
     <!-- Payment Stripe Section (hidden) -->
     <script src="https://js.stripe.com/v3/"></script>
 
@@ -525,7 +534,7 @@
                 <div class="col-md-4">
                     <h6 class="footer-title">Follow Us</h6>
                     <div class="social-links">
-                        <a href="https://www.instagram.com/bee_thevillan?igsh=NDF3N2hhZDYwMmF2&utm_source=qr" target="_blank" rel="noopener noreferrer" class="social-icon instagram" title="Instagram">
+                        <a href="https://www.instagram.com/bee_thevillan?igshid=NDF3N2hhZDYwMmF2&utm_source=qr" target="_blank" rel="noopener noreferrer" class="social-icon instagram" title="Instagram">
                             <i class="fab fa-instagram"></i>
                         </a>
                         <a href="https://www.tiktok.com/@thecaptaintrq" target="_blank" rel="noopener noreferrer" class="social-icon tiktok" title="TikTok">
@@ -539,9 +548,8 @@
             </div>
             <hr class="footer-divider">
             <p class="text-center footer-copyright">&copy; 2024 GameHub. All rights reserved. | Developed with <i class="fas fa-heart"></i> for gamers</p>
->>>>>>> temp-fix
         </div>
-    </div>
+    </footer>
 
     <!-- Admin Office Modal -->
     <div class="modal fade" id="adminOfficeModal" tabindex="-1" data-bs-backdrop="static">
