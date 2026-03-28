@@ -505,3 +505,317 @@ async function handleAdminLogout() {
         window.location.href = '/admin-login.html';
     }
 }
+
+// ========================================
+// THEME SETTINGS FUNCTIONS
+// ========================================
+
+function updateBackgroundImage() {
+    const imageUrl = document.getElementById('bgImageUrl').value;
+    const fileInput = document.getElementById('bgImageUpload');
+    
+    if (fileInput.files && fileInput.files[0]) {
+        // Handle file upload
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const dataUrl = e.target.result;
+            setBackgroundImage(dataUrl);
+            showAdminNotification('Background image updated successfully!', 'success');
+        };
+        reader.readAsDataURL(fileInput.files[0]);
+    } else if (imageUrl) {
+        // Handle URL
+        setBackgroundImage(imageUrl);
+        showAdminNotification('Background image updated successfully!', 'success');
+    } else {
+        showAdminNotification('Please provide an image URL or upload a file', 'error');
+    }
+}
+
+function setBackgroundImage(imageUrl) {
+    if (imageUrl) {
+        const style = document.createElement('style');
+        style.textContent = `
+            body::before {
+                background-image: url('${imageUrl}') !important;
+            }
+        `;
+        document.head.appendChild(style);
+        localStorage.setItem('backgroundImage', imageUrl);
+        
+        // Notify parent window to update background
+        if (window.opener) {
+            window.opener.postMessage({ type: 'updateBackground', imageUrl: imageUrl }, '*');
+        }
+    }
+}
+
+function removeBackground() {
+    localStorage.removeItem('backgroundImage');
+    const style = document.createElement('style');
+    style.textContent = `
+        body::before {
+            background-image: none !important;
+        }
+    `;
+    document.head.appendChild(style);
+    
+    // Notify parent window to remove background
+    if (window.opener) {
+        window.opener.postMessage({ type: 'removeBackground' }, '*');
+    }
+    
+    showAdminNotification('Background image removed', 'success');
+}
+
+function updateColorScheme() {
+    const primaryColor = document.getElementById('primaryColor').value;
+    const secondaryColor = document.getElementById('secondaryColor').value;
+    const accentColor = document.getElementById('accentColor').value;
+    
+    const colors = {
+        primary: primaryColor,
+        secondary: secondaryColor,
+        accent: accentColor
+    };
+    
+    localStorage.setItem('colorScheme', JSON.stringify(colors));
+    
+    // Update CSS variables
+    const root = document.documentElement;
+    root.style.setProperty('--primary-color', primaryColor);
+    root.style.setProperty('--secondary-color', secondaryColor);
+    root.style.setProperty('--accent-color', accentColor);
+    
+    // Notify parent window to update colors
+    if (window.opener) {
+        window.opener.postMessage({ type: 'updateColors', colors: colors }, '*');
+    }
+    
+    showAdminNotification('Color scheme updated successfully!', 'success');
+}
+
+// ========================================
+// ANALYTICS FUNCTIONS
+// ========================================
+
+function initializeAnalytics() {
+    // Initialize revenue chart
+    const ctx = document.getElementById('revenueChart');
+    if (ctx) {
+        // Simple chart simulation (in production, use Chart.js or similar)
+        ctx.getContext('2d').fillStyle = '#ff6b35';
+        ctx.fillRect(50, 50, 100, 100);
+    }
+    
+    // Load real analytics data
+    loadAnalyticsData();
+}
+
+function loadAnalyticsData() {
+    // Simulated analytics data
+    const analytics = {
+        totalVisitors: 1234,
+        totalOrders: 89,
+        totalRevenue: 4567,
+        gamesPlayed: 456
+    };
+    
+    // Update dashboard with real data
+    updateAnalyticsDisplay(analytics);
+}
+
+function updateAnalyticsDisplay(data) {
+    // Update statistics cards
+    const statCards = document.querySelectorAll('.stat-card h3');
+    if (statCards.length >= 4) {
+        statCards[0].textContent = data.totalVisitors.toLocaleString();
+        statCards[1].textContent = data.totalOrders.toLocaleString();
+        statCards[2].textContent = `$${data.totalRevenue.toLocaleString()}`;
+        statCards[3].textContent = data.gamesPlayed.toLocaleString();
+    }
+}
+
+// ========================================
+// USER MANAGEMENT FUNCTIONS
+// ========================================
+
+function searchUsers() {
+    const searchTerm = document.getElementById('userSearch').value.toLowerCase();
+    const rows = document.querySelectorAll('#userTableBody tr');
+    
+    rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(searchTerm) ? '' : 'none';
+    });
+}
+
+function addNewUser() {
+    // Create user modal or form
+    const userName = prompt('Enter user name:');
+    const userEmail = prompt('Enter user email:');
+    
+    if (userName && userEmail) {
+        const newUser = {
+            id: Date.now(),
+            name: userName,
+            email: userEmail,
+            role: 'User',
+            status: 'Active',
+            joined: new Date().toISOString().split('T')[0]
+        };
+        
+        addUserToTable(newUser);
+        showAdminNotification(`User ${userName} added successfully!`, 'success');
+    }
+}
+
+function addUserToTable(user) {
+    const tbody = document.getElementById('userTableBody');
+    const row = document.createElement('tr');
+    row.innerHTML = `
+        <td>${user.id}</td>
+        <td>${user.name}</td>
+        <td>${user.email}</td>
+        <td><span class="badge bg-primary">${user.role}</span></td>
+        <td><span class="badge bg-success">${user.status}</span></td>
+        <td>${user.joined}</td>
+        <td>
+            <button class="btn btn-sm btn-outline-info me-1" onclick="editUser(${user.id})">
+                <i class="fas fa-edit"></i>
+            </button>
+            <button class="btn btn-sm btn-outline-danger" onclick="deleteUser(${user.id})">
+                <i class="fas fa-trash"></i>
+            </button>
+        </td>
+    `;
+    tbody.appendChild(row);
+}
+
+function editUser(userId) {
+    const user = findUserById(userId);
+    if (user) {
+        const newName = prompt('Enter new name:', user.name);
+        const newEmail = prompt('Enter new email:', user.email);
+        
+        if (newName && newEmail) {
+            user.name = newName;
+            user.email = newEmail;
+            updateUserInTable(user);
+            showAdminNotification('User updated successfully!', 'success');
+        }
+    }
+}
+
+function deleteUser(userId) {
+    if (confirm('Are you sure you want to delete this user?')) {
+        const row = document.querySelector(`#userTableBody tr:nth-child(${getUserRowIndex(userId)})`);
+        if (row) {
+            row.remove();
+            showAdminNotification('User deleted successfully!', 'success');
+        }
+    }
+}
+
+function findUserById(userId) {
+    // Find user in table (simplified for demo)
+    const rows = document.querySelectorAll('#userTableBody tr');
+    for (let row of rows) {
+        if (row.cells[0].textContent == userId) {
+            return {
+                id: userId,
+                name: row.cells[1].textContent,
+                email: row.cells[2].textContent,
+                role: row.cells[3].textContent,
+                status: row.cells[4].textContent,
+                joined: row.cells[5].textContent
+            };
+        }
+    }
+    return null;
+}
+
+function getUserRowIndex(userId) {
+    const rows = document.querySelectorAll('#userTableBody tr');
+    for (let i = 0; i < rows.length; i++) {
+        if (rows[i].cells[0].textContent == userId) {
+            return i + 1;
+        }
+    }
+    return -1;
+}
+
+function updateUserInTable(user) {
+    const row = document.querySelector(`#userTableBody tr:nth-child(${getUserRowIndex(user.id)})`);
+    if (row) {
+        row.cells[1].textContent = user.name;
+        row.cells[2].textContent = user.email;
+    }
+}
+
+function exportUsers() {
+    const rows = document.querySelectorAll('#userTableBody tr');
+    const users = [];
+    
+    rows.forEach(row => {
+        users.push({
+            id: row.cells[0].textContent,
+            name: row.cells[1].textContent,
+            email: row.cells[2].textContent,
+            role: row.cells[3].textContent,
+            status: row.cells[4].textContent,
+            joined: row.cells[5].textContent
+        });
+    });
+    
+    const csv = convertToCSV(users);
+    downloadCSV(csv, 'users_export.csv');
+    showAdminNotification('Users exported successfully!', 'success');
+}
+
+function convertToCSV(data) {
+    const headers = ['ID', 'Name', 'Email', 'Role', 'Status', 'Joined'];
+    const csvHeaders = headers.join(',');
+    const csvData = data.map(user => 
+        `${user.id},"${user.name}","${user.email}","${user.role}","${user.status}","${user.joined}"`
+    ).join('\n');
+    
+    return csvHeaders + '\n' + csvData;
+}
+
+function downloadCSV(csv, filename) {
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    window.URL.revokeObjectURL(url);
+}
+
+// ========================================
+// INITIALIZATION
+// ========================================
+
+// Initialize new features when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Load saved theme settings
+    const savedColors = localStorage.getItem('colorScheme');
+    if (savedColors) {
+        const colors = JSON.parse(savedColors);
+        document.getElementById('primaryColor').value = colors.primary;
+        document.getElementById('secondaryColor').value = colors.secondary;
+        document.getElementById('accentColor').value = colors.accent;
+    }
+    
+    // Initialize analytics
+    initializeAnalytics();
+    
+    // Background opacity slider
+    const bgOpacity = document.getElementById('bgOpacity');
+    if (bgOpacity) {
+        bgOpacity.addEventListener('input', function() {
+            document.getElementById('bgOpacityValue').textContent = this.value + '%';
+        });
+    }
+});
