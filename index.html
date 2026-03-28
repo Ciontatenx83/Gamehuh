@@ -537,7 +537,12 @@
                         </div>
                         <div class="mb-3">
                             <label for="loginPassword" class="form-label">Password</label>
-                            <input type="password" class="form-control" id="loginPassword" required>
+                            <div class="password-input-group">
+                                <input type="password" class="form-control" id="loginPassword" required>
+                                <button type="button" class="btn btn-outline-secondary password-toggle" onclick="togglePassword('loginPassword', this)">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
                         </div>
                         <div class="mb-3 form-check">
                             <input type="checkbox" class="form-check-input" id="rememberMe">
@@ -573,11 +578,22 @@
                         </div>
                         <div class="mb-3">
                             <label for="signupPassword" class="form-label">Password</label>
-                            <input type="password" class="form-control" id="signupPassword" required>
+                            <div class="password-input-group">
+                                <input type="password" class="form-control" id="signupPassword" required>
+                                <button type="button" class="btn btn-outline-secondary password-toggle" onclick="togglePassword('signupPassword', this)">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <div class="password-strength mt-2" id="signupPasswordStrength"></div>
                         </div>
                         <div class="mb-3">
                             <label for="signupConfirmPassword" class="form-label">Confirm Password</label>
-                            <input type="password" class="form-control" id="signupConfirmPassword" required>
+                            <div class="password-input-group">
+                                <input type="password" class="form-control" id="signupConfirmPassword" required>
+                                <button type="button" class="btn btn-outline-secondary password-toggle" onclick="togglePassword('signupConfirmPassword', this)">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
                         </div>
                         <div class="mb-3 form-check">
                             <input type="checkbox" class="form-check-input" id="agreeTerms" required>

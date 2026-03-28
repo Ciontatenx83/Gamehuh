@@ -536,6 +536,71 @@ function updateThemeIcon(theme) {
     }
 }
 
+// ========= PASSWORD FUNCTIONALITY =========
+
+// Toggle Password Visibility
+function togglePassword(inputId, button) {
+    const input = document.getElementById(inputId);
+    const icon = button.querySelector('i');
+    
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+    } else {
+        input.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+    }
+}
+
+// Check Password Strength
+function checkPasswordStrength(password) {
+    let strength = 0;
+    let feedback = '';
+    
+    // Length check
+    if (password.length >= 8) strength++;
+    if (password.length >= 12) strength++;
+    
+    // Character variety checks
+    if (/[a-z]/.test(password)) strength++;
+    if (/[A-Z]/.test(password)) strength++;
+    if (/[0-9]/.test(password)) strength++;
+    if (/[^a-zA-Z0-9]/.test(password)) strength++;
+    
+    // Determine strength level
+    if (strength <= 2) {
+        feedback = { level: 'weak', text: 'Weak password', color: '#dc3545', width: '25%' };
+    } else if (strength <= 3) {
+        feedback = { level: 'fair', text: 'Fair password', color: '#ffc107', width: '50%' };
+    } else if (strength <= 4) {
+        feedback = { level: 'good', text: 'Good password', color: '#28a745', width: '75%' };
+    } else {
+        feedback = { level: 'strong', text: 'Strong password', color: '#007bff', width: '100%' };
+    }
+    
+    return feedback;
+}
+
+// Update Password Strength Display
+function updatePasswordStrength(passwordInput, strengthContainer) {
+    const password = passwordInput.value;
+    const strength = checkPasswordStrength(password);
+    
+    if (password.length === 0) {
+        strengthContainer.innerHTML = '';
+        return;
+    }
+    
+    strengthContainer.innerHTML = `
+        <div class="password-strength">
+            <div class="password-strength-bar strength-${strength.level}" style="width: ${strength.width}; background: ${strength.color};"></div>
+        </div>
+        <div class="password-strength-text strength-${strength.level}">${strength.text}</div>
+    `;
+}
+
 // ========= USER AUTHENTICATION =========
 
 // Show Login Modal
@@ -737,6 +802,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const signupForm = document.getElementById('signupForm');
     if (signupForm) {
         signupForm.addEventListener('submit', handleSignup);
+        
+        // Add password strength checker
+        const signupPassword = document.getElementById('signupPassword');
+        const signupPasswordStrength = document.getElementById('signupPasswordStrength');
+        
+        if (signupPassword && signupPasswordStrength) {
+            signupPassword.addEventListener('input', function() {
+                updatePasswordStrength(this, signupPasswordStrength);
+            });
+        }
     }
     
     // Check for remembered user
@@ -782,7 +857,12 @@ function showAdminLoginModal() {
                                 </div>
                                 <div class="mb-3">
                                     <label for="adminPassword" class="form-label">Admin Password</label>
-                                    <input type="password" class="form-control" id="adminPassword" required>
+                                    <div class="password-input-group">
+                                        <input type="password" class="form-control" id="adminPassword" required>
+                                        <button type="button" class="btn btn-outline-secondary password-toggle" onclick="togglePassword('adminPassword', this)">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
                                 </div>
                                 <button type="submit" class="btn btn-primary w-100">Login</button>
                             </form>

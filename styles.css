@@ -161,6 +161,134 @@ body::after {
     border-color: #ff8c42 !important;
 }
 
+/* Password Input Groups */
+.password-input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-input-group .form-control {
+    padding-right: 50px;
+    border-radius: var(--glass-border-radius) !important;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 10px;
+    background: rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    color: var(--text-primary) !important;
+    border-radius: 5px;
+    padding: 5px 10px;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    z-index: 10;
+}
+
+.password-toggle:hover {
+    background: rgba(255, 107, 53, 0.2) !important;
+    border-color: #ff6b35 !important;
+    color: #ff6b35 !important;
+    transform: scale(1.05);
+}
+
+.password-toggle:focus {
+    outline: none;
+    box-shadow: 0 0 0 0.25rem rgba(255, 107, 53, 0.25);
+}
+
+/* Password Strength Indicator */
+.password-strength {
+    height: 4px;
+    border-radius: 2px;
+    background: #e9ecef;
+    overflow: hidden;
+    margin-top: 8px;
+}
+
+.password-strength-bar {
+    height: 100%;
+    transition: width 0.3s ease, background-color 0.3s ease;
+    border-radius: 2px;
+}
+
+.password-strength-text {
+    font-size: 0.8rem;
+    margin-top: 4px;
+    font-weight: 500;
+}
+
+.strength-weak {
+    background: #dc3545;
+    color: #dc3545;
+}
+
+.strength-fair {
+    background: #ffc107;
+    color: #ffc107;
+}
+
+.strength-good {
+    background: #28a745;
+    color: #28a745;
+}
+
+.strength-strong {
+    background: #007bff;
+    color: #007bff;
+}
+
+/* Enhanced Form Control Styling */
+.form-control {
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    color: var(--text-primary);
+    border-radius: var(--glass-border-radius);
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 16px var(--glass-shadow);
+}
+
+.form-control:focus {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: #ff6b35;
+    box-shadow: 0 0 20px rgba(255, 107, 53, 0.3);
+    color: var(--text-primary);
+}
+
+.form-control::placeholder {
+    color: var(--text-muted);
+    opacity: 0.8;
+}
+
+.form-label {
+    color: var(--text-primary);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+/* Modal Glassmorphism Enhancements */
+.glass-modal-content {
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--glass-border-radius);
+    box-shadow: 0 8px 32px var(--glass-shadow);
+}
+
+.glass-header {
+    border-bottom: 1px solid var(--glass-border);
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--glass-border-radius) var(--glass-border-radius) 0 0;
+}
+
+.glass-header .modal-title {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
 /* Navbar Dropdown */
 .navbar .dropdown-menu {
     background: var(--glass-bg);
