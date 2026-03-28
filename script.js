@@ -550,16 +550,30 @@ function updateThemeIcon(theme) {
 function togglePassword(inputId, button) {
     const input = document.getElementById(inputId);
     const icon = button.querySelector('i');
-    
+
     if (input.type === 'password') {
         input.type = 'text';
         icon.classList.remove('fa-eye');
         icon.classList.add('fa-eye-slash');
+        button.title = 'Hide password';
+        button.style.background = 'rgba(255, 107, 53, 0.3) !important';
+        button.style.borderColor = '#ff6b35 !important';
+        button.style.color = '#ff6b35 !important';
     } else {
         input.type = 'password';
         icon.classList.remove('fa-eye-slash');
         icon.classList.add('fa-eye');
+        button.title = 'Show password';
+        button.style.background = 'rgba(255, 255, 255, 0.1) !important';
+        button.style.borderColor = 'rgba(255, 255, 255, 0.2) !important';
+        button.style.color = 'var(--text-primary) !important';
     }
+    
+    // Add visual feedback
+    button.style.transform = 'scale(1.1)';
+    setTimeout(() => {
+        button.style.transform = 'scale(1.05)';
+    }, 150);
 }
 
 // Check Password Strength
@@ -714,7 +728,6 @@ function handleSignup(e) {
     const email = document.getElementById('signupEmail').value.trim();
     const password = document.getElementById('signupPassword').value;
     const confirmPassword = document.getElementById('signupConfirmPassword').value;
-    const agreeTerms = document.getElementById('agreeTerms').checked;
     
     // Comprehensive validation
     if (!name || !email || !password || !confirmPassword) {
@@ -740,11 +753,6 @@ function handleSignup(e) {
     // Validate passwords match
     if (password !== confirmPassword) {
         showNotification('Passwords do not match', 'error');
-        return;
-    }
-    
-    if (!agreeTerms) {
-        showNotification('Please agree to the Terms and Conditions', 'error');
         return;
     }
     
