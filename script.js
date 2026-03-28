@@ -336,7 +336,15 @@ function removeFromCart(index) {
 // Update cart badge
 function updateCartBadge() {
     const badge = document.querySelector('.badge-cart');
-    badge.textContent = cart.length;
+    if (badge) {
+        badge.textContent = cart.length;
+        // Show/hide badge based on cart content
+        if (cart.length > 0) {
+            badge.style.display = 'inline-block';
+        } else {
+            badge.style.display = 'none';
+        }
+    }
 }
 
 // Save cart to localStorage
@@ -971,6 +979,7 @@ function stopBackgroundRotation() {
     if (rotationInterval) {
         clearInterval(rotationInterval);
         rotationInterval = null;
+        console.log('Background rotation stopped');
     }
 }
 
