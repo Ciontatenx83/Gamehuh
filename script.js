@@ -97,12 +97,13 @@ function loadGamesFromStorage() {
     ];
 }
 
+// Initialize games from localStorage
+let games = loadGamesFromStorage();
+
+// Save games to localStorage
 function saveGamesToStorage() {
     localStorage.setItem('gameHubGames', JSON.stringify(games));
 }
-
-// Initialize games from localStorage
-let games = loadGamesFromStorage();
 
 
 let cart = [];
@@ -111,11 +112,11 @@ let currentGameForModal = null;
 // Initialize the page
 document.addEventListener('DOMContentLoaded', function() {
     initializeTheme();
+    loadCartFromStorage(); // Load cart
+    updateCartBadge(); // Update cart badge
     displayFeaturedGames();
     displayAllGames();
     setupEventListeners();
-    loadCartFromStorage();
-    updateCartBadge();
 });
 
 // Display featured games
@@ -866,112 +867,128 @@ function loadAdminTabContent(tabId) {
 
 // Load Dashboard Content
 function loadDashboardContent() {
-    const dashboardTab = document.querySelector('#dashboardTab .tab-content');
-    if (dashboardTab && !dashboardTab.innerHTML.includes('stat-card')) {
-        dashboardTab.innerHTML = `
-            <div class="row">
-                <div class="col-md-3">
-                    <div class="stat-card text-center">
-                        <h4><i class="fas fa-users text-primary"></i></h4>
-                        <h3>1,234</h3>
-                        <p class="text-muted">Total Users</p>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="stat-card text-center">
-                        <h4><i class="fas fa-gamepad text-success"></i></h4>
-                        <h3>45</h3>
-                        <p class="text-muted">Total Games</p>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="stat-card text-center">
-                        <h4><i class="fas fa-shopping-cart text-warning"></i></h4>
-                        <h3>89</h3>
-                        <p class="text-muted">Total Orders</p>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="stat-card text-center">
-                        <h4><i class="fas fa-dollar-sign text-info"></i></h4>
-                        <h3>$4,567</h3>
-                        <p class="text-muted">Revenue</p>
-                    </div>
-                </div>
-            </div>
-        `;
+    const dashboardTab = document.querySelector('#dashboardTab');
+    if (dashboardTab) {
+        // Update total games count
+        const totalGamesElement = document.getElementById('totalGamesCount');
+        if (totalGamesElement) {
+            totalGamesElement.textContent = games.filter(g => !g.hidden).length;
+        }
     }
 }
 
 // Load Add Game Content
 function loadAddGameContent() {
-    // Add game form content
-    const addGameTab = document.querySelector('#addGameTab .tab-content');
-    if (addGameTab && !addGameTab.innerHTML.includes('gameName')) {
-        addGameTab.innerHTML = `
-            <form id="addGameForm">
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label for="gameName" class="form-label">Game Name</label>
-                        <input type="text" class="form-control" id="gameName" required>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label for="gameGenre" class="form-label">Genre</label>
-                        <select class="form-select" id="gameGenre" required>
-                            <option value="">Select Genre</option>
-                            <option value="action">Action</option>
-                            <option value="adventure">Adventure</option>
-                            <option value="rpg">RPG</option>
-                            <option value="puzzle">Puzzle</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label for="gamePrice" class="form-label">Price</label>
-                        <input type="number" class="form-control" id="gamePrice" step="0.01" required>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label for="gameImage" class="form-label">Image URL</label>
-                        <input type="url" class="form-control" id="gameImage">
-                    </div>
-                </div>
-                <div class="mb-3">
-                    <label for="gameDescription" class="form-label">Description</label>
-                    <textarea class="form-control" id="gameDescription" rows="3" required></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary">Add Game</button>
-            </form>
-        `;
-        
-        // Add event listener for add game form
-        document.getElementById('addGameForm').addEventListener('submit', handleAddGame);
+    // The form already exists in HTML, just add event listener if needed
+    const addGameForm = document.getElementById('addGameForm');
+    if (addGameForm && !addGameForm.hasAttribute('data-listener')) {
+        addGameForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            handleAddGameFromForm();
+        });
+        addGameForm.setAttribute('data-listener', 'true');
     }
+}
+
+// Handle Add Game from Form
+function handleAddGameFromForm() {
+    const gameData = {
+        name: document.getElementById('gameTitle').value,
+        category: document.getElementById('gameCategory').value,
+        price: parseFloat(document.getElementById('gamePrice').value),
+        image: document.getElementById('gameImage')?.value || 'https://via.placeholder.com/300x200?text=New+Game',
+        description: document.getElementById('gameDescription')?.value || 'New game description',
+        developer: document.getElementById('gameDeveloper')?.value || 'Unknown Developer',
+        hidden: false
+    };
+    
+    gameData.id = Date.now();
+    games.push(gameData);
+    saveGamesToStorage();
+    
+    // Reset form
+    document.getElementById('addGameForm').reset();
+    
+    // Refresh displays
+    displayFeaturedGames();
+    displayAllGames();
+    loadDashboardContent();
+    
+    showNotification('Game added successfully!', 'success');
 }
 
 // Load Manage Games Content
 function loadManageGamesContent() {
-    const manageGamesTab = document.querySelector('#manageGamesTab .tab-content');
-    if (manageGamesTab && !manageGamesTab.innerHTML.includes('gamesTable')) {
-        manageGamesTab.innerHTML = `
-            <div class="table-responsive">
-                <table class="table table-dark table-hover">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Genre</th>
-                            <th>Price</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="gamesTableBody">
-                        <!-- Games will be loaded here -->
-                    </tbody>
-                </table>
-            </div>
-        `;
-        loadGamesTable();
+    const manageGamesTab = document.querySelector('#manageGamesTab');
+    if (manageGamesTab) {
+        const tableBody = manageGamesTab.querySelector('#adminGamesTableBody');
+        if (tableBody) {
+            tableBody.innerHTML = games.map(game => `
+                <tr>
+                    <td>${game.id}</td>
+                    <td>${game.name}</td>
+                    <td>${game.category}</td>
+                    <td>$${game.price}</td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary" onclick="editAdminGame(${game.id})">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="toggleGameVisibility(${game.id})">
+                            <i class="fas fa-eye${game.hidden ? '-slash' : ''}"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteAdminGame(${game.id})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+    }
+}
+
+// Edit Admin Game
+function editAdminGame(gameId) {
+    const game = games.find(g => g.id === gameId);
+    if (game) {
+        // Populate the add game form
+        document.getElementById('gameTitle').value = game.name;
+        document.getElementById('gameCategory').value = game.category;
+        document.getElementById('gamePrice').value = game.price;
+        document.getElementById('gameImage').value = game.image;
+        document.getElementById('gameDescription').value = game.description;
+        document.getElementById('gameDeveloper').value = game.developer;
+        
+        // Switch to add game tab
+        const addGameTabBtn = document.querySelector('[data-bs-target="#addGameTab"]');
+        if (addGameTabBtn) {
+            addGameTabBtn.click();
+        }
+    }
+}
+
+// Toggle Game Visibility
+function toggleGameVisibility(gameId) {
+    const game = games.find(g => g.id === gameId);
+    if (game) {
+        game.hidden = !game.hidden;
+        saveGamesToStorage();
+        displayFeaturedGames();
+        displayAllGames();
+        loadManageGamesContent();
+        showNotification(`Game ${game.hidden ? 'hidden' : 'shown'} successfully!`, 'success');
+    }
+}
+
+// Delete Admin Game
+function deleteAdminGame(gameId) {
+    if (confirm('Are you sure you want to delete this game?')) {
+        games = games.filter(g => g.id !== gameId);
+        saveGamesToStorage();
+        displayFeaturedGames();
+        displayAllGames();
+        loadManageGamesContent();
+        loadDashboardContent();
+        showNotification('Game deleted successfully!', 'success');
     }
 }
 
@@ -1050,11 +1067,10 @@ function handleAddGame(e) {
         description: document.getElementById('gameDescription').value
     };
     
-    // Add game to localStorage
-    let games = JSON.parse(localStorage.getItem('games') || '[]');
+    // Add game to existing games array
     gameData.id = Date.now();
     games.push(gameData);
-    localStorage.setItem('games', JSON.stringify(games));
+    saveGamesToStorage(); // Use the main games storage
     
     // Reset form
     document.getElementById('addGameForm').reset();
@@ -1070,12 +1086,11 @@ function handleAddGame(e) {
 function loadGamesTable() {
     const tbody = document.getElementById('gamesTableBody');
     if (tbody) {
-        const games = JSON.parse(localStorage.getItem('games') || '[]');
         tbody.innerHTML = games.map(game => `
             <tr>
                 <td>${game.id}</td>
                 <td>${game.name}</td>
-                <td>${game.genre}</td>
+                <td>${game.genre || game.category}</td>
                 <td>$${game.price}</td>
                 <td>
                     <button class="btn btn-sm btn-outline-primary" onclick="editGame(${game.id})">
@@ -1113,9 +1128,8 @@ function editGame(gameId) {
 // Delete Game
 function deleteGame(gameId) {
     if (confirm('Are you sure you want to delete this game?')) {
-        let games = JSON.parse(localStorage.getItem('games') || '[]');
         games = games.filter(g => g.id !== gameId);
-        localStorage.setItem('games', JSON.stringify(games));
+        saveGamesToStorage(); // Use the main games storage
         loadGamesTable();
         showNotification('Game deleted successfully!', 'success');
     }

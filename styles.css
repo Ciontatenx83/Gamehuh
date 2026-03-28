@@ -130,6 +130,56 @@ body::after {
     margin-right: 0.75rem;
 }
 
+/* Navbar Buttons Styling */
+.navbar .btn {
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    color: var(--text-primary) !important;
+    border-radius: var(--glass-border-radius);
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 16px var(--glass-shadow);
+}
+
+.navbar .btn:hover {
+    background: rgba(255, 107, 53, 0.2);
+    border-color: #ff6b35;
+    box-shadow: 0 8px 32px rgba(255, 107, 53, 0.3);
+    transform: translateY(-2px);
+}
+
+.navbar .btn-primary {
+    background: #ff6b35 !important;
+    border-color: #ff6b35 !important;
+    color: white !important;
+}
+
+.navbar .btn-primary:hover {
+    background: #ff8c42 !important;
+    border-color: #ff8c42 !important;
+}
+
+/* Navbar Dropdown */
+.navbar .dropdown-menu {
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--glass-border-radius);
+    box-shadow: 0 8px 32px var(--glass-shadow);
+}
+
+.navbar .dropdown-item {
+    color: var(--text-primary) !important;
+    transition: all 0.3s ease;
+}
+
+.navbar .dropdown-item:hover {
+    background: rgba(255, 107, 53, 0.1);
+    color: #ff6b35 !important;
+}
+
 .nav-link {
     color: var(--text-primary) !important;
     font-weight: 600;
