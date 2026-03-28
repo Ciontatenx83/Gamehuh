@@ -30,9 +30,14 @@
                             <i class="fas fa-shopping-cart"></i> Cart <span class="badge badge-cart" style="display:none;">0</span>
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <button class="btn btn-sm btn-outline-light" onclick="showLoginModal()">
+                            <i class="fas fa-sign-in-alt"></i> Log In
+                        </button>
+                    </li>
                     <li class="nav-item ms-2">
-                        <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark/light mode">
-                            <i class="fas fa-moon"></i>
+                        <button class="btn btn-sm btn-primary" onclick="showSignupModal()">
+                            <i class="fas fa-user-plus"></i> Sign Up
                         </button>
                     </li>
                 </ul>
@@ -41,7 +46,7 @@
     </nav>
 
     <!-- Admin Secret Entry Point (Hidden Icon at bottom-right) -->
-    <div class="admin-trigger-hint" onclick="openAdminDashboard()">
+    <div class="admin-trigger-hint" onclick="openAdminPanel()">
         <i class="fas fa-lock"></i>
     </div>
 
@@ -515,6 +520,80 @@
             <p class="text-center footer-copyright">&copy; 2024 GameHub. All rights reserved. | Developed with <i class="fas fa-heart"></i> for gamers</p>
         </div>
     </footer>
+
+    <!-- Login Modal -->
+    <div class="modal fade" id="loginModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="glass-modal-content">
+                <div class="modal-header glass-header">
+                    <h5 class="modal-title"><i class="fas fa-sign-in-alt"></i> Login</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="loginForm">
+                        <div class="mb-3">
+                            <label for="loginEmail" class="form-label">Email Address</label>
+                            <input type="email" class="form-control" id="loginEmail" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="loginPassword" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="loginPassword" required>
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="rememberMe">
+                            <label class="form-check-label" for="rememberMe">Remember me</label>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Login</button>
+                    </form>
+                    <div class="text-center mt-3">
+                        <p>Don't have an account? <a href="#" onclick="switchToSignup()">Sign Up</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Signup Modal -->
+    <div class="modal fade" id="signupModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="glass-modal-content">
+                <div class="modal-header glass-header">
+                    <h5 class="modal-title"><i class="fas fa-user-plus"></i> Sign Up</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="signupForm">
+                        <div class="mb-3">
+                            <label for="signupName" class="form-label">Full Name</label>
+                            <input type="text" class="form-control" id="signupName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="signupEmail" class="form-label">Email Address</label>
+                            <input type="email" class="form-control" id="signupEmail" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="signupPassword" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="signupPassword" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="signupConfirmPassword" class="form-label">Confirm Password</label>
+                            <input type="password" class="form-control" id="signupConfirmPassword" required>
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="agreeTerms" required>
+                            <label class="form-check-label" for="agreeTerms">
+                                I agree to the <a href="#" onclick="showTerms()">Terms and Conditions</a>
+                            </label>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Sign Up</button>
+                    </form>
+                    <div class="text-center mt-3">
+                        <p>Already have an account? <a href="#" onclick="switchToLogin()">Login</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Admin Office Modal -->
     <div class="modal fade" id="adminOfficeModal" tabindex="-1" data-bs-backdrop="static">

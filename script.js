@@ -535,21 +535,628 @@ function updateThemeIcon(theme) {
     }
 }
 
+// ========= USER AUTHENTICATION =========
+
+// Show Login Modal
+function showLoginModal() {
+    const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+    loginModal.show();
+}
+
+// Show Signup Modal
+function showSignupModal() {
+    const signupModal = new bootstrap.Modal(document.getElementById('signupModal'));
+    signupModal.show();
+}
+
+// Switch to Signup
+function switchToSignup() {
+    const loginModal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
+    loginModal.hide();
+    showSignupModal();
+}
+
+// Switch to Login
+function switchToLogin() {
+    const signupModal = bootstrap.Modal.getInstance(document.getElementById('signupModal'));
+    signupModal.hide();
+    showLoginModal();
+}
+
+// Handle Login
+function handleLogin(e) {
+    e.preventDefault();
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
+    const rememberMe = document.getElementById('rememberMe').checked;
+    
+    // Get users from localStorage
+    const users = JSON.parse(localStorage.getItem('users') || '[]');
+    const user = users.find(u => u.email === email && u.password === password);
+    
+    if (user) {
+        // Set current user
+        localStorage.setItem('currentUser', JSON.stringify(user));
+        if (rememberMe) {
+            localStorage.setItem('rememberUser', 'true');
+        }
+        
+        // Update navbar
+        updateUserNavbar();
+        
+        // Close modal
+        const loginModal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
+        loginModal.hide();
+        
+        // Reset form
+        document.getElementById('loginForm').reset();
+        
+        showNotification('Login successful!', 'success');
+    } else {
+        showNotification('Invalid email or password', 'error');
+    }
+}
+
+// Handle Signup
+function handleSignup(e) {
+    e.preventDefault();
+    const name = document.getElementById('signupName').value;
+    const email = document.getElementById('signupEmail').value;
+    const password = document.getElementById('signupPassword').value;
+    const confirmPassword = document.getElementById('signupConfirmPassword').value;
+    const agreeTerms = document.getElementById('agreeTerms').checked;
+    
+    // Validate passwords match
+    if (password !== confirmPassword) {
+        showNotification('Passwords do not match', 'error');
+        return;
+    }
+    
+    // Check if user already exists
+    const users = JSON.parse(localStorage.getItem('users') || '[]');
+    if (users.find(u => u.email === email)) {
+        showNotification('User with this email already exists', 'error');
+        return;
+    }
+    
+    // Create new user
+    const newUser = {
+        id: Date.now(),
+        name: name,
+        email: email,
+        password: password, // In production, hash this
+        role: 'user',
+        status: 'active',
+        joined: new Date().toISOString().split('T')[0]
+    };
+    
+    users.push(newUser);
+    localStorage.setItem('users', JSON.stringify(users));
+    
+    // Auto-login after signup
+    localStorage.setItem('currentUser', JSON.stringify(newUser));
+    updateUserNavbar();
+    
+    // Close modal
+    const signupModal = bootstrap.Modal.getInstance(document.getElementById('signupModal'));
+    signupModal.hide();
+    
+    // Reset form
+    document.getElementById('signupForm').reset();
+    
+    showNotification('Account created successfully!', 'success');
+}
+
+// Update User Navbar
+function updateUserNavbar() {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+    const navbar = document.querySelector('.navbar-nav.ms-auto');
+    
+    if (currentUser) {
+        // Show user menu
+        navbar.innerHTML = `
+            <li class="nav-item"><a class="nav-link" href="#games">Games</a></li>
+            <li class="nav-item"><a class="nav-link" href="#categories">Categories</a></li>
+            <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+            <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+            <li class="nav-item">
+                <a class="nav-link cart-link" href="#" onclick="openCartModal(event)">
+                    <i class="fas fa-shopping-cart"></i> Cart <span class="badge badge-cart" style="display:none;">0</span>
+                </a>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                    <i class="fas fa-user"></i> ${currentUser.name}
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#"><i class="fas fa-user"></i> Profile</a></li>
+                    <li><a class="dropdown-item" href="#"><i class="fas fa-cog"></i> Settings</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                </ul>
+            </li>
+        `;
+    } else {
+        // Show login/signup buttons
+        navbar.innerHTML = `
+            <li class="nav-item"><a class="nav-link" href="#games">Games</a></li>
+            <li class="nav-item"><a class="nav-link" href="#categories">Categories</a></li>
+            <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+            <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+            <li class="nav-item">
+                <a class="nav-link cart-link" href="#" onclick="openCartModal(event)">
+                    <i class="fas fa-shopping-cart"></i> Cart <span class="badge badge-cart" style="display:none;">0</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <button class="btn btn-sm btn-outline-light" onclick="showLoginModal()">
+                    <i class="fas fa-sign-in-alt"></i> Log In
+                </button>
+            </li>
+            <li class="nav-item ms-2">
+                <button class="btn btn-sm btn-primary" onclick="showSignupModal()">
+                    <i class="fas fa-user-plus"></i> Sign Up
+                </button>
+            </li>
+        `;
+    }
+}
+
+// Logout
+function logout() {
+    localStorage.removeItem('currentUser');
+    localStorage.removeItem('rememberUser');
+    updateUserNavbar();
+    showNotification('Logged out successfully', 'info');
+}
+
+// Show Terms
+function showTerms() {
+    alert('Terms and Conditions:\n\n1. You must be 13+ years old to use this service.\n2. You are responsible for your account security.\n3. All purchases are final.\n4. We reserve the right to terminate accounts for violations.\n5. Privacy is important to us - see our Privacy Policy.');
+}
+
+// Check for remembered user on page load
+function checkRememberedUser() {
+    const rememberUser = localStorage.getItem('rememberUser');
+    const currentUser = localStorage.getItem('currentUser');
+    
+    if (rememberUser === 'true' && currentUser) {
+        updateUserNavbar();
+    }
+}
+
+// Initialize authentication
+document.addEventListener('DOMContentLoaded', function() {
+    // Add event listeners for login/signup forms
+    const loginForm = document.getElementById('loginForm');
+    if (loginForm) {
+        loginForm.addEventListener('submit', handleLogin);
+    }
+    
+    const signupForm = document.getElementById('signupForm');
+    if (signupForm) {
+        signupForm.addEventListener('submit', handleSignup);
+    }
+    
+    // Check for remembered user
+    checkRememberedUser();
+});
+
 // ========= ADMIN DASHBOARD =========
 const ADMIN_PASSWORD = 'Ciontaten83x';
 let adminAuthenticated = false;
 
-// Open Admin Dashboard in separate window
-function openAdminDashboard() {
+// Open Admin Panel in current site
+function openAdminPanel() {
     // Check if already authenticated
     const token = localStorage.getItem('adminToken');
     if (token) {
-        // Open admin dashboard in new window
-        window.open('/admin.html', '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+        // Open admin panel in modal within current site
+        const adminModal = new bootstrap.Modal(document.getElementById('adminOfficeModal'));
+        adminModal.show();
+        loadAdminDashboard();
     } else {
-        // Redirect to admin login
-        window.open('/admin-login.html', '_blank', 'width=500,height=600,scrollbars=yes,resizable=yes');
+        // Redirect to admin login in modal
+        showAdminLoginModal();
     }
+}
+
+// Show Admin Login Modal
+function showAdminLoginModal() {
+    // Create admin login modal if it doesn't exist
+    if (!document.getElementById('adminLoginModal')) {
+        const modalHtml = `
+            <div class="modal fade" id="adminLoginModal" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="glass-modal-content">
+                        <div class="modal-header glass-header">
+                            <h5 class="modal-title"><i class="fas fa-lock"></i> Admin Login</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="adminLoginForm">
+                                <div class="mb-3">
+                                    <label for="adminEmail" class="form-label">Admin Email</label>
+                                    <input type="email" class="form-control" id="adminEmail" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="adminPassword" class="form-label">Admin Password</label>
+                                    <input type="password" class="form-control" id="adminPassword" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100">Login</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+        
+        // Add event listener for admin login form
+        document.getElementById('adminLoginForm').addEventListener('submit', handleAdminLogin);
+    }
+    
+    const adminLoginModal = new bootstrap.Modal(document.getElementById('adminLoginModal'));
+    adminLoginModal.show();
+}
+
+// Handle Admin Login
+function handleAdminLogin(e) {
+    e.preventDefault();
+    const email = document.getElementById('adminEmail').value;
+    const password = document.getElementById('adminPassword').value;
+    
+    // Simple authentication (in production, use proper authentication)
+    if (password === 'Ciontaten83x') {
+        // Set admin token
+        localStorage.setItem('adminToken', 'admin_authenticated');
+        localStorage.setItem('adminEmail', email);
+        
+        // Close login modal
+        const loginModal = bootstrap.Modal.getInstance(document.getElementById('adminLoginModal'));
+        loginModal.hide();
+        
+        // Open admin panel
+        openAdminPanel();
+        showNotification('Admin login successful!', 'success');
+    } else {
+        showNotification('Invalid admin credentials', 'error');
+    }
+}
+
+// Load Admin Dashboard
+function loadAdminDashboard() {
+    // Load admin data and initialize dashboard
+    initializeAdminTabs();
+    loadAdminData();
+}
+
+// Initialize Admin Tabs
+function initializeAdminTabs() {
+    // Add event listeners for admin tabs
+    const adminTabs = document.querySelectorAll('[data-bs-toggle="tab"]');
+    adminTabs.forEach(tab => {
+        tab.addEventListener('shown.bs.tab', function (e) {
+            const target = e.target.getAttribute('data-bs-target');
+            loadAdminTabContent(target);
+        });
+    });
+}
+
+// Load Admin Tab Content
+function loadAdminTabContent(tabId) {
+    switch(tabId) {
+        case '#dashboardTab':
+            loadDashboardContent();
+            break;
+        case '#addGameTab':
+            loadAddGameContent();
+            break;
+        case '#manageGamesTab':
+            loadManageGamesContent();
+            break;
+        case '#analyticsTab':
+            loadAnalyticsContent();
+            break;
+        case '#themeSettingsTab':
+            loadThemeSettingsContent();
+            break;
+    }
+}
+
+// Load Dashboard Content
+function loadDashboardContent() {
+    const dashboardTab = document.querySelector('#dashboardTab .tab-content');
+    if (dashboardTab && !dashboardTab.innerHTML.includes('stat-card')) {
+        dashboardTab.innerHTML = `
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="stat-card text-center">
+                        <h4><i class="fas fa-users text-primary"></i></h4>
+                        <h3>1,234</h3>
+                        <p class="text-muted">Total Users</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card text-center">
+                        <h4><i class="fas fa-gamepad text-success"></i></h4>
+                        <h3>45</h3>
+                        <p class="text-muted">Total Games</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card text-center">
+                        <h4><i class="fas fa-shopping-cart text-warning"></i></h4>
+                        <h3>89</h3>
+                        <p class="text-muted">Total Orders</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card text-center">
+                        <h4><i class="fas fa-dollar-sign text-info"></i></h4>
+                        <h3>$4,567</h3>
+                        <p class="text-muted">Revenue</p>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+}
+
+// Load Add Game Content
+function loadAddGameContent() {
+    // Add game form content
+    const addGameTab = document.querySelector('#addGameTab .tab-content');
+    if (addGameTab && !addGameTab.innerHTML.includes('gameName')) {
+        addGameTab.innerHTML = `
+            <form id="addGameForm">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="gameName" class="form-label">Game Name</label>
+                        <input type="text" class="form-control" id="gameName" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="gameGenre" class="form-label">Genre</label>
+                        <select class="form-select" id="gameGenre" required>
+                            <option value="">Select Genre</option>
+                            <option value="action">Action</option>
+                            <option value="adventure">Adventure</option>
+                            <option value="rpg">RPG</option>
+                            <option value="puzzle">Puzzle</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="gamePrice" class="form-label">Price</label>
+                        <input type="number" class="form-control" id="gamePrice" step="0.01" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="gameImage" class="form-label">Image URL</label>
+                        <input type="url" class="form-control" id="gameImage">
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="gameDescription" class="form-label">Description</label>
+                    <textarea class="form-control" id="gameDescription" rows="3" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Add Game</button>
+            </form>
+        `;
+        
+        // Add event listener for add game form
+        document.getElementById('addGameForm').addEventListener('submit', handleAddGame);
+    }
+}
+
+// Load Manage Games Content
+function loadManageGamesContent() {
+    const manageGamesTab = document.querySelector('#manageGamesTab .tab-content');
+    if (manageGamesTab && !manageGamesTab.innerHTML.includes('gamesTable')) {
+        manageGamesTab.innerHTML = `
+            <div class="table-responsive">
+                <table class="table table-dark table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Genre</th>
+                            <th>Price</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="gamesTableBody">
+                        <!-- Games will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        `;
+        loadGamesTable();
+    }
+}
+
+// Load Analytics Content
+function loadAnalyticsContent() {
+    const analyticsTab = document.querySelector('#analyticsTab .tab-content');
+    if (analyticsTab && !analyticsTab.innerHTML.includes('analyticsChart')) {
+        analyticsTab.innerHTML = `
+            <div class="row">
+                <div class="col-md-8">
+                    <h5>Revenue Chart</h5>
+                    <canvas id="analyticsChart" style="height: 300px;"></canvas>
+                </div>
+                <div class="col-md-4">
+                    <h5>Recent Activity</h5>
+                    <div class="activity-log">
+                        <div class="activity-item">
+                            <i class="fas fa-shopping-cart"></i> New order received
+                        </div>
+                        <div class="activity-item">
+                            <i class="fas fa-user"></i> New user registered
+                        </div>
+                        <div class="activity-item">
+                            <i class="fas fa-gamepad"></i> Game downloaded
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+}
+
+// Load Theme Settings Content
+function loadThemeSettingsContent() {
+    const themeSettingsTab = document.querySelector('#themeSettingsTab .tab-content');
+    if (themeSettingsTab && !themeSettingsTab.innerHTML.includes('bgImageUrl')) {
+        themeSettingsTab.innerHTML = `
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Background Settings</h5>
+                    <div class="mb-3">
+                        <label for="bgImageUrl" class="form-label">Background Image URL</label>
+                        <input type="url" class="form-control" id="bgImageUrl">
+                    </div>
+                    <div class="mb-3">
+                        <label for="bgOpacity" class="form-label">Background Opacity</label>
+                        <input type="range" class="form-range" id="bgOpacity" min="0" max="100" value="60">
+                    </div>
+                    <button class="btn btn-primary" onclick="updateThemeBackground()">Update Background</button>
+                </div>
+                <div class="col-md-6">
+                    <h5>Color Settings</h5>
+                    <div class="mb-3">
+                        <label for="primaryColor" class="form-label">Primary Color</label>
+                        <input type="color" class="form-control form-control-color" id="primaryColor" value="#ff6b35">
+                    </div>
+                    <div class="mb-3">
+                        <label for="secondaryColor" class="form-label">Secondary Color</label>
+                        <input type="color" class="form-control form-control-color" id="secondaryColor" value="#1e3a8a">
+                    </div>
+                    <button class="btn btn-primary" onclick="updateThemeColors()">Update Colors</button>
+                </div>
+            </div>
+        `;
+    }
+}
+
+// Handle Add Game
+function handleAddGame(e) {
+    e.preventDefault();
+    const gameData = {
+        name: document.getElementById('gameName').value,
+        genre: document.getElementById('gameGenre').value,
+        price: parseFloat(document.getElementById('gamePrice').value),
+        image: document.getElementById('gameImage').value,
+        description: document.getElementById('gameDescription').value
+    };
+    
+    // Add game to localStorage
+    let games = JSON.parse(localStorage.getItem('games') || '[]');
+    gameData.id = Date.now();
+    games.push(gameData);
+    localStorage.setItem('games', JSON.stringify(games));
+    
+    // Reset form
+    document.getElementById('addGameForm').reset();
+    
+    // Show success message
+    showNotification('Game added successfully!', 'success');
+    
+    // Refresh games table if visible
+    loadGamesTable();
+}
+
+// Load Games Table
+function loadGamesTable() {
+    const tbody = document.getElementById('gamesTableBody');
+    if (tbody) {
+        const games = JSON.parse(localStorage.getItem('games') || '[]');
+        tbody.innerHTML = games.map(game => `
+            <tr>
+                <td>${game.id}</td>
+                <td>${game.name}</td>
+                <td>${game.genre}</td>
+                <td>$${game.price}</td>
+                <td>
+                    <button class="btn btn-sm btn-outline-primary" onclick="editGame(${game.id})">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger" onclick="deleteGame(${game.id})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
+        `).join('');
+    }
+}
+
+// Edit Game
+function editGame(gameId) {
+    const games = JSON.parse(localStorage.getItem('games') || '[]');
+    const game = games.find(g => g.id === gameId);
+    if (game) {
+        // Populate form with game data
+        document.getElementById('gameName').value = game.name;
+        document.getElementById('gameGenre').value = game.genre;
+        document.getElementById('gamePrice').value = game.price;
+        document.getElementById('gameImage').value = game.image || '';
+        document.getElementById('gameDescription').value = game.description;
+        
+        // Switch to add game tab
+        const addGameTab = document.querySelector('[data-bs-target="#addGameTab"]');
+        if (addGameTab) {
+            addGameTab.click();
+        }
+    }
+}
+
+// Delete Game
+function deleteGame(gameId) {
+    if (confirm('Are you sure you want to delete this game?')) {
+        let games = JSON.parse(localStorage.getItem('games') || '[]');
+        games = games.filter(g => g.id !== gameId);
+        localStorage.setItem('games', JSON.stringify(games));
+        loadGamesTable();
+        showNotification('Game deleted successfully!', 'success');
+    }
+}
+
+// Update Theme Background
+function updateThemeBackground() {
+    const imageUrl = document.getElementById('bgImageUrl').value;
+    const opacity = document.getElementById('bgOpacity').value;
+    
+    if (imageUrl) {
+        setBackgroundImage(imageUrl);
+        document.body.style.setProperty('--bg-opacity', opacity / 100);
+        showNotification('Background updated successfully!', 'success');
+    }
+}
+
+// Update Theme Colors
+function updateThemeColors() {
+    const primaryColor = document.getElementById('primaryColor').value;
+    const secondaryColor = document.getElementById('secondaryColor').value;
+    
+    document.documentElement.style.setProperty('--primary-color', primaryColor);
+    document.documentElement.style.setProperty('--secondary-color', secondaryColor);
+    
+    showNotification('Colors updated successfully!', 'success');
+}
+
+// Exit Admin Panel
+function exitAdminPanel() {
+    const adminModal = bootstrap.Modal.getInstance(document.getElementById('adminOfficeModal'));
+    if (adminModal) {
+        adminModal.hide();
+    }
+}
+
+// Load Admin Data
+function loadAdminData() {
+    // Load all admin data
+    loadDashboardContent();
+    loadGamesTable();
 }
 
 // Background Image Management
