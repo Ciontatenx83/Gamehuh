@@ -3,13 +3,16 @@
    ============================================= */
 
 :root {
-    --primary-color: #0d6efd;
-    --secondary-color: #6c757d;
-    --accent-color: #f59e0b;
+    --primary-color: #ff6b35; /* Orange */
+    --secondary-color: #1e3a8a; /* Dark Blue */
+    --accent-color: #ff8c42; /* Light Orange */
     --success-color: #10b981;
     --danger-color: #ef4444;
-    --text-light: #f1f5f9;
-    --text-muted: #64748b;
+    --text-light: #ffffff; /* White */
+    --text-muted: #f1f5f9;
+    --neon-blue: #1e3a8a; /* Dark Blue */
+    --neon-purple: #ff6b35; /* Orange */
+    --neon-pink: #ff8c42; /* Light Orange */
 }
 
 /* Dark Mode (Default) */
@@ -17,16 +20,16 @@
 [data-theme="dark"] {
     --dark-bg: #0f172a;
     --card-bg: #1e293b;
-    --text-primary: #f8fafc;
-    --text-secondary: #e2e8f0;
-    --text-light: rgba(255, 255, 255, 0.9);
+    --text-primary: #ffffff; /* White */
+    --text-secondary: #f1f5f9; /* Light Blue-White */
+    --text-light: rgba(255, 255, 255, 0.95); /* White */
     --border-color: rgba(255, 255, 255, 0.2);
     --border-light: #334155;
     --hero-bg-start: #1e293b;
-    --hero-bg-end: #0f172a;
+    --hero-bg-end: #1e3a8a; /* Dark Blue */
     --section-bg: #1e293b;
-    --footer-bg-start: #0f172a;
-    --footer-bg-end: #1a1f35;
+    --footer-bg-start: #1e3a8a; /* Dark Blue */
+    --footer-bg-end: #0f172a;
     --form-bg: #334155;
     --form-border: #475569;
     --form-focus-bg: #475569;
@@ -36,19 +39,19 @@
 [data-theme="light"] {
     --dark-bg: #ffffff;
     --card-bg: #f8f9fa;
-    --text-primary: #0f172a;
-    --text-secondary: #1e293b;
-    --text-light: rgba(0, 0, 0, 0.8);
-    --border-color: rgba(0, 0, 0, 0.12);
-    --border-light: #d1d5db;
-    --hero-bg-start: #e8ecf1;
-    --hero-bg-end: #0d6efd;
+    --text-primary: #1e3a8a; /* Dark Blue */
+    --text-secondary: #ff6b35; /* Orange */
+    --text-light: rgba(30, 58, 138, 0.9); /* Dark Blue */
+    --border-color: rgba(255, 107, 53, 0.2); /* Orange */
+    --border-light: #ff6b35; /* Orange */
+    --hero-bg-start: #f8f9fa;
+    --hero-bg-end: #ff6b35; /* Orange */
     --section-bg: #f5f5f5;
-    --footer-bg-start: #e8ecf1;
-    --footer-bg-end: #d1d5db;
+    --footer-bg-start: #ff6b35; /* Orange */
+    --footer-bg-end: #1e3a8a; /* Dark Blue */
     --form-bg: #ffffff;
-    --form-border: #d1d5db;
-    --form-focus-bg: #f3f4f6;
+    --form-border: #ff6b35; /* Orange */
+    --form-focus-bg: #fff5f0; /* Light Orange */
 }
 
 /* General Styles */
@@ -79,10 +82,10 @@ body {
    ============================================= */
 
 .navbar {
-    background: rgba(15, 23, 42, 0.85);
+    background: rgba(30, 58, 138, 0.85); /* Dark Blue */
     backdrop-filter: blur(20px);
-    border-bottom: 2px solid var(--neon-blue);
-    box-shadow: 0 8px 32px rgba(0, 212, 255, 0.1);
+    border-bottom: 2px solid #ff6b35; /* Orange */
+    box-shadow: 0 8px 32px rgba(255, 107, 53, 0.1);
     padding: 1rem 0;
 }
 
@@ -100,7 +103,7 @@ body {
 }
 
 [data-theme="light"] .navbar-brand {
-    color: #0f172a !important;
+    color: #1e3a8a !important; /* Dark Blue */
     font-weight: 700;
     text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
 }
@@ -129,7 +132,8 @@ body {
 }
 
 .nav-link:hover {
-    color: var(--neon-blue) !important;
+    color: #ff8c42 !important; /* Light Orange */
+    text-shadow: 0 0 8px rgba(255, 140, 66, 0.5);
 }
 
 .nav-link:hover::after {
@@ -178,7 +182,7 @@ body {
    ============================================= */
 
 .hero-section {
-    background: linear-gradient(135deg, #1e293b 0%, var(--primary-color) 100%);
+    background: linear-gradient(135deg, #1e3a8a 0%, #ff6b35 100%); /* Dark Blue to Orange */
     padding: 80px 0;
     text-align: center;
     color: white;
@@ -237,14 +241,14 @@ body {
    ============================================= */
 
 .btn-neon {
-    background: linear-gradient(135deg, var(--neon-blue) 0%, var(--neon-purple) 100%);
+    background: linear-gradient(135deg, #1e3a8a 0%, #ff6b35 100%); /* Dark Blue to Orange */
     border: none;
     color: white;
     font-weight: 700;
     padding: 0.75rem 2rem;
     border-radius: 50px;
     transition: all 0.3s ease;
-    box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+    box-shadow: 0 0 20px rgba(255, 107, 53, 0.4);
     position: relative;
     overflow: hidden;
 }
@@ -264,7 +268,7 @@ body {
 
 .btn-neon:hover {
     transform: translateY(-3px);
-    box-shadow: 0 0 40px rgba(0, 212, 255, 0.8), 0 0 80px rgba(139, 92, 246, 0.6);
+    box-shadow: 0 0 40px rgba(255, 140, 66, 0.8), 0 0 80px rgba(255, 107, 53, 0.6);
     color: white;
     text-decoration: none;
 }
@@ -303,7 +307,7 @@ body {
 .section-title {
     font-size: 2.5rem;
     font-weight: 800;
-    background: linear-gradient(135deg, var(--neon-blue) 0%, var(--neon-purple) 100%);
+    background: linear-gradient(135deg, #1e3a8a 0%, #ff6b35 100%); /* Dark Blue to Orange */
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -316,7 +320,7 @@ body {
     display: block;
     width: 100px;
     height: 4px;
-    background: linear-gradient(135deg, var(--neon-blue) 0%, var(--neon-purple) 100%);
+    background: linear-gradient(135deg, #1e3a8a 0%, #ff6b35 100%); /* Dark Blue to Orange */
     margin: 1rem auto 0;
     border-radius: 2px;
 }
