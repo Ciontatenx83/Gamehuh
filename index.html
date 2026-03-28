@@ -31,11 +31,6 @@
                         </a>
                     </li>
                     <li class="nav-item ms-2">
-                        <button class="btn btn-sm btn-outline-light" id="adminLoginBtn" onclick="showAdminLogin()" aria-label="Admin login">
-                            <i class="fas fa-user-shield"></i> Admin
-                        </button>
-                    </li>
-                    <li class="nav-item ms-2">
                         <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark/light mode">
                             <i class="fas fa-moon"></i>
                         </button>
@@ -46,7 +41,7 @@
     </nav>
 
     <!-- Admin Secret Entry Point (Hidden Icon at bottom-right) -->
-    <div class="admin-trigger-hint" onclick="triggerAdminEntry()">
+    <div class="admin-trigger-hint" onclick="openAdminDashboard()">
         <i class="fas fa-lock"></i>
     </div>
 

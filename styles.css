@@ -13,45 +13,33 @@
     --neon-blue: #1e3a8a; /* Dark Blue */
     --neon-purple: #ff6b35; /* Orange */
     --neon-pink: #ff8c42; /* Light Orange */
+    
+    /* Glassmorphism variables */
+    --glass-bg: rgba(15, 23, 42, 0.25);
+    --glass-border: rgba(255, 255, 255, 0.18);
+    --glass-shadow: rgba(31, 38, 135, 0.37);
+    --glass-blur: blur(4px);
+    --glass-border-radius: 16px;
 }
 
-/* Dark Mode (Default) */
+/* Dark Mode Only - Full Dark Theme */
 :root,
 [data-theme="dark"] {
-    --dark-bg: #0f172a;
-    --card-bg: #1e293b;
+    --dark-bg: #0a0a0f; /* Very dark */
+    --card-bg: rgba(15, 23, 42, 0.25);
     --text-primary: #ffffff; /* White */
     --text-secondary: #f1f5f9; /* Light Blue-White */
     --text-light: rgba(255, 255, 255, 0.95); /* White */
-    --border-color: rgba(255, 255, 255, 0.2);
-    --border-light: #334155;
-    --hero-bg-start: #1e293b;
-    --hero-bg-end: #1e3a8a; /* Dark Blue */
-    --section-bg: #1e293b;
-    --footer-bg-start: #1e3a8a; /* Dark Blue */
-    --footer-bg-end: #0f172a;
-    --form-bg: #334155;
-    --form-border: #475569;
-    --form-focus-bg: #475569;
-}
-
-/* Light Mode */
-[data-theme="light"] {
-    --dark-bg: #ffffff;
-    --card-bg: #f8f9fa;
-    --text-primary: #1e3a8a; /* Dark Blue */
-    --text-secondary: #ff6b35; /* Orange */
-    --text-light: rgba(30, 58, 138, 0.9); /* Dark Blue */
-    --border-color: rgba(255, 107, 53, 0.2); /* Orange */
-    --border-light: #ff6b35; /* Orange */
-    --hero-bg-start: #f8f9fa;
-    --hero-bg-end: #ff6b35; /* Orange */
-    --section-bg: #f5f5f5;
-    --footer-bg-start: #ff6b35; /* Orange */
-    --footer-bg-end: #1e3a8a; /* Dark Blue */
-    --form-bg: #ffffff;
-    --form-border: #ff6b35; /* Orange */
-    --form-focus-bg: #fff5f0; /* Light Orange */
+    --border-color: rgba(255, 255, 255, 0.1);
+    --border-light: rgba(255, 255, 255, 0.2);
+    --hero-bg-start: transparent;
+    --hero-bg-end: transparent;
+    --section-bg: transparent;
+    --footer-bg-start: rgba(15, 23, 42, 0.25);
+    --footer-bg-end: rgba(10, 10, 15, 0.25);
+    --form-bg: rgba(15, 23, 42, 0.25);
+    --form-border: rgba(255, 255, 255, 0.18);
+    --form-focus-bg: rgba(30, 58, 138, 0.25);
 }
 
 /* General Styles */
@@ -63,30 +51,60 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: var(--dark-bg);
+    background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%);
     color: var(--text-primary);
     line-height: 1.6;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    overflow-x: hidden;
+    min-height: 100vh;
+    position: relative;
 }
 
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, var(--primary-dark) 0%, #0d1829 100%);
-    color: var(--text-light);
-    line-height: 1.6;
-    overflow-x: hidden;
+/* Background Image Support */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('path/to/your/background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    opacity: 0.3;
+    z-index: -1;
+    transition: opacity 0.3s ease;
+}
+
+/* Background image controls */
+body.has-background::before {
+    opacity: 0.6;
+}
+
+body::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(10, 10, 15, 0.7) 0%, rgba(26, 26, 46, 0.7) 100%);
+    z-index: -1;
 }
 
 /* =============================================
-   NAVBAR
+   NAVBAR - Glassmorphism
    ============================================= */
 
 .navbar {
-    background: rgba(30, 58, 138, 0.85); /* Dark Blue */
-    backdrop-filter: blur(20px);
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
     border-bottom: 2px solid #ff6b35; /* Orange */
-    box-shadow: 0 8px 32px rgba(255, 107, 53, 0.1);
+    box-shadow: 0 8px 32px var(--glass-shadow);
     padding: 1rem 0;
+    border-radius: 0 0 var(--glass-border-radius) var(--glass-border-radius);
 }
 
 .navbar-brand {
@@ -150,7 +168,7 @@ body {
 }
 
 /* =============================================
-   ADMIN TRIGGER HINT
+   ADMIN TRIGGER - Glassmorphism
    ============================================= */
 
 .admin-trigger-hint {
@@ -159,7 +177,9 @@ body {
     right: 30px;
     width: 50px;
     height: 50px;
-    background: linear-gradient(135deg, var(--neon-blue) 0%, var(--neon-purple) 100%);
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -167,23 +187,24 @@ body {
     cursor: pointer;
     font-size: 1.5rem;
     color: white;
-    box-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
+    box-shadow: 0 8px 32px var(--glass-shadow);
     transition: all 0.3s ease;
     z-index: 999;
 }
 
 .admin-trigger-hint:hover {
     transform: scale(1.1) rotate(10deg);
-    box-shadow: 0 0 50px rgba(0, 212, 255, 0.8);
+    box-shadow: 0 8px 32px rgba(255, 107, 53, 0.5);
+    border-color: #ff6b35;
 }
 
 /* =============================================
-   HERO SECTION
+   HERO SECTION - Glassmorphism
    ============================================= */
 
 .hero-section {
-    background: linear-gradient(135deg, #1e3a8a 0%, #ff6b35 100%); /* Dark Blue to Orange */
-    padding: 80px 0;
+    background: transparent;
+    padding: 120px 0 80px;
     text-align: center;
     color: white;
     overflow: hidden;
@@ -191,32 +212,18 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-}
-
-@media (min-width: 768px) {
-    .hero-section {
-        padding: 150px 0;
-    }
-}
-
-.hero-section::before {
-    content: '';
-    position: absolute;
-    width: 400px;
-    height: 400px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, transparent 70%);
-    bottom: -50px;
-    right: -50px;
-    animation: float 8s ease-in-out infinite reverse;
-}
-
-@keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(30px); }
+    position: relative;
 }
 
 .hero-content {
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--glass-border-radius);
+    padding: 3rem;
+    box-shadow: 0 8px 32px var(--glass-shadow);
+    max-width: 800px;
+    margin: 0 auto;
     position: relative;
     z-index: 10;
 }
@@ -455,20 +462,21 @@ body {
     margin-top: 2rem;
 }
 
-/* Game Cards with Zoom Animation */
+/* Game Cards - Glassmorphism */
 .game-card {
-    background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(239, 68, 68, 0.15) 100%); /* Purple-Red gradient */
-    border: 1px solid rgba(139, 92, 246, 0.3);
-    border-radius: 15px;
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--glass-border-radius);
     overflow: hidden;
     transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    backdrop-filter: blur(5px);
+    box-shadow: 0 8px 32px var(--glass-shadow);
 }
 
 .game-card:hover {
     border-color: rgba(239, 68, 68, 0.6); /* Red border on hover */
     transform: translateY(-10px);
-    box-shadow: 0 0 30px rgba(139, 92, 246, 0.5), 0 0 60px rgba(239, 68, 68, 0.3);
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.5), 0 0 60px rgba(239, 68, 68, 0.3);
 }
 
 .game-card-image {
@@ -637,17 +645,17 @@ body {
    ============================================= */
 
 .glass-modal-content {
-    background: rgba(30, 41, 59, 0.95);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(0, 212, 255, 0.3);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 30px rgba(0, 212, 255, 0.2);
-    border-radius: 15px;
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 8px 32px var(--glass-shadow);
+    border-radius: var(--glass-border-radius);
 }
 
 .glass-header {
-    background: rgba(15, 23, 42, 0.8);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    border-bottom: 1px solid var(--glass-border);
 }
 
 .pricing-card ul li {
@@ -675,21 +683,22 @@ body {
 
 .form-control,
 .form-select {
-    background-color: var(--form-bg);
-    border: 1px solid var(--form-border);
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
     color: var(--text-primary) !important;
-    border-radius: 8px;
+    border-radius: var(--glass-border-radius);
     padding: 0.75rem 1rem;
     font-size: 1rem;
     transition: all 0.3s ease;
-    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 16px var(--glass-shadow);
 }
 
 .form-control:focus,
 .form-select:focus {
     background: var(--form-focus-bg) !important;
-    border-color: var(--neon-blue) !important;
-    box-shadow: 0 0 20px rgba(0, 212, 255, 0.3) !important;
+    border-color: #ff6b35 !important;
+    box-shadow: 0 8px 32px rgba(255, 107, 53, 0.3) !important;
     color: var(--text-primary) !important;
     outline: none;
 }

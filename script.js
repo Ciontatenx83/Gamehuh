@@ -539,12 +539,46 @@ function updateThemeIcon(theme) {
 const ADMIN_PASSWORD = 'Ciontaten83x';
 let adminAuthenticated = false;
 
-function showAdminLogin() {
-    const loginModal = new bootstrap.Modal(document.getElementById('adminLoginModal'));
-    document.getElementById('adminPassword').value = '';
-    document.getElementById('adminLoginError').style.display = 'none';
-    loginModal.show();
+// Open Admin Dashboard in separate window
+function openAdminDashboard() {
+    // Check if already authenticated
+    const token = localStorage.getItem('adminToken');
+    if (token) {
+        // Open admin dashboard in new window
+        window.open('/admin.html', '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+    } else {
+        // Redirect to admin login
+        window.open('/admin-login.html', '_blank', 'width=500,height=600,scrollbars=yes,resizable=yes');
+    }
 }
+
+// Background Image Management
+function setBackgroundImage(imageUrl) {
+    if (imageUrl) {
+        document.body.style.setProperty('--bg-image', `url('${imageUrl}')`);
+        const style = document.createElement('style');
+        style.textContent = `
+            body::before {
+                background-image: url('${imageUrl}') !important;
+            }
+        `;
+        document.head.appendChild(style);
+        document.body.classList.add('has-background');
+        localStorage.setItem('backgroundImage', imageUrl);
+    }
+}
+
+function loadBackgroundImage() {
+    const savedImage = localStorage.getItem('backgroundImage');
+    if (savedImage) {
+        setBackgroundImage(savedImage);
+    }
+}
+
+// Initialize background on page load
+document.addEventListener('DOMContentLoaded', function() {
+    loadBackgroundImage();
+});
 
 function authenticateAdmin() {
     const password = document.getElementById('adminPassword').value;
