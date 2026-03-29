@@ -907,6 +907,12 @@ function loadAdminOffice() {
     }, 500);
 }
 
+// Show Login Modal
+function showLoginModal() {
+    const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+    loginModal.show();
+}
+
 // Show Signup Modal
 function showSignupModal() {
     const signupModal = new bootstrap.Modal(document.getElementById('signupModal'));
@@ -1182,8 +1188,23 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Check for remembered user
-    checkRememberedUser();
+    // Create test user for debugging (if no users exist)
+    const users = JSON.parse(localStorage.getItem('users') || '[]');
+    if (users.length === 0) {
+        const testUser = {
+            id: Date.now(),
+            name: 'Test User',
+            email: 'test@example.com',
+            password: '123456',
+            role: 'user',
+            status: 'active',
+            joined: new Date().toISOString().split('T')[0],
+            lastLogin: new Date().toISOString()
+        };
+        users.push(testUser);
+        localStorage.setItem('users', JSON.stringify(users));
+        console.log('Test user created: test@example.com / 123456');
+    }
 });
 
 // ========= BACKGROUND MANAGEMENT SYSTEM =========
