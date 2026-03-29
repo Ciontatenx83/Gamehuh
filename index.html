@@ -627,6 +627,11 @@
                                 <i class="fas fa-edit"></i> Manage Games
                             </button>
                         </li>
+                        <li class="nav-item">
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#backgroundTab">
+                                <i class="fas fa-image"></i> Background
+                            </button>
+                        </li>
                     </ul>
 
                     <!-- Tab Content -->
@@ -717,6 +722,68 @@
                         <div class="tab-pane fade" id="manageGamesTab">
                             <div class="games-management-list" id="gamesList">
                                 <!-- Games list will be populated -->
+                            </div>
+                        </div>
+
+                        <!-- Background Tab -->
+                        <div class="tab-pane fade" id="backgroundTab">
+                            <div class="background-management">
+                                <h5><i class="fas fa-image"></i> Background Management</h5>
+                                
+                                <!-- Upload Section -->
+                                <div class="upload-section mb-4">
+                                    <h6>Upload Background Images</h6>
+                                    <div class="upload-area" id="uploadArea">
+                                        <div class="upload-content">
+                                            <i class="fas fa-cloud-upload-alt fa-3x mb-3"></i>
+                                            <p>Drag & drop images here or click to browse</p>
+                                            <input type="file" id="backgroundUpload" accept="image/*" multiple style="display: none;">
+                                            <button class="btn btn-outline-light" onclick="document.getElementById('backgroundUpload').click()">
+                                                <i class="fas fa-upload"></i> Choose Images
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Background Gallery -->
+                                <div class="background-gallery-section mb-4">
+                                    <h6>Background Gallery</h6>
+                                    <div class="background-gallery" id="backgroundGallery">
+                                        <!-- Background images will be displayed here -->
+                                    </div>
+                                </div>
+
+                                <!-- Rotation Controls -->
+                                <div class="rotation-controls mb-4">
+                                    <h6>Background Rotation</h6>
+                                    <div class="rotation-settings">
+                                        <div class="form-check form-switch mb-3">
+                                            <input class="form-check-input" type="checkbox" id="autoRotate">
+                                            <label class="form-check-label" for="autoRotate">
+                                                Auto-rotate backgrounds every 5 seconds
+                                            </label>
+                                        </div>
+                                        <div class="rotation-controls-buttons">
+                                            <button class="btn btn-outline-light btn-sm" onclick="startBackgroundRotation()">
+                                                <i class="fas fa-play"></i> Start Rotation
+                                            </button>
+                                            <button class="btn btn-outline-light btn-sm" onclick="stopBackgroundRotation()">
+                                                <i class="fas fa-stop"></i> Stop Rotation
+                                            </button>
+                                            <button class="btn btn-outline-danger btn-sm" onclick="clearAllBackgrounds()">
+                                                <i class="fas fa-trash"></i> Clear All
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Current Background -->
+                                <div class="current-background">
+                                    <h6>Current Background</h6>
+                                    <div class="current-bg-display" id="currentBgDisplay">
+                                        <p>No background set</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

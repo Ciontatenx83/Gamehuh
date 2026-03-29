@@ -623,6 +623,271 @@ function updatePasswordStrength(passwordInput, strengthContainer) {
     `;
 }
 
+// ========= BACKGROUND MANAGEMENT =========
+
+// Background management variables
+let backgroundImages = [];
+let currentBackgroundIndex = 0;
+let rotationInterval = null;
+const ROTATION_INTERVAL = 5000; // 5 seconds
+
+// Initialize background management
+function initializeBackgroundManagement() {
+    loadBackgroundImages();
+    setupBackgroundUpload();
+    setupDragAndDrop();
+    setupRotationControls();
+    updateBackgroundGallery();
+    updateCurrentBackgroundDisplay();
+}
+
+// Load background images from localStorage
+function loadBackgroundImages() {
+    const stored = localStorage.getItem('backgroundImages');
+    if (stored) {
+        backgroundImages = JSON.parse(stored);
+    }
+}
+
+// Save background images to localStorage
+function saveBackgroundImages() {
+    localStorage.setItem('backgroundImages', JSON.stringify(backgroundImages));
+}
+
+// Setup background upload
+function setupBackgroundUpload() {
+    const uploadInput = document.getElementById('backgroundUpload');
+    if (uploadInput) {
+        uploadInput.addEventListener('change', handleBackgroundUpload);
+    }
+}
+
+// Handle background upload
+function handleBackgroundUpload(e) {
+    const files = Array.from(e.target.files);
+    
+    files.forEach(file => {
+        if (file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const imageData = {
+                    id: Date.now() + Math.random(),
+                    url: event.target.result,
+                    name: file.name,
+                    uploaded: new Date().toISOString()
+                };
+                backgroundImages.push(imageData);
+                saveBackgroundImages();
+                updateBackgroundGallery();
+                showNotification(`Background image "${file.name}" uploaded successfully!`, 'success');
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+    
+    // Clear the input
+    e.target.value = '';
+}
+
+// Setup drag and drop
+function setupDragAndDrop() {
+    const uploadArea = document.getElementById('uploadArea');
+    if (!uploadArea) return;
+    
+    uploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadArea.classList.add('dragover');
+    });
+    
+    uploadArea.addEventListener('dragleave', () => {
+        uploadArea.classList.remove('dragover');
+    });
+    
+    uploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadArea.classList.remove('dragover');
+        
+        const files = Array.from(e.dataTransfer.files);
+        files.forEach(file => {
+            if (file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const imageData = {
+                        id: Date.now() + Math.random(),
+                        url: event.target.result,
+                        name: file.name,
+                        uploaded: new Date().toISOString()
+                    };
+                    backgroundImages.push(imageData);
+                    saveBackgroundImages();
+                    updateBackgroundGallery();
+                    showNotification(`Background image "${file.name}" uploaded successfully!`, 'success');
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    });
+}
+
+// Setup rotation controls
+function setupRotationControls() {
+    const autoRotateCheckbox = document.getElementById('autoRotate');
+    if (autoRotateCheckbox) {
+        autoRotateCheckbox.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                startBackgroundRotation();
+            } else {
+                stopBackgroundRotation();
+            }
+        });
+    }
+}
+
+// Update background gallery
+function updateBackgroundGallery() {
+    const gallery = document.getElementById('backgroundGallery');
+    if (!gallery) return;
+    
+    if (backgroundImages.length === 0) {
+        gallery.innerHTML = '<p class="text-muted">No background images uploaded yet.</p>';
+        return;
+    }
+    
+    gallery.innerHTML = backgroundImages.map((bg, index) => `
+        <div class="background-item ${index === currentBackgroundIndex ? 'active' : ''}" data-index="${index}">
+            <img src="${bg.url}" alt="${bg.name}" class="background-thumb">
+            <div class="background-overlay">
+                <button class="btn btn-sm" onclick="setBackground(${index})" title="Set as background">
+                    <i class="fas fa-check"></i>
+                </button>
+                <button class="btn btn-sm" onclick="removeBackground(${index})" title="Remove">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        </div>
+    `).join('');
+}
+
+// Update current background display
+function updateCurrentBackgroundDisplay() {
+    const display = document.getElementById('currentBgDisplay');
+    if (!display) return;
+    
+    if (backgroundImages.length === 0 || currentBackgroundIndex >= backgroundImages.length) {
+        display.innerHTML = '<p>No background set</p>';
+        return;
+    }
+    
+    const currentBg = backgroundImages[currentBackgroundIndex];
+    display.style.backgroundImage = `url(${currentBg.url})`;
+    display.innerHTML = `<small style="background: rgba(0,0,0,0.7); padding: 5px 10px; border-radius: 4px;">${currentBg.name}</small>`;
+}
+
+// Set background
+function setBackground(index) {
+    if (index >= 0 && index < backgroundImages.length) {
+        currentBackgroundIndex = index;
+        applyBackgroundImage(backgroundImages[index].url);
+        updateBackgroundGallery();
+        updateCurrentBackgroundDisplay();
+        showNotification('Background updated successfully!', 'success');
+    }
+}
+
+// Remove background
+function removeBackground(index) {
+    if (index >= 0 && index < backgroundImages.length) {
+        const bgName = backgroundImages[index].name;
+        backgroundImages.splice(index, 1);
+        
+        // Adjust current index if needed
+        if (currentBackgroundIndex >= backgroundImages.length) {
+            currentBackgroundIndex = backgroundImages.length - 1;
+        }
+        
+        saveBackgroundImages();
+        updateBackgroundGallery();
+        updateCurrentBackgroundDisplay();
+        
+        // Apply background if there are still images
+        if (backgroundImages.length > 0) {
+            applyBackgroundImage(backgroundImages[currentBackgroundIndex].url);
+        } else {
+            clearBackgroundImage();
+        }
+        
+        showNotification(`Background "${bgName}" removed successfully!`, 'info');
+    }
+}
+
+// Apply background image
+function applyBackgroundImage(imageUrl) {
+    document.body.style.setProperty('--bg-image', `url('${imageUrl}')`);
+    document.body.classList.add('has-background');
+}
+
+// Clear background image
+function clearBackgroundImage() {
+    document.body.style.removeProperty('--bg-image');
+    document.body.classList.remove('has-background');
+}
+
+// Start background rotation
+function startBackgroundRotation() {
+    if (backgroundImages.length < 2) {
+        showNotification('Need at least 2 background images for rotation!', 'error');
+        return;
+    }
+    
+    stopBackgroundRotation(); // Clear any existing interval
+    
+    rotationInterval = setInterval(() => {
+        currentBackgroundIndex = (currentBackgroundIndex + 1) % backgroundImages.length;
+        applyBackgroundImage(backgroundImages[currentBackgroundIndex].url);
+        updateBackgroundGallery();
+        updateCurrentBackgroundDisplay();
+    }, ROTATION_INTERVAL);
+    
+    // Update checkbox
+    const autoRotateCheckbox = document.getElementById('autoRotate');
+    if (autoRotateCheckbox) {
+        autoRotateCheckbox.checked = true;
+    }
+    
+    showNotification('Background rotation started (5 seconds interval)', 'success');
+}
+
+// Stop background rotation
+function stopBackgroundRotation() {
+    if (rotationInterval) {
+        clearInterval(rotationInterval);
+        rotationInterval = null;
+        console.log('Background rotation stopped');
+    }
+    
+    // Update checkbox
+    const autoRotateCheckbox = document.getElementById('autoRotate');
+    if (autoRotateCheckbox) {
+        autoRotateCheckbox.checked = false;
+    }
+    
+    showNotification('Background rotation stopped', 'info');
+}
+
+// Clear all backgrounds
+function clearAllBackgrounds() {
+    if (confirm('Are you sure you want to remove all background images? This action cannot be undone.')) {
+        backgroundImages = [];
+        currentBackgroundIndex = 0;
+        saveBackgroundImages();
+        updateBackgroundGallery();
+        updateCurrentBackgroundDisplay();
+        clearBackgroundImage();
+        stopBackgroundRotation();
+        showNotification('All background images cleared!', 'info');
+    }
+}
+
 // ========= USER AUTHENTICATION =========
 
 // Email validation function
@@ -631,10 +896,15 @@ function isValidEmail(email) {
     return emailRegex.test(email);
 }
 
-// Show Login Modal
-function showLoginModal() {
-    const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
-    loginModal.show();
+// Load Admin Office
+function loadAdminOffice() {
+    const adminModal = new bootstrap.Modal(document.getElementById('adminOfficeModal'));
+    adminModal.show();
+    
+    // Initialize background management when admin office is loaded
+    setTimeout(() => {
+        initializeBackgroundManagement();
+    }, 500);
 }
 
 // Show Signup Modal
