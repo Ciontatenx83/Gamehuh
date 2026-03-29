@@ -1188,11 +1188,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // ========= BACKGROUND MANAGEMENT SYSTEM =========
 
-let backgroundImages = [];
-let currentBackgroundIndex = 0;
-let rotationInterval = null;
-let rotationEnabled = true;
-
 // Load Background Gallery
 function loadBackgroundGallery() {
     const saved = localStorage.getItem('backgroundImages');
