@@ -664,7 +664,6 @@ function handleLogin(e) {
     // Get form values
     const email = document.getElementById('loginEmail').value.trim();
     const password = document.getElementById('loginPassword').value;
-    const rememberMe = document.getElementById('rememberMe').checked;
     
     // Basic validation
     if (!email || !password) {
@@ -695,11 +694,6 @@ function handleLogin(e) {
         
         // Set current user
         localStorage.setItem('currentUser', JSON.stringify(user));
-        if (rememberMe) {
-            localStorage.setItem('rememberUser', 'true');
-        } else {
-            localStorage.removeItem('rememberUser');
-        }
         
         // Update navbar
         updateUserNavbar();
@@ -865,7 +859,6 @@ function logout() {
     
     // Clear session data
     localStorage.removeItem('currentUser');
-    localStorage.removeItem('rememberUser');
     
     // Update navbar
     updateUserNavbar();
@@ -894,16 +887,6 @@ function showProfile() {
 // Show Settings
 function showSettings() {
     alert('Settings panel coming soon! You will be able to:\n- Update your profile\n- Change password\n- Manage notifications\n- Privacy settings');
-}
-
-// Check for remembered user on page load
-function checkRememberedUser() {
-    const rememberUser = localStorage.getItem('rememberUser');
-    const currentUser = localStorage.getItem('currentUser');
-    
-    if (rememberUser === 'true' && currentUser) {
-        updateUserNavbar();
-    }
 }
 
 // Initialize authentication
