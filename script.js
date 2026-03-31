@@ -8,91 +8,259 @@ function loadGamesFromStorage() {
     return [
         {
             id: 1,
-            name: 'Dragon Quest',
-            category: 'rpg',
-            price: 29.99,
+            name: "Cyber Strike 2077",
+            category: "action",
+            price: 59.99,
             rating: 4.8,
-            image: 'https://via.placeholder.com/300x200?text=Dragon+Quest',
-            developer: 'Epic Studios',
-            description: 'Embark on an epic adventure in a fantasy world filled with dragons, magic, and treasures.',
-            hidden: false
+            developer: "Neon Studios",
+            description: "Experience the ultimate cyberpunk action game with stunning visuals and intense gameplay.",
+            image: "https://picsum.photos/seed/cyber1/400/250",
+            screenshots: [
+                "https://picsum.photos/seed/cyber1/800/450",
+                "https://picsum.photos/seed/cyber2/800/450",
+                "https://picsum.photos/seed/cyber3/800/450"
+            ],
+            requirements: {
+                minimum: {
+                    os: "Windows 10 64-bit",
+                    processor: "Intel Core i5-8400",
+                    memory: "12 GB RAM",
+                    graphics: "NVIDIA GeForce GTX 1660",
+                    storage: "60 GB available space"
+                },
+                recommended: {
+                    os: "Windows 11 64-bit",
+                    processor: "Intel Core i7-10700K",
+                    memory: "32 GB RAM",
+                    graphics: "NVIDIA GeForce RTX 3080",
+                    storage: "100 GB available space"
+                }
+            },
+            releaseDate: "2024-04-01"
         },
         {
             id: 2,
-            name: 'Cyber Storm',
-            category: 'action',
-            price: 39.99,
-            rating: 4.5,
-            image: 'https://via.placeholder.com/300x200?text=Cyber+Storm',
-            developer: 'Vertex Games',
-            description: 'Experience intense action in a cyberpunk world with stunning visuals and fast-paced gameplay.',
-            hidden: false
+            name: "Dragon Quest XI",
+            category: "rpg",
+            price: 49.99,
+            rating: 4.9,
+            developer: "Square Enix",
+            description: "Embark on an epic RPG adventure with turn-based combat and a rich storyline.",
+            image: "https://picsum.photos/seed/dragon1/400/250",
+            screenshots: [
+                "https://picsum.photos/seed/dragon1/800/450",
+                "https://picsum.photos/seed/dragon2/800/450",
+                "https://picsum.photos/seed/dragon3/800/450"
+            ],
+            requirements: {
+                minimum: {
+                    os: "Windows 10 64-bit",
+                    processor: "Intel Core i5-4460",
+                    memory: "8 GB RAM",
+                    graphics: "NVIDIA GeForce GTX 960",
+                    storage: "45 GB available space"
+                },
+                recommended: {
+                    os: "Windows 11 64-bit",
+                    processor: "Intel Core i7-6700K",
+                    memory: "16 GB RAM",
+                    graphics: "NVIDIA GeForce RTX 2060",
+                    storage: "80 GB available space"
+                }
+            },
+            releaseDate: "2024-01-20"
         },
         {
             id: 3,
-            name: 'Lost Temple',
-            category: 'adventure',
-            price: 24.99,
-            rating: 4.6,
-            image: 'https://via.placeholder.com/300x200?text=Lost+Temple',
-            developer: 'Adventure Inc',
-            description: 'Explore ancient ruins and solve puzzles to find the legendary Lost Temple.',
-            hidden: false
+            name: "Speed Rush Legends",
+            category: "racing",
+            price: 39.99,
+            rating: 4.5,
+            developer: "Velocity Games",
+            description: "Race against the best drivers in this high-octane racing game with realistic physics.",
+            image: "https://picsum.photos/seed/racing1/400/250",
+            screenshots: [
+                "https://picsum.photos/seed/racing1/800/450",
+                "https://picsum.photos/seed/racing2/800/450",
+                "https://picsum.photos/seed/racing3/800/450"
+            ],
+            requirements: {
+                minimum: {
+                    os: "Windows 10 64-bit",
+                    processor: "Intel Core i3-3250",
+                    memory: "6 GB RAM",
+                    graphics: "NVIDIA GeForce GTX 750 Ti",
+                    storage: "30 GB available space"
+                },
+                recommended: {
+                    os: "Windows 11 64-bit",
+                    processor: "Intel Core i5-8600K",
+                    memory: "12 GB RAM",
+                    graphics: "NVIDIA GeForce GTX 1660",
+                    storage: "50 GB available space"
+                }
+            },
+            releaseDate: "2024-02-10"
         },
         {
             id: 4,
-            name: 'Brain Master',
-            category: 'puzzle',
-            price: 9.99,
-            rating: 4.4,
-            image: 'https://via.placeholder.com/300x200?text=Brain+Master',
-            developer: 'Mind Games Co',
-            description: 'Challenge your mind with hundreds of brain-teasing puzzles and logic challenges.',
-            hidden: false
+            name: "Puzzle Master Pro",
+            category: "puzzle",
+            price: 19.99,
+            rating: 4.6,
+            developer: "Mind Games Inc",
+            description: "Challenge your mind with over 1000 unique puzzles in this brain-teasing adventure.",
+            image: "https://picsum.photos/seed/puzzle1/400/250",
+            screenshots: [
+                "https://picsum.photos/seed/puzzle1/800/450",
+                "https://picsum.photos/seed/puzzle2/800/450",
+                "https://picsum.photos/seed/puzzle3/800/450"
+            ],
+            requirements: {
+                minimum: {
+                    os: "Windows 10 64-bit",
+                    processor: "Intel Core i3-2100",
+                    memory: "4 GB RAM",
+                    graphics: "Intel HD Graphics 620",
+                    storage: "10 GB available space"
+                },
+                recommended: {
+                    os: "Windows 11 64-bit",
+                    processor: "Intel Core i5-8400",
+                    memory: "8 GB RAM",
+                    graphics: "NVIDIA GeForce GTX 1050",
+                    storage: "20 GB available space"
+                }
+            },
+            releaseDate: "2024-01-05"
         },
         {
             id: 5,
-            name: 'Championship Racing',
-            category: 'sports',
-            price: 34.99,
+            name: "Strategy Empire",
+            category: "strategy",
+            price: 44.99,
             rating: 4.7,
-            image: 'https://via.placeholder.com/300x200?text=Championship+Racing',
-            developer: 'Racing Masters',
-            description: 'Race against the world in realistic car racing with multiple tracks and vehicles.',
-            hidden: false
+            developer: "Tactical Studios",
+            description: "Build your empire and conquer the world in this deep strategy game.",
+            image: "https://picsum.photos/seed/strategy1/400/250",
+            screenshots: [
+                "https://picsum.photos/seed/strategy1/800/450",
+                "https://picsum.photos/seed/strategy2/800/450",
+                "https://picsum.photos/seed/strategy3/800/450"
+            ],
+            requirements: {
+                minimum: {
+                    os: "Windows 10 64-bit",
+                    processor: "Intel Core i5-6500",
+                    memory: "8 GB RAM",
+                    graphics: "NVIDIA GeForce GTX 960",
+                    storage: "40 GB available space"
+                },
+                recommended: {
+                    os: "Windows 11 64-bit",
+                    processor: "Intel Core i7-8700K",
+                    memory: "16 GB RAM",
+                    graphics: "NVIDIA GeForce RTX 3060",
+                    storage: "60 GB available space"
+                }
+            },
+            releaseDate: "2024-02-20"
         },
         {
             id: 6,
-            name: 'Night Hunter',
-            category: 'action',
-            price: 44.99,
-            rating: 4.9,
-            image: 'https://via.placeholder.com/300x200?text=Night+Hunter',
-            developer: 'Dark Games LLC',
-            description: 'Hunt supernatural creatures in a dark, atmospheric world filled with mystery.',
-            hidden: false
+            name: "Sports Champions 2024",
+            category: "sports",
+            price: 59.99,
+            rating: 4.4,
+            developer: "Athletic Games",
+            description: "Compete in multiple sports including football, basketball, and racing.",
+            image: "https://picsum.photos/seed/sports1/400/250",
+            screenshots: [
+                "https://picsum.photos/seed/sports1/800/450",
+                "https://picsum.photos/seed/sports2/800/450",
+                "https://picsum.photos/seed/sports3/800/450"
+            ],
+            requirements: {
+                minimum: {
+                    os: "Windows 10 64-bit",
+                    processor: "Intel Core i5-4590",
+                    memory: "8 GB RAM",
+                    graphics: "NVIDIA GeForce GTX 1050",
+                    storage: "35 GB available space"
+                },
+                recommended: {
+                    os: "Windows 11 64-bit",
+                    processor: "Intel Core i7-9700K",
+                    memory: "12 GB RAM",
+                    graphics: "NVIDIA GeForce RTX 2070",
+                    storage: "50 GB available space"
+                }
+            },
+            releaseDate: "2024-03-01"
         },
         {
             id: 7,
-            name: 'Fantasy Quest',
-            category: 'rpg',
-            price: 49.99,
+            name: "Adventure Quest",
+            category: "adventure",
+            price: 34.99,
             rating: 4.8,
-            image: 'https://via.placeholder.com/300x200?text=Fantasy+Quest',
-            developer: 'Quest Studios',
-            description: 'Create your character and explore a vast fantasy world with thousands of quests.',
-            hidden: false
+            developer: "Quest Studios",
+            description: "Explore vast open worlds and uncover ancient mysteries in this adventure game.",
+            image: "https://picsum.photos/seed/adventure1/400/250",
+            screenshots: [
+                "https://picsum.photos/seed/adventure1/800/450",
+                "https://picsum.photos/seed/adventure2/800/450",
+                "https://picsum.photos/seed/adventure3/800/450"
+            ],
+            requirements: {
+                minimum: {
+                    os: "Windows 10 64-bit",
+                    processor: "Intel Core i5-7600K",
+                    memory: "8 GB RAM",
+                    graphics: "NVIDIA GeForce GTX 960",
+                    storage: "25 GB available space"
+                },
+                recommended: {
+                    os: "Windows 11 64-bit",
+                    processor: "Intel Core i7-10700K",
+                    memory: "16 GB RAM",
+                    graphics: "NVIDIA GeForce RTX 3060",
+                    storage: "40 GB available space"
+                }
+            },
+            releaseDate: "2024-01-15"
         },
         {
             id: 8,
-            name: 'Puzzle Paradise',
-            category: 'puzzle',
-            price: 14.99,
-            rating: 4.3,
-            image: 'https://via.placeholder.com/300x200?text=Puzzle+Paradise',
-            developer: 'Paradise Games',
-            description: 'Colorful puzzle game with beautiful graphics and addictive gameplay.',
-            hidden: false
+            name: "Space Combat Elite",
+            category: "action",
+            price: 69.99,
+            rating: 4.9,
+            developer: "Cosmic Games",
+            description: "Engage in epic space battles with stunning graphics and intense combat.",
+            image: "https://picsum.photos/seed/space1/400/250",
+            screenshots: [
+                "https://picsum.photos/seed/space1/800/450",
+                "https://picsum.photos/seed/space2/800/450",
+                "https://picsum.photos/seed/space3/800/450"
+            ],
+            requirements: {
+                minimum: {
+                    os: "Windows 10 64-bit",
+                    processor: "Intel Core i5-8400",
+                    memory: "12 GB RAM",
+                    graphics: "NVIDIA GeForce GTX 1660",
+                    storage: "60 GB available space"
+                },
+                recommended: {
+                    os: "Windows 11 64-bit",
+                    processor: "Intel Core i7-10700K",
+                    memory: "32 GB RAM",
+                    graphics: "NVIDIA GeForce RTX 3080",
+                    storage: "100 GB available space"
+                }
+            },
+            releaseDate: "2024-04-01"
         }
     ];
 }
