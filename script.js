@@ -196,14 +196,21 @@ function setupEventListeners() {
 
 // Filter games
 function filterGames() {
-    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
     const category = document.getElementById('categoryFilter').value;
 
     const filtered = games.filter(game => {
-        const matchesSearch = game.name.toLowerCase().includes(searchTerm) || 
-                             game.description.toLowerCase().includes(searchTerm);
+        // Enhanced search: check name, description, developer, and category
+        const matchesSearch = !searchTerm || 
+            game.name.toLowerCase().includes(searchTerm) || 
+            game.description.toLowerCase().includes(searchTerm) ||
+            game.developer.toLowerCase().includes(searchTerm) ||
+            game.category.toLowerCase().includes(searchTerm);
+        
         const matchesCategory = !category || game.category === category;
-        return matchesSearch && matchesCategory && !game.hidden;
+        const isVisible = !game.hidden;
+        
+        return matchesSearch && matchesCategory && isVisible;
     });
 
     displayAllGames(filtered);
@@ -211,12 +218,46 @@ function filterGames() {
     // Show/hide active filter
     const activeFilter = document.getElementById('activeFilter');
     const activeFilterName = document.getElementById('activeFilterName');
-    if (category) {
+    if (category || searchTerm) {
         activeFilter.style.display = 'block';
-        activeFilterName.textContent = category.charAt(0).toUpperCase() + category.slice(1);
+        let filterText = '';
+        if (category) filterText += category.charAt(0).toUpperCase() + category.slice(1);
+        if (searchTerm) filterText += (filterText ? ' + ' : '') + `"${searchTerm}"`;
+        activeFilterName.textContent = filterText;
     } else {
         activeFilter.style.display = 'none';
     }
+    
+    // Show results count
+    showSearchResults(filtered.length, searchTerm, category);
+}
+
+// Show search results count
+function showSearchResults(count, searchTerm, category) {
+    const totalGames = games.filter(game => !game.hidden).length;
+    let message = '';
+    
+    if (searchTerm || category) {
+        message = `Found ${count} of ${totalGames} games`;
+        if (count === 0) {
+            message += '. Try adjusting your search terms.';
+        }
+    } else {
+        message = `Showing all ${totalGames} games`;
+    }
+    
+    // Update or create results message
+    let resultsDiv = document.getElementById('searchResults');
+    if (!resultsDiv) {
+        resultsDiv = document.createElement('div');
+        resultsDiv.id = 'searchResults';
+        resultsDiv.className = 'text-muted mb-3';
+        const searchSection = document.querySelector('#games .container');
+        if (searchSection) {
+            searchSection.insertBefore(resultsDiv, document.getElementById('searchInput').parentNode.nextSibling);
+        }
+    }
+    resultsDiv.textContent = message;
 }
 
 // Clear filter
@@ -225,6 +266,60 @@ function clearFilter() {
     document.getElementById('searchInput').value = '';
     document.getElementById('activeFilter').style.display = 'none';
     displayAllGames();
+    showSearchResults(games.filter(game => !game.hidden).length, '', '');
+}
+
+// Enhanced smooth scrolling for navigation
+document.addEventListener('DOMContentLoaded', function() {
+    // Smooth scroll for all anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            const href = this.getAttribute('href');
+            if (href !== '#' && href !== '#cart') {
+                e.preventDefault();
+                const target = document.querySelector(href);
+                if (target) {
+                    const offsetTop = target.offsetTop - 80; // Account for fixed navbar
+                    window.scrollTo({
+                        top: offsetTop,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Update active nav state
+                    updateActiveNavigation(href);
+                }
+            }
+        });
+    });
+    
+    // Update active navigation on scroll
+    window.addEventListener('scroll', updateActiveNavigationOnScroll);
+});
+
+// Update active navigation state
+function updateActiveNavigation(targetId) {
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === targetId) {
+            link.classList.add('active');
+        }
+    });
+}
+
+// Update active navigation on scroll
+function updateActiveNavigationOnScroll() {
+    const sections = document.querySelectorAll('section[id]');
+    const scrollY = window.pageYOffset;
+
+    sections.forEach(section => {
+        const sectionHeight = section.offsetHeight;
+        const sectionTop = section.offsetTop - 100;
+        const sectionId = section.getAttribute('id');
+
+        if (scrollY > sectionTop && scrollY <= sectionTop + sectionHeight) {
+            updateActiveNavigation(`#${sectionId}`);
+        }
+    });
 }
 
 // Open game modal with details
@@ -282,6 +377,49 @@ function addToCart() {
         // Show notification
         showNotification(`${currentGameForModal.name} added to cart!`);
     }
+}
+
+// Download game demo
+function downloadGame() {
+    if (!currentGameForModal) return;
+
+    // Show download notification
+    showNotification(`Preparing demo download for ${currentGameForModal.name}...`, 'info');
+    
+    // Simulate download preparation
+    setTimeout(() => {
+        // Create a demo download link (in production, this would be a real file)
+        const demoContent = `Demo Version - ${currentGameForModal.name}\n\nThis is a demo version of ${currentGameForModal.name}.\n\nGame Details:\n- Developer: ${currentGameForModal.developer}\n- Category: ${currentGameForModal.category}\n- Rating: ${currentGameForModal.rating}/5\n\nThank you for trying our game!`;
+        
+        // Create blob and download
+        const blob = new Blob([demoContent], { type: 'text/plain' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${currentGameForModal.name}_Demo.txt`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+        
+        showNotification(`Demo download started for ${currentGameForModal.name}!`, 'success');
+        
+        // Track download activity
+        trackDownloadActivity(currentGameForModal.id);
+    }, 1500);
+}
+
+// Track download activity
+function trackDownloadActivity(gameId) {
+    const downloads = JSON.parse(localStorage.getItem('gameDownloads') || '[]');
+    const download = {
+        gameId: gameId,
+        gameName: currentGameForModal.name,
+        timestamp: new Date().toISOString(),
+        type: 'demo'
+    };
+    downloads.push(download);
+    localStorage.setItem('gameDownloads', JSON.stringify(downloads));
 }
 
 // Show cart

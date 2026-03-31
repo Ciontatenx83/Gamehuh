@@ -1384,7 +1384,137 @@ body::after {
     overflow-y: auto;
 }
 
+/* Navigation Active State */
+.nav-link.active {
+    color: #ff6b35 !important;
+    background: rgba(255, 107, 53, 0.1) !important;
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+/* Search Results Styling */
+#searchResults {
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--glass-border-radius);
+    padding: 1rem;
+    text-align: center;
+    font-weight: 500;
+}
+
+/* Download Button Styling */
+#downloadButton {
+    background: linear-gradient(45deg, #28a745, #20c997);
+    border: none;
+    color: white;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+#downloadButton:hover {
+    background: linear-gradient(45deg, #218838, #1ea085);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);
+}
+
+#downloadButton:active {
+    transform: translateY(0);
+}
+
+/* Enhanced Mobile Navigation */
+@media (max-width: 768px) {
+    .navbar-nav .nav-link.active {
+        background: rgba(255, 107, 53, 0.2);
+        border-radius: 6px;
+    }
+    
+    #searchResults {
+        font-size: 0.9rem;
+        margin: 0.5rem 0;
+    }
+}
+
 /* Responsive Design - Mobile First */
+@media (max-width: 768px) {
+    .hero-content h1 {
+        font-size: 2.5rem;
+    }
+
+    .hero-content .lead {
+        font-size: 1.1rem;
+    }
+
+    .categories-grid {
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 20px;
+    }
+
+    .category-card {
+        padding: 25px 20px;
+    }
+
+    .category-card i {
+        font-size: 2.5rem;
+    }
+
+    .category-card h5 {
+        font-size: 1rem;
+    }
+
+    .game-card-image {
+        height: 180px;
+    }
+
+    /* Tablet Navigation */
+    .navbar-nav .nav-item {
+        margin: 0 0.5rem;
+    }
+
+    .navbar-nav .btn {
+        margin: 0 0.25rem;
+    }
+
+    /* Tablet Game Cards */
+    .game-card {
+        margin-bottom: 1.5rem;
+    }
+
+    .game-card-body {
+        padding: 1.25rem;
+    }
+
+    .game-card-title {
+        font-size: 1.1rem;
+    }
+
+    .game-card-text {
+        font-size: 0.9rem;
+    }
+
+    /* Tablet Search and Filter */
+    .row.mb-5 .col-md-6,
+    .row.mb-5 .col-md-6 {
+        margin-bottom: 1rem;
+    }
+
+    /* Tablet Modal */
+    .modal-dialog {
+        max-width: 90%;
+        margin: 2rem auto;
+    }
+
+    /* Tablet Admin Dashboard */
+    .admin-tab-content {
+        padding: 1rem;
+    }
+
+    .background-gallery {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    }
+}
+
+/* Mobile Navigation Improvements */
 @media (max-width: 480px) {
     .hero-content h1 {
         font-size: 1.8rem;
@@ -1422,6 +1552,67 @@ body::after {
     #searchInput,
     #categoryFilter {
         margin-bottom: 1rem;
+    }
+
+    .navbar-nav {
+        text-align: center;
+        padding: 1rem 0;
+    }
+
+    .navbar-nav .nav-item {
+        margin: 0.5rem 0;
+    }
+
+    .navbar-nav .btn {
+        margin: 0.25rem 0;
+        width: 100%;
+    }
+
+    /* Mobile Game Cards */
+    .game-card {
+        margin-bottom: 1rem;
+    }
+
+    .game-card-image {
+        height: 120px;
+    }
+
+    .game-card-body {
+        padding: 1rem;
+    }
+
+    .game-card-title {
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .game-card-text {
+        font-size: 0.85rem;
+    }
+
+    /* Mobile Cart Badge */
+    .badge-cart {
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        font-size: 0.7rem;
+        padding: 2px 6px;
+    }
+
+    /* Mobile Modal Improvements */
+    .modal-dialog {
+        margin: 1rem;
+        max-width: calc(100% - 2rem);
+    }
+
+    .password-input-group .form-control {
+        padding-right: 45px;
+    }
+
+    .password-toggle {
+        right: 8px;
+        padding: 4px 8px;
+        font-size: 0.8rem;
     }
 }
 
