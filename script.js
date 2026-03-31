@@ -9,7 +9,7 @@ const games = [
         price: 59.99,
         rating: 4.8,
         developer: "Neon Studios",
-        description: "Experience the ultimate cyberpunk action game with stunning visuals and intense gameplay.",
+        description: "Experience the ultimate cyberpunk action game with stunning visuals and intense gameplay in a dystopian future.",
         image: "https://picsum.photos/seed/cyber1/400/250"
     },
     {
@@ -68,54 +68,41 @@ const games = [
 let cart = [];
 let currentGame = null;
 let currentFilter = 'all';
+let filteredGames = [...games];
 
 // Initialize
 document.addEventListener('DOMContentLoaded', function() {
-    displayGames();
-    setupEventListeners();
+    loadGames();
+    updateCartCount();
 });
 
-// Setup Event Listeners
-function setupEventListeners() {
-    // Search functionality
-    document.getElementById('heroSearch').addEventListener('input', (e) => {
-        searchGames(e.target.value);
-    });
-    
-    document.getElementById('gameSearch').addEventListener('input', (e) => {
-        searchGames(e.target.value);
-    });
-    
-    // Sort functionality
-    document.getElementById('sortSelect').addEventListener('change', (e) => {
-        sortGames(e.target.value);
-    });
-    
-    // Form submissions
-    document.getElementById('loginForm').addEventListener('submit', handleLogin);
-    document.getElementById('signupForm').addEventListener('submit', handleSignup);
+// Load Games
+function loadGames() {
+    displayGames(games);
 }
 
 // Display Games
-function displayGames(gamesToShow = games) {
-    const gamesList = document.getElementById('gamesList');
+function displayGames(gamesToShow) {
+    const gamesGrid = document.getElementById('gamesGrid');
     
     if (gamesToShow.length === 0) {
-        gamesList.innerHTML = '<div class="col-12 text-center"><p>No games found.</p></div>';
+        gamesGrid.innerHTML = '<div class="col-12 text-center"><p>No games found.</p></div>';
         return;
     }
     
-    gamesList.innerHTML = gamesToShow.map(game => `
-        <div class="game-card" onclick="openGameModal(${game.id})">
-            <img src="${game.image}" alt="${game.name}">
-            <div class="game-card-body">
-                <h3>${game.name}</h3>
-                <p>${game.description}</p>
-                <div class="game-card-footer">
-                    <span class="game-price">$${game.price}</span>
-                    <span class="game-rating">
-                        <i class="fas fa-star"></i> ${game.rating}
-                    </span>
+    gamesGrid.innerHTML = gamesToShow.map(game => `
+        <div class="col-md-4">
+            <div class="game-card" onclick="showGameDetails(${game.id})">
+                <img src="${game.image}" alt="${game.name}">
+                <div class="game-card-body">
+                    <h5>${game.name}</h5>
+                    <p>${game.description}</p>
+                    <div class="game-card-footer">
+                        <span class="game-price">$${game.price}</span>
+                        <span class="game-rating">
+                            <i class="fas fa-star"></i> ${game.rating}
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -123,72 +110,84 @@ function displayGames(gamesToShow = games) {
 }
 
 // Search Games
-function searchGames(searchTerm) {
-    const filtered = games.filter(game => 
-        game.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        game.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        game.developer.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+function searchGames() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
     
-    if (currentFilter !== 'all') {
-        const categoryFiltered = filtered.filter(game => game.category === currentFilter);
-        displayGames(categoryFiltered);
+    if (searchTerm === '') {
+        filteredGames = currentFilter === 'all' ? [...games] : games.filter(game => game.category === currentFilter);
     } else {
-        displayGames(filtered);
+        filteredGames = games.filter(game => 
+            game.name.toLowerCase().includes(searchTerm) ||
+            game.description.toLowerCase().includes(searchTerm) ||
+            game.developer.toLowerCase().includes(searchTerm)
+        );
+        
+        if (currentFilter !== 'all') {
+            filteredGames = filteredGames.filter(game => game.category === currentFilter);
+        }
     }
+    
+    displayGames(filteredGames);
 }
 
 // Filter by Category
-function filterByCategory(category) {
+function filterCategory(category) {
     currentFilter = category;
     
     if (category === 'all') {
-        displayGames();
+        filteredGames = [...games];
     } else {
-        const filtered = games.filter(game => game.category === category);
-        displayGames(filtered);
+        filteredGames = games.filter(game => game.category === category);
     }
     
-    // Update active state
-    document.querySelectorAll('.category-card').forEach(card => {
-        card.classList.remove('active');
-    });
-    document.querySelector(`[data-category="${category}"]`).classList.add('active');
+    displayGames(filteredGames);
+    
+    // Scroll to games section
+    document.getElementById('games').scrollIntoView({behavior: 'smooth'});
 }
 
 // Sort Games
-function sortGames(sortBy) {
-    let sorted = [...games];
+function sortGames() {
+    const sortBy = document.getElementById('sortSelect').value;
     
     switch(sortBy) {
         case 'name':
-            sorted.sort((a, b) => a.name.localeCompare(b.name));
+            filteredGames.sort((a, b) => a.name.localeCompare(b.name));
             break;
         case 'price':
-            sorted.sort((a, b) => a.price - b.price);
+            filteredGames.sort((a, b) => a.price - b.price);
             break;
         case 'rating':
-            sorted.sort((a, b) => b.rating - a.rating);
+            filteredGames.sort((a, b) => b.rating - a.rating);
             break;
     }
     
-    displayGames(sorted);
+    displayGames(filteredGames);
 }
 
-// Open Game Modal
-function openGameModal(gameId) {
+// Clear Filter
+function clearFilter() {
+    currentFilter = 'all';
+    document.getElementById('searchInput').value = '';
+    document.getElementById('sortSelect').value = 'name';
+    filteredGames = [...games];
+    displayGames(games);
+}
+
+// Show Game Details
+function showGameDetails(gameId) {
     const game = games.find(g => g.id === gameId);
     if (!game) return;
     
     currentGame = game;
     
-    document.getElementById('gameModalTitle').textContent = game.name;
-    document.getElementById('gameModalImage').src = game.image;
-    document.getElementById('gameModalDescription').textContent = game.description;
-    document.getElementById('gameModalDeveloper').textContent = game.developer;
-    document.getElementById('gameModalCategory').textContent = game.category;
-    document.getElementById('gameModalRating').innerHTML = `<i class="fas fa-star"></i> ${game.rating}`;
-    document.getElementById('gameModalPrice').textContent = `$${game.price}`;
+    document.getElementById('modalTitle').textContent = game.name;
+    document.getElementById('modalImage').src = game.image;
+    document.getElementById('modalDescription').textContent = game.description;
+    document.getElementById('modalDeveloper').textContent = game.developer;
+    document.getElementById('modalCategory').textContent = game.category;
+    document.getElementById('modalRating').innerHTML = `<i class="fas fa-star"></i> ${game.rating}`;
+    document.getElementById('modalPrice').textContent = `$${game.price}`;
     
     const modal = new bootstrap.Modal(document.getElementById('gameModal'));
     modal.show();
@@ -209,28 +208,24 @@ function addToCart() {
         });
     }
     
-    updateCartBadge();
+    updateCartCount();
     showNotification(`${currentGame.name} added to cart!`);
     
     const modal = bootstrap.Modal.getInstance(document.getElementById('gameModal'));
     modal.hide();
 }
 
-// Update Cart Badge
-function updateCartBadge() {
-    const badge = document.querySelector('.badge-cart');
+// Update Cart Count
+function updateCartCount() {
+    const cartCount = document.getElementById('cartCount');
     const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
     
-    if (totalItems > 0) {
-        badge.textContent = totalItems;
-        badge.style.display = 'inline-block';
-    } else {
-        badge.style.display = 'none';
-    }
+    cartCount.textContent = totalItems;
+    cartCount.style.display = totalItems > 0 ? 'inline-block' : 'none';
 }
 
-// Open Cart Modal
-function openCartModal(event) {
+// Open Cart
+function openCart(event) {
     event.preventDefault();
     
     const cartItems = document.getElementById('cartItems');
@@ -239,14 +234,14 @@ function openCartModal(event) {
         cartItems.innerHTML = '<p class="text-center">Your cart is empty</p>';
     } else {
         cartItems.innerHTML = cart.map(item => `
-            <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="cart-item">
                 <div>
                     <h6>${item.name}</h6>
                     <small class="text-muted">Qty: ${item.quantity}</small>
                 </div>
-                <div>
+                <div class="d-flex align-items-center gap-2">
                     <strong>$${(item.price * item.quantity).toFixed(2)}</strong>
-                    <button class="btn btn-sm btn-danger ms-2" onclick="removeFromCart(${item.id})">
+                    <button class="btn btn-sm btn-danger" onclick="removeFromCart(${item.id})">
                         <i class="fas fa-trash"></i>
                     </button>
                 </div>
@@ -269,8 +264,8 @@ function updateCartTotal() {
 // Remove from Cart
 function removeFromCart(gameId) {
     cart = cart.filter(item => item.id !== gameId);
-    updateCartBadge();
-    openCartModal(event); // Refresh cart modal
+    updateCartCount();
+    openCart(event); // Refresh cart modal
 }
 
 // Checkout
@@ -281,10 +276,10 @@ function checkout() {
     }
     
     const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    showNotification(`Order placed! Total: $${total.toFixed(2)}`, 'success');
+    showNotification(`Order placed successfully! Total: $${total.toFixed(2)}`, 'success');
     
     cart = [];
-    updateCartBadge();
+    updateCartCount();
     
     const modal = bootstrap.Modal.getInstance(document.getElementById('cartModal'));
     modal.hide();
@@ -298,13 +293,13 @@ function downloadGame() {
     
     // Simulate download
     setTimeout(() => {
-        const content = `Game: ${currentGame.name}\nDeveloper: ${currentGame.developer}\nCategory: ${currentGame.category}\nPrice: $${currentGame.price}\n\nThank you for downloading from GameHub!`;
+        const content = `Game: ${currentGame.name}\nDeveloper: ${currentGame.developer}\nCategory: ${currentGame.category}\nPrice: $${currentGame.price}\nRating: ${currentGame.rating}/5\n\nThank you for downloading from GameHub!\n\nGame Details:\n${currentGame.description}`;
         
         const blob = new Blob([content], { type: 'text/plain' });
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `${currentGame.name}.txt`;
+        a.download = `${currentGame.name.replace(/\s+/g, '_')}_Info.txt`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -317,15 +312,9 @@ function downloadGame() {
     modal.hide();
 }
 
-// Show Login Modal
-function showLoginModal() {
+// Show Login
+function showLogin() {
     const modal = new bootstrap.Modal(document.getElementById('loginModal'));
-    modal.show();
-}
-
-// Show Signup Modal
-function showSignupModal() {
-    const modal = new bootstrap.Modal(document.getElementById('signupModal'));
     modal.show();
 }
 
@@ -333,34 +322,15 @@ function showSignupModal() {
 function handleLogin(event) {
     event.preventDefault();
     
-    const email = document.getElementById('loginEmail').value;
-    const password = document.getElementById('loginPassword').value;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
     
     // Simple validation
     if (email && password) {
-        showNotification('Login successful!', 'success');
+        showNotification('Login successful! Welcome back.', 'success');
         const modal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
         modal.hide();
         document.getElementById('loginForm').reset();
-    } else {
-        showNotification('Please fill in all fields', 'error');
-    }
-}
-
-// Handle Signup
-function handleSignup(event) {
-    event.preventDefault();
-    
-    const name = document.getElementById('signupName').value;
-    const email = document.getElementById('signupEmail').value;
-    const password = document.getElementById('signupPassword').value;
-    
-    // Simple validation
-    if (name && email && password) {
-        showNotification('Account created successfully!', 'success');
-        const modal = bootstrap.Modal.getInstance(document.getElementById('signupModal'));
-        modal.hide();
-        document.getElementById('signupForm').reset();
     } else {
         showNotification('Please fill in all fields', 'error');
     }
@@ -386,13 +356,9 @@ function showNotification(message, type = 'info') {
     }, 3000);
 }
 
-// Smooth Scroll
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-            target.scrollIntoView({ behavior: 'smooth' });
-        }
-    });
+// Search on Enter key
+document.getElementById('searchInput').addEventListener('keypress', function(event) {
+    if (event.key === 'Enter') {
+        searchGames();
+    }
 });
