@@ -3,40 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tariq Smile Game Hub - Premium Gaming Platform</title>
+    <title>GameHub - Modern Gaming Platform</title>
+    <meta name="description" content="Discover and download the latest games on GameHub - Your modern gaming platform">
+    
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
     <link href="styles.css" rel="stylesheet">
 </head>
 <body>
-    <!-- Navigation Bar -->
-    <nav class="navbar navbar-dark navbar-expand-lg sticky-top">
-        <div class="container-fluid">
+    <!-- Modern Navigation -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
             <a class="navbar-brand" href="#home">
-                <i class="fas fa-gamepad"></i> Tariq Smile
+                <i class="fas fa-gamepad"></i> GameHub
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="#games">Games</a></li>
                     <li class="nav-item"><a class="nav-link" href="#categories">Categories</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
                     <li class="nav-item">
                         <a class="nav-link cart-link" href="#" onclick="openCartModal(event)">
                             <i class="fas fa-shopping-cart"></i> Cart <span class="badge badge-cart" style="display:none;">0</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <button class="btn btn-sm btn-outline-light" onclick="showLoginModal()">
-                            <i class="fas fa-sign-in-alt"></i> Log In
+                        <button class="btn btn-sm btn-primary" onclick="showLoginModal()">
+                            <i class="fas fa-sign-in-alt"></i> Login
                         </button>
                     </li>
                     <li class="nav-item ms-2">
-                        <button class="btn btn-sm btn-primary" onclick="showSignupModal()">
+                        <button class="btn btn-sm btn-secondary" onclick="showSignupModal()">
                             <i class="fas fa-user-plus"></i> Sign Up
                         </button>
                     </li>
@@ -45,492 +50,197 @@
         </div>
     </nav>
 
-    <!-- Admin Secret Entry Point (Hidden Icon at bottom-right) -->
-    <div class="admin-trigger-hint" onclick="openAdminPanel()">
-        <i class="fas fa-lock"></i>
-    </div>
-
     <!-- Hero Section -->
     <section id="home" class="hero-section">
-        <div class="hero-overlay"></div>
         <div class="container">
             <div class="hero-content">
-                <h1 class="display-4 fw-bold animate__animated animate__fadeInDown">Welcome to Tariq Smile Game Hub</h1>
-                <p class="lead animate__animated animate__fadeInUp">Premium Gaming. Instant Access. Unmatched Experience.</p>
-                <button class="btn btn-neon btn-lg animate__animated animate__fadeInUp" onclick="document.getElementById('games').scrollIntoView({behavior: 'smooth'})">
-                    <i class="fas fa-rocket"></i> Explore Games
+                <h1 class="animate__animated animate__fadeInDown">GameHub</h1>
+                <p class="lead animate__animated animate__fadeInUp">Your Ultimate Gaming Destination</p>
+                <div class="hero-search">
+                    <div class="search-container">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" class="search-input" id="heroSearch" placeholder="Search for games, categories, or developers...">
+                    </div>
+                </div>
+                <div class="hero-buttons">
+                    <button class="btn btn-primary btn-lg animate__animated animate__fadeInUp" onclick="document.getElementById('games').scrollIntoView({behavior: 'smooth'})">
+                        <i class="fas fa-rocket"></i> Browse Games
+                    </button>
+                    <button class="btn btn-secondary btn-lg animate__animated animate__fadeInUp" onclick="document.getElementById('categories').scrollIntoView({behavior: 'smooth'})">
+                        <i class="fas fa-th-large"></i> Explore Categories
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories Section -->
+    <section id="categories" class="section">
+        <div class="container">
+            <h2 class="section-title">Game Categories</h2>
+            <div class="category-pills" id="categoryPills">
+                <button class="category-pill active" data-category="all">
+                    <i class="fas fa-th"></i> All Games
+                </button>
+                <button class="category-pill" data-category="action">
+                    <i class="fas fa-bolt"></i> Action
+                </button>
+                <button class="category-pill" data-category="adventure">
+                    <i class="fas fa-compass"></i> Adventure
+                </button>
+                <button class="category-pill" data-category="rpg">
+                    <i class="fas fa-dragon"></i> RPG
+                </button>
+                <button class="category-pill" data-category="strategy">
+                    <i class="fas fa-chess"></i> Strategy
+                </button>
+                <button class="category-pill" data-category="sports">
+                    <i class="fas fa-football-ball"></i> Sports
+                </button>
+                <button class="category-pill" data-category="racing">
+                    <i class="fas fa-flag-checkered"></i> Racing
+                </button>
+                <button class="category-pill" data-category="puzzle">
+                    <i class="fas fa-puzzle-piece"></i> Puzzle
                 </button>
             </div>
         </div>
     </section>
 
-    <!-- Featured Games Section -->
-    <section id="featured" class="featured-section py-5">
-        <div class="container">
-            <h2 class="section-title text-center mb-5">Featured Games</h2>
-            <div class="row" id="featuredGames">
-                <!-- Featured games will be populated by JavaScript -->
-            </div>
-        </div>
-    </section>
-
-    <!-- Categories Grid Section (Premium Visual) -->
-    <section id="categories" class="categories-section py-5">
-        <div class="container">
-            <h2 class="section-title text-center mb-5">Game Categories</h2>
-            <div class="categories-grid" id="categoriesGrid">
-                <!-- Categories will be populated by JavaScript -->
-            </div>
-        </div>
-    </section>
-
     <!-- Games Section -->
-    <section id="games" class="games-section py-5">
+    <section id="games" class="section">
         <div class="container">
-            <h2 class="section-title mb-4">Browse All Games</h2>
-            
-            <!-- Search & Filter -->
-            <div class="row mb-5">
-                <div class="col-md-6">
-                    <input type="text" class="form-control" id="searchInput" placeholder="Search games...">
-                </div>
-                <div class="col-md-6">
-                    <select class="form-select" id="categoryFilter">
-                        <option value="">All Categories</option>
-                        <option value="action">Action</option>
-                        <option value="adventure">Adventure</option>
-                        <option value="anime">Anime</option>
-                        <option value="horror">Horror</option>
-                        <option value="multiplayer">Multiplayer</option>
-                        <option value="open world">Open World</option>
-                        <option value="racing">Racing</option>
-                        <option value="shooting">Shooting</option>
-                        <option value="simulation">Simulation</option>
-                        <option value="sports">Sports</option>
-                        <option value="strategy">Strategy</option>
+            <div class="section-header">
+                <h2 class="section-title">All Games</h2>
+                <div class="games-controls">
+                    <div class="search-container">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" class="search-input" id="gameSearch" placeholder="Search games...">
+                    </div>
+                    <select class="form-select" id="sortSelect">
+                        <option value="name">Sort by Name</option>
+                        <option value="price">Sort by Price</option>
+                        <option value="rating">Sort by Rating</option>
+                        <option value="newest">Sort by Newest</option>
                     </select>
                 </div>
             </div>
-
-            <!-- Active Category Filter -->
-            <div class="active-filter mb-4" id="activeFilter" style="display:none;">
-                <span>Filtering by: <strong id="activeFilterName"></strong></span>
-                <button class="btn-clear-filter" onclick="clearFilter()">✕</button>
-            </div>
-
-            <!-- Games Grid -->
+            
+            <div id="searchResults"></div>
+            
             <div class="games-grid" id="gamesList">
                 <!-- Games will be populated by JavaScript -->
             </div>
-
-<!-- No Results Message -->
-            <div class="no-results-message" id="noResultsMessage" style="display:none;">
-                <i class="fas fa-search"></i>
-                <p>No games found. Try adjusting your search.</p>
+            
+            <div class="load-more-container">
+                <button class="btn btn-secondary" id="loadMoreBtn" onclick="loadMoreGames()">
+                    <i class="fas fa-plus"></i> Load More Games
+                </button>
             </div>
         </div>
     </section>
 
-    <!-- About Section -->
-    <section id="about" class="about-section py-5">
+    <!-- Individual Game Page (Hidden by default) -->
+    <section id="gameDetail" class="section" style="display: none;">
         <div class="container">
-            <h2 class="section-title text-center mb-5">About Tariq Smile Game Hub</h2>
-            <div class="row align-items-center">
-                <div class="col-md-6">
-                    <div class="about-content">
-                        <p class="mb-4">Tariq Smile Game Hub is your ultimate destination for premium gaming. We offer a curated collection of the best games across all genres with secure payments and instant delivery.</p>
-                        <ul class="features-list">
-                            <li><i class="fas fa-check-circle"></i> Instant game downloads</li>
-                            <li><i class="fas fa-check-circle"></i> Secure payment processing</li>
-                            <li><i class="fas fa-check-circle"></i> 24/7 customer support</li>
-                            <li><i class="fas fa-check-circle"></i> Regular game updates</li>
-                            <li><i class="fas fa-check-circle"></i> Money-back guarantee</li>
-                        </ul>
+            <button class="btn btn-secondary mb-4" onclick="backToGames()">
+                <i class="fas fa-arrow-left"></i> Back to Games
+            </button>
+            
+            <div class="game-detail-container">
+                <div class="game-detail-header">
+                    <div class="game-detail-image-container">
+                        <img id="detailImage" src="" alt="" class="game-detail-image">
+                        <div class="game-detail-actions">
+                            <button class="btn btn-primary btn-lg" onclick="downloadCurrentGame()">
+                                <i class="fas fa-download"></i> Download
+                            </button>
+                            <button class="btn btn-secondary btn-lg" onclick="addToCartFromDetail()">
+                                <i class="fas fa-shopping-cart"></i> Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                    <div class="game-detail-info">
+                        <h1 id="detailTitle"></h1>
+                        <div class="game-meta">
+                            <span class="game-category-badge" id="detailCategory"></span>
+                            <div class="game-rating" id="detailRating"></div>
+                            <div class="game-price" id="detailPrice"></div>
+                        </div>
+                        <p id="detailDescription"></p>
+                        <div class="game-developer">
+                            <strong>Developer:</strong> <span id="detailDeveloper"></span>
+                        </div>
+                        <div class="game-release-date">
+                            <strong>Release Date:</strong> <span id="detailReleaseDate"></span>
+                        </div>
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <div class="about-image-placeholder">
-                        <i class="fas fa-gamepad"></i>
+                
+                <div class="game-screenshots">
+                    <h3>Screenshots</h3>
+                    <div class="screenshots-grid" id="screenshotsGrid">
+                        <!-- Screenshots will be populated by JavaScript -->
                     </div>
                 </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Admin Login & Dashboard -->
-    <div class="modal fade" id="adminLoginModal" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Admin Login</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <div class="mb-3">
-              <label class="form-label">Password</label>
-              <input type="password" id="adminPassword" class="form-control" placeholder="Enter admin password">
-            </div>
-            <div id="adminLoginError" class="text-danger" style="display:none;">Invalid password</div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button type="button" class="btn btn-primary" onclick="authenticateAdmin()">Login</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <section id="adminDashboard" class="py-5" style="display:none;">
-        <div class="container">
-            <h2 class="mb-4">Admin Dashboard</h2>
-            <p>Logged in as admin. Password-protected controls for game management.</p>
-            <div class="mb-4">
-                <button class="btn btn-danger" onclick="adminLogout()">Log out</button>
-            </div>
-
-            <h4>Game List</h4>
-            <div id="adminGameList"></div>
-
-            <h4 class="mt-5">Add New Game</h4>
-            <form id="adminAddGameForm" onsubmit="event.preventDefault(); addGameAsAdmin();">
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <input type="text" id="newGameName" class="form-control" placeholder="Name" required>
-                    </div>
-                    <div class="col-md-6">
-                        <input type="text" id="newGameCategory" class="form-control" placeholder="Category" required>
-                    </div>
-                    <div class="col-md-4">
-                        <input type="number" step="0.01" id="newGamePrice" class="form-control" placeholder="Price" required>
-                    </div>
-                    <div class="col-md-4">
-                        <input type="number" step="0.1" min="0" max="5" id="newGameRating" class="form-control" placeholder="Rating" required>
-                    </div>
-                    <div class="col-md-4">
-                        <input type="text" id="newGameDeveloper" class="form-control" placeholder="Developer" required>
-                    </div>
-                    <div class="col-12">
-                        <input type="text" id="newGameImage" class="form-control" placeholder="Image URL (optional if using upload)">
-                    </div>
-                    <div class="col-md-6">
-                        <input type="file" id="newGameImageFile" class="form-control" accept="image/*">
-                    </div>
-                    <div class="col-12">
-                        <textarea id="newGameDescription" class="form-control" placeholder="Description" rows="2" required></textarea>
-                    </div>
-                    <div class="col-12">
-                        <button class="btn btn-success" type="submit">Add Game</button>
-                    </div>
-                </div>
-            </form>
-            <div id="adminMessage" class="mt-3"></div>
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section id="contact" class="contact-section py-5">
-        <div class="container">
-            <h2 class="section-title text-center mb-5">Get in Touch</h2>
-            <div class="row">
-                <div class="col-md-6 offset-md-3">
-                    <form id="contactForm" class="glass-form">
-                        <div class="mb-3">
-                            <input type="text" class="form-control glass-input" id="contactName" placeholder="Your Name" required>
+                
+                <div class="game-requirements">
+                    <h3>System Requirements</h3>
+                    <div class="requirements-grid">
+                        <div class="requirement-card">
+                            <h4><i class="fas fa-desktop"></i> Minimum</h4>
+                            <div id="minRequirements"></div>
                         </div>
-                        <div class="mb-3">
-                            <input type="email" class="form-control glass-input" id="contactEmail" placeholder="Your Email" required>
-                        </div>
-                        <div class="mb-3">
-                            <textarea class="form-control glass-input" id="contactMessage" rows="5" placeholder="Your Message" required></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-neon w-100">Send Message</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </section>
-
-</div>
-    </section>
-    <section id="faq" class="py-5">
-        <div class="container">
-            <h2 class="text-center mb-5">Frequently Asked Questions</h2>
-            <div class="row g-4">
-                <div class="col-lg-8 offset-lg-2">
-                    <div class="accordion" id="faqAccordion">
-                        <!-- General Information -->
-                        <div class="accordion-item">
-                            <h2 class="accordion-header">
-                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
-                                    What is GameHub?
-                                </button>
-                            </h2>
-                            <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                                <div class="accordion-body">
-                                    GameHub is a digital storefront and subscription service where users can browse, purchase, and download premium video games across various genres, including Action, RPG, Horror, and Simulation.
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="accordion-item">
-                            <h2 class="accordion-header">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
-                                    How do I download games?
-                                </button>
-                            </h2>
-                            <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                                <div class="accordion-body">
-                                    Once you have purchased a game or subscribed to a plan, you can access instant downloads directly from the platform.
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Subscription & Pricing -->
-                        <div class="accordion-item">
-                            <h2 class="accordion-header">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
-                                    What are the different membership plans?
-                                </button>
-                            </h2>
-                            <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                                <div class="accordion-body">
-                                    <strong>Basic (Free):</strong> Access to free games and standard customer support.<br><br>
-                                    <strong>Premium ($9.99/month):</strong> Access to all premium games, priority support, discounts on new releases, and cloud save functionality.<br><br>
-                                    <strong>Pro ($19.99/month):</strong> All Premium benefits plus exclusive early access, 24/7 VIP support, and extra bonus games.
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="accordion-item">
-                            <h2 class="accordion-header">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
-                                    Is there a money-back guarantee?
-                                </button>
-                            </h2>
-                            <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                                <div class="accordion-body">
-                                    Yes. GameHub offers a money-back guarantee to ensure customer satisfaction with their purchases.
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Account & Security -->
-                        <div class="accordion-item">
-                            <h2 class="accordion-header">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq5">
-                                    How are payments handled?
-                                </button>
-                            </h2>
-                            <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                                <div class="accordion-body">
-                                    The platform uses secure payment processing to ensure that your financial data and transactions are protected.
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="accordion-item">
-                            <h2 class="accordion-header">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq6">
-                                    What is the "Admin" section?
-                                </button>
-                            </h2>
-                            <div id="faq6" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                                <div class="accordion-body">
-                                    The Admin section is a password-protected dashboard intended for site developers and managers. It allows them to add new games, manage the existing library, and oversee the platform's content.
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Support & Technical -->
-                        <div class="accordion-item">
-                            <h2 class="accordion-header">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq7">
-                                    What genres are available on GameHub?
-                                </button>
-                            </h2>
-                            <div id="faq7" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                                <div class="accordion-body">
-                                    We offer a wide variety of categories including: Action, Adventure, Anime, Horror, Multiplayer, Open World, Racing, Shooting, Simulation, Sports, and Strategy.
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="accordion-item">
-                            <h2 class="accordion-header">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq8">
-                                    How do I contact customer support?
-                                </button>
-                            </h2>
-                            <div id="faq8" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                                <div class="accordion-body">
-                                    You can reach out to us through the "Get in Touch" section at the bottom of the website by filling out the contact form with your name, email, and message. Pro members have access to 24/7 VIP support.
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="accordion-item">
-                            <h2 class="accordion-header">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq9">
-                                    Can I use a Shopping Cart?
-                                </button>
-                            </h2>
-                            <div id="faq9" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                                <div class="accordion-body">
-                                    Yes, you can add multiple games to your cart by clicking the "Add to Cart" button on any game profile. You can view your total and checkout by clicking the Cart icon in the navigation menu.
-                                </div>
-                            </div>
+                        <div class="requirement-card">
+                            <h4><i class="fas fa-rocket"></i> Recommended</h4>
+                            <div id="recRequirements"></div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
-
-    <!-- Shopping Cart Modal -->
-    <div class="modal fade" id="cartModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="glass-modal-content">
-                <div class="modal-header glass-header">
-                    <h5 class="modal-title"><i class="fas fa-shopping-cart"></i> Your Shopping Cart</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div id="cartItems">
-                        <div class="empty-cart-message">
-                            <i class="fas fa-shopping-cart"></i>
-                            <p>Your cart is empty</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer glass-footer">
-                    <div class="cart-total">
-                        <strong>Total: $<span id="cartTotal">0.00</span></strong>
-                    </div>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Continue Shopping</button>
-                    <button type="button" class="btn btn-neon" onclick="proceedToCheckout()" id="checkoutBtn" style="display:none;">Proceed to Checkout</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Game Details Modal -->
-    <div class="modal fade" id="gameModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="glass-modal-content">
-                <div class="modal-header glass-header">
-                    <h5 class="modal-title" id="gameModalTitle"></h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <img id="gameModalImage" src="" alt="" class="img-fluid rounded mb-3">
-                    <div class="game-detail-row">
-                        <label>Description:</label>
-                        <p id="gameModalDescription"></p>
-                    </div>
-                    <div class="game-detail-row">
-                        <label>Developer:</label>
-                        <p id="gameModalDeveloper"></p>
-                    </div>
-                    <div class="game-detail-row">
-                        <label>Genre:</label>
-                        <p id="gameModalCategory"></p>
-                    </div>
-                    <div class="game-detail-row">
-                        <label>Release Date:</label>
-                        <p id="gameModalReleaseDate"></p>
-                    </div>
-                    <div class="game-detail-row">
-                        <label>Rating:</label>
-                        <div id="gameModalRating"></div>
-                    </div>
-                </div>
-                <div class="modal-footer glass-footer">
-                    <p class="me-auto"><strong class="price-display">$<span id="gameModalPrice">0.00</span></strong></p>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-success" id="downloadButton" onclick="downloadGame()">
-                        <i class="fas fa-download"></i> Download Demo
-                    </button>
-                    <button type="button" class="btn btn-neon" id="buyButton" onclick="addToCart()">Add to Cart</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Admin Entry Modal (2FA) -->
-    <div class="modal fade" id="adminEntryModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-sm modal-dialog-centered">
-            <div class="glass-modal-content">
-                <div class="modal-header glass-header">
-                    <h5 class="modal-title"><i class="fas fa-lock"></i> Admin Access</h5>
-                </div>
-                <div class="modal-body">
-                    <div id="adminLoginStep1">
-                        <p class="text-center mb-4">Click below to request a 2FA code. A 6-digit code will be sent to ericmosha676@gmail.com</p>
-                        <button class="btn btn-neon w-100 mb-2" id="sendCodeBtn" onclick="sendAdminCode()">
-                            <i class="fas fa-envelope"></i> Request 2FA Code
-                        </button>
-                        <div id="codeStatus" style="display:none;" class="alert mt-3"></div>
-                    </div>
-                    <div id="adminLoginStep2" style="display:none;">
-                        <p class="text-center mb-4">Enter the 6-digit code sent to your email:</p>
-                        <div class="otp-input-container mb-3">
-                            <input type="text" id="otpInput" class="otp-input" placeholder="000000" maxlength="6" pattern="[0-9]{6}">
-                        </div>
-                        <button class="btn btn-neon w-100" onclick="verifyAdminCode()">Verify & Enter Office</button>
-                        <button class="btn btn-secondary w-100 mt-2" onclick="resetAdminForm()">Back</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Payment Stripe Section (hidden) -->
-    <script src="https://js.stripe.com/v3/"></script>
 
     <!-- Footer -->
-    <footer class="footer-section">
+    <footer class="footer">
         <div class="container">
-            <div class="row mb-5">
-                <div class="col-md-4 mb-4 mb-md-0">
-                    <h5 class="footer-title">GameHub</h5>
-                    <p class="footer-text">Your ultimate gaming destination for premium games and exclusive content.</p>
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>GameHub</h5>
+                    <p>Your ultimate gaming destination with thousands of games to discover and download.</p>
                 </div>
-                <div class="col-md-4 mb-4 mb-md-0">
-                    <h6 class="footer-title">Quick Links</h6>
-                    <ul class="list-unstyled footer-links">
-                        <li><a href="#games">Browse Games</a></li>
+                <div class="col-md-4">
+                    <h5>Quick Links</h5>
+                    <ul class="footer-links">
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#games">Games</a></li>
                         <li><a href="#categories">Categories</a></li>
-                        <li><a href="#about">About Us</a></li>
                         <li><a href="#contact">Contact</a></li>
                     </ul>
                 </div>
                 <div class="col-md-4">
-                    <h6 class="footer-title">Follow Us</h6>
+                    <h5>Connect</h5>
                     <div class="social-links">
-                        <a href="https://www.instagram.com/bee_thevillan?igshid=NDF3N2hhZDYwMmF2&utm_source=qr" target="_blank" rel="noopener noreferrer" class="social-icon instagram" title="Instagram">
-                            <i class="fab fa-instagram"></i>
-                        </a>
-                        <a href="https://www.tiktok.com/@thecaptaintrq" target="_blank" rel="noopener noreferrer" class="social-icon tiktok" title="TikTok">
-                            <i class="fab fa-tiktok"></i>
-                        </a>
-                        <a href="https://www.facebook.com/share/1FgEX3sSvg/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" class="social-icon facebook" title="Facebook">
-                            <i class="fab fa-facebook"></i>
-                        </a>
+                        <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-discord"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-steam"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
                     </div>
                 </div>
             </div>
-            <hr class="footer-divider">
-            <p class="text-center footer-copyright">&copy; 2024 GameHub. All rights reserved. | Developed with <i class="fas fa-heart"></i> for gamers</p>
+            <div class="footer-bottom">
+                <p>&copy; 2024 GameHub. All rights reserved.</p>
+            </div>
         </div>
     </footer>
 
     <!-- Login Modal -->
     <div class="modal fade" id="loginModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="glass-modal-content">
-                <div class="modal-header glass-header">
-                    <h5 class="modal-title"><i class="fas fa-sign-in-alt"></i> Login</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Login to GameHub</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <form id="loginForm">
@@ -540,18 +250,10 @@
                         </div>
                         <div class="mb-3">
                             <label for="loginPassword" class="form-label">Password</label>
-                            <div class="password-input-group">
-                                <input type="password" class="form-control" id="loginPassword" required>
-                                <button type="button" class="btn btn-outline-secondary password-toggle" onclick="togglePassword('loginPassword', this)">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                            </div>
+                            <input type="password" class="form-control" id="loginPassword" required>
                         </div>
                         <button type="submit" class="btn btn-primary w-100">Login</button>
                     </form>
-                    <div class="text-center mt-3">
-                        <p>Don't have an account? <a href="#" onclick="switchToSignup()">Sign Up</a></p>
-                    </div>
                 </div>
             </div>
         </div>
@@ -560,10 +262,10 @@
     <!-- Signup Modal -->
     <div class="modal fade" id="signupModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="glass-modal-content">
-                <div class="modal-header glass-header">
-                    <h5 class="modal-title"><i class="fas fa-user-plus"></i> Sign Up</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Join GameHub</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <form id="signupForm">
@@ -577,245 +279,44 @@
                         </div>
                         <div class="mb-3">
                             <label for="signupPassword" class="form-label">Password</label>
-                            <div class="password-input-group">
-                                <input type="password" class="form-control" id="signupPassword" required>
-                                <button type="button" class="btn btn-outline-secondary password-toggle" onclick="togglePassword('signupPassword', this)">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                            </div>
-                            <div class="password-strength mt-2" id="signupPasswordStrength"></div>
+                            <input type="password" class="form-control" id="signupPassword" required>
                         </div>
                         <div class="mb-3">
                             <label for="signupConfirmPassword" class="form-label">Confirm Password</label>
-                            <div class="password-input-group">
-                                <input type="password" class="form-control" id="signupConfirmPassword" required>
-                                <button type="button" class="btn btn-outline-secondary password-toggle" onclick="togglePassword('signupConfirmPassword', this)">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                            </div>
+                            <input type="password" class="form-control" id="signupConfirmPassword" required>
                         </div>
-                        <button type="submit" class="btn btn-primary w-100">Sign Up</button>
+                        <button type="submit" class="btn btn-primary w-100">Create Account</button>
                     </form>
-                    <div class="text-center mt-3">
-                        <p>Already have an account? <a href="#" onclick="switchToLogin()">Login</a></p>
-                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Admin Office Modal -->
-    <div class="modal fade" id="adminOfficeModal" tabindex="-1" data-bs-backdrop="static">
-        <div class="modal-dialog modal-xl modal-dialog-centered">
-            <div class="glass-modal-content admin-office-modal">
-                <div class="modal-header glass-header admin-header">
-                    <h5 class="modal-title"><i class="fas fa-crown"></i> Manager Office</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" onclick="exitAdminPanel()"></button>
-                </div>
-                <div class="modal-body">
-                    <!-- Admin Tabs -->
-                    <ul class="nav nav-tabs admin-tabs" id="adminTabs">
-                        <li class="nav-item">
-                            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#dashboardTab">
-                                <i class="fas fa-chart-bar"></i> Dashboard
-                            </button>
-                        </li>
-                        <li class="nav-item">
-                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#addGameTab">
-                                <i class="fas fa-plus"></i> Add Game
-                            </button>
-                        </li>
-                        <li class="nav-item">
-                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#manageGamesTab">
-                                <i class="fas fa-edit"></i> Manage Games
-                            </button>
-                        </li>
-                        <li class="nav-item">
-                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#backgroundTab">
-                                <i class="fas fa-image"></i> Background
-                            </button>
-                        </li>
-                    </ul>
-
-                    <!-- Tab Content -->
-                    <div class="tab-content admin-tab-content">
-                        <!-- Dashboard Tab -->
-                        <div class="tab-pane fade show active" id="dashboardTab">
-                            <div class="dashboard-stats">
-                                <div class="stat-card">
-                                    <i class="fas fa-gamepad"></i>
-                                    <div>
-                                        <h6>Total Games</h6>
-                                        <p id="totalGamesCount">0</p>
-                                    </div>
-                                </div>
-                                <div class="stat-card">
-                                    <i class="fas fa-tags"></i>
-                                    <div>
-                                        <h6>Categories</h6>
-                                        <p>10</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="admin-actions mt-4">
-                                <h6>Quick Actions</h6>
-                                <button class="btn btn-outline-light" onclick="exportGamesData()">
-                                    <i class="fas fa-download"></i> Export Data
-                                </button>
-                                <button class="btn btn-outline-light" onclick="resetAllData()">
-                                    <i class="fas fa-redo"></i> Reset All Games
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Add Game Tab -->
-                        <div class="tab-pane fade" id="addGameTab">
-                            <form id="addGameForm" class="admin-form">
-                                <div class="form-group mb-3">
-                                    <label>Game Title *</label>
-                                    <input type="text" class="form-control glass-input" id="gameTitle" required>
-                                </div>
-                                <div class="form-group mb-3">
-                                    <label>Price ($) *</label>
-                                    <input type="number" class="form-control glass-input" id="gamePrice" min="0" step="0.01" required>
-                                </div>
-                                <div class="form-group mb-3">
-                                    <label>Category *</label>
-                                    <select class="form-select glass-input" id="gameCategory" required>
-                                        <option value="">Select Category</option>
-                                        <option value="action">⚡ Action</option>
-                                        <option value="open-world">🌍 Open World</option>
-                                        <option value="adventure">🗺️ Adventure</option>
-                                        <option value="rpg">🐉 RPG</option>
-                                        <option value="horror">👻 Horror</option>
-                                        <option value="sports">⚽ Sports</option>
-                                        <option value="racing">🏎️ Racing</option>
-                                        <option value="strategy">♟️ Strategy</option>
-                                        <option value="simulation">🎮 Simulation</option>
-                                        <option value="puzzle">🧩 Puzzle</option>
-                                    </select>
-                                </div>
-                                <div class="form-group mb-3">
-                                    <label>Cloud Link (Download URL) *</label>
-                                    <input type="url" class="form-control glass-input" id="gameLink" required>
-                                </div>
-                                <div class="form-group mb-3">
-                                    <label>Description</label>
-                                    <textarea class="form-control glass-input" id="gameDescription" rows="3"></textarea>
-                                </div>
-                                <div class="form-group mb-3">
-                                    <label>Developer</label>
-                                    <input type="text" class="form-control glass-input" id="gameDeveloper">
-                                </div>
-                                <div class="form-group mb-3">
-                                    <label>Image URL</label>
-                                    <input type="url" class="form-control glass-input" id="gameImage" placeholder="https://...">
-                                </div>
-                                <div class="form-group mb-3">
-                                    <label>Rating (1-5)</label>
-                                    <input type="number" class="form-control glass-input" id="gameRating" min="1" max="5" step="0.1">
-                                </div>
-                                <button type="submit" class="btn btn-neon w-100">
-                                    <i class="fas fa-plus"></i> Add Game
-                                </button>
-                            </form>
-                        </div>
-
-                        <!-- Manage Games Tab -->
-                        <div class="tab-pane fade" id="manageGamesTab">
-                            <div class="games-management-list" id="gamesList">
-                                <!-- Games list will be populated -->
-                            </div>
-                        </div>
-
-                        <!-- Background Tab -->
-                        <div class="tab-pane fade" id="backgroundTab">
-                            <div class="background-management">
-                                <h5><i class="fas fa-image"></i> Background Management</h5>
-                                
-                                <!-- Upload Section -->
-                                <div class="upload-section mb-4">
-                                    <h6>Upload Background Images</h6>
-                                    <div class="upload-area" id="uploadArea">
-                                        <div class="upload-content">
-                                            <i class="fas fa-cloud-upload-alt fa-3x mb-3"></i>
-                                            <p>Drag & drop images here or click to browse</p>
-                                            <input type="file" id="backgroundUpload" accept="image/*" multiple style="display: none;">
-                                            <button class="btn btn-outline-light" onclick="document.getElementById('backgroundUpload').click()">
-                                                <i class="fas fa-upload"></i> Choose Images
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Background Gallery -->
-                                <div class="background-gallery-section mb-4">
-                                    <h6>Background Gallery</h6>
-                                    <div class="background-gallery" id="backgroundGallery">
-                                        <!-- Background images will be displayed here -->
-                                    </div>
-                                </div>
-
-                                <!-- Rotation Controls -->
-                                <div class="rotation-controls mb-4">
-                                    <h6>Background Rotation</h6>
-                                    <div class="rotation-settings">
-                                        <div class="form-check form-switch mb-3">
-                                            <input class="form-check-input" type="checkbox" id="autoRotate">
-                                            <label class="form-check-label" for="autoRotate">
-                                                Auto-rotate backgrounds every 5 seconds
-                                            </label>
-                                        </div>
-                                        <div class="rotation-controls-buttons">
-                                            <button class="btn btn-outline-light btn-sm" onclick="startBackgroundRotation()">
-                                                <i class="fas fa-play"></i> Start Rotation
-                                            </button>
-                                            <button class="btn btn-outline-light btn-sm" onclick="stopBackgroundRotation()">
-                                                <i class="fas fa-stop"></i> Stop Rotation
-                                            </button>
-                                            <button class="btn btn-outline-danger btn-sm" onclick="clearAllBackgrounds()">
-                                                <i class="fas fa-trash"></i> Clear All
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Current Background -->
-                                <div class="current-background">
-                                    <h6>Current Background</h6>
-                                    <div class="current-bg-display" id="currentBgDisplay">
-                                        <p>No background set</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Profile Modal -->
-    <div class="modal fade" id="profileModal" tabindex="-1">
+    <!-- Cart Modal -->
+    <div class="modal fade" id="cartModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
-            <div class="glass-modal-content">
-                <div class="modal-header glass-header">
-                    <h5 class="modal-title"><i class="fas fa-user"></i> User Profile</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Shopping Cart</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <div id="profileContent">
-                        <!-- Profile content will be dynamically inserted here -->
+                    <div id="cartItems">
+                        <!-- Cart items will be populated by JavaScript -->
+                    </div>
+                    <div class="cart-summary">
+                        <h4>Total: $<span id="cartTotal">0.00</span></h4>
                     </div>
                 </div>
-                <div class="modal-footer glass-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" onclick="saveProfileSettings()">Save Settings</button>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Continue Shopping</button>
+                    <button type="button" class="btn btn-primary" onclick="checkout()">Checkout</button>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="script.js"></script>
 </body>
