@@ -1180,7 +1180,18 @@ function handleSignup(e) {
         role: 'user',
         status: 'active',
         joined: new Date().toISOString().split('T')[0],
-        lastLogin: new Date().toISOString()
+        lastLogin: new Date().toISOString(),
+        profilePicture: null,
+        preferences: {
+            theme: 'dark',
+            notifications: true,
+            newsletter: false
+        },
+        stats: {
+            gamesDownloaded: 0,
+            gamesPurchased: 0,
+            lastActivity: new Date().toISOString()
+        }
     };
     
     // Save user to localStorage
@@ -1201,7 +1212,11 @@ function handleSignup(e) {
     document.getElementById('signupForm').reset();
     document.getElementById('signupPasswordStrength').innerHTML = '';
     
+    // Show welcome notification with account details
     showNotification(`Welcome to GameHub, ${name}! Your account has been created successfully.`, 'success');
+    
+    // Log user creation for debugging
+    console.log('New user created:', { name, email, id: newUser.id });
 }
 
 // Update User Navbar
@@ -1293,14 +1308,113 @@ function showTerms() {
 // Show Profile
 function showProfile() {
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    if (currentUser) {
-        alert(`Profile Information:\n\nName: ${currentUser.name}\nEmail: ${currentUser.email}\nMember Since: ${currentUser.joined}\nStatus: ${currentUser.status}`);
+    if (!currentUser) {
+        showNotification('Please login to view your profile', 'error');
+        return;
     }
+    
+    // Create profile modal content
+    const profileContent = `
+        <div class="text-center mb-4">
+            <div class="mb-3">
+                <i class="fas fa-user-circle fa-5x text-primary"></i>
+            </div>
+            <h4>${currentUser.name}</h4>
+            <p class="text-muted">${currentUser.email}</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card bg-dark text-white">
+                    <div class="card-body">
+                        <h6><i class="fas fa-calendar"></i> Member Since</h6>
+                        <p>${currentUser.joined}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card bg-dark text-white">
+                    <div class="card-body">
+                        <h6><i class="fas fa-gamepad"></i> Games Downloaded</h6>
+                        <p>${currentUser.stats?.gamesDownloaded || 0}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-3">
+            <h6>Account Settings</h6>
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="emailNotifications" ${currentUser.preferences?.notifications ? 'checked' : ''}>
+                <label class="form-check-label" for="emailNotifications">
+                    Email Notifications
+                </label>
+            </div>
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="newsletter" ${currentUser.preferences?.newsletter ? 'checked' : ''}>
+                <label class="form-check-label" for="newsletter">
+                    Newsletter Subscription
+                </label>
+            </div>
+        </div>
+    `;
+    
+    // Update modal content
+    document.getElementById('profileContent').innerHTML = profileContent;
+    
+    // Show profile modal
+    const profileModal = new bootstrap.Modal(document.getElementById('profileModal'));
+    profileModal.show();
 }
 
 // Show Settings
 function showSettings() {
-    alert('Settings panel coming soon! You will be able to:\n- Update your profile\n- Change password\n- Manage notifications\n- Privacy settings');
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (!currentUser) {
+        showNotification('Please login to view settings', 'error');
+        return;
+    }
+    
+    showNotification('Settings panel coming soon!', 'info');
+}
+
+// Save Profile Settings
+function saveProfileSettings() {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (!currentUser) {
+        showNotification('Please login to save settings', 'error');
+        return;
+    }
+    
+    // Get updated preferences
+    const emailNotifications = document.getElementById('emailNotifications')?.checked || false;
+    const newsletter = document.getElementById('newsletter')?.checked || false;
+    
+    // Update user preferences
+    currentUser.preferences = {
+        ...currentUser.preferences,
+        notifications: emailNotifications,
+        newsletter: newsletter
+    };
+    
+    // Update user in localStorage
+    const users = JSON.parse(localStorage.getItem('users') || '[]');
+    const userIndex = users.findIndex(u => u.id === currentUser.id);
+    if (userIndex !== -1) {
+        users[userIndex] = currentUser;
+        localStorage.setItem('users', JSON.stringify(users));
+    }
+    
+    // Update current user
+    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+    
+    showNotification('Profile settings saved successfully!', 'success');
+    
+    // Close modal
+    const profileModal = bootstrap.Modal.getInstance(document.getElementById('profileModal'));
+    if (profileModal) {
+        profileModal.hide();
+    }
 }
 
 // Initialize authentication
