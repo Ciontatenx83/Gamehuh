@@ -273,19 +273,75 @@ function saveGamesToStorage() {
     localStorage.setItem('gameHubGames', JSON.stringify(games));
 }
 
-
 let cart = [];
 let currentGameForModal = null;
 
-// Initialize the page
+// Initialize modern gaming platform
 document.addEventListener('DOMContentLoaded', function() {
-    initializeTheme();
-    loadCartFromStorage(); // Load cart
-    updateCartBadge(); // Update cart badge
-    displayFeaturedGames();
+    initializeGamingPlatform();
+});
+
+// Initialize platform functionality
+function initializeGamingPlatform() {
     displayAllGames();
     setupEventListeners();
-});
+    setupSmoothScrolling();
+    setupAnimations();
+}
+
+// Display all games
+function displayAllGames() {
+    const gamesList = document.getElementById('gamesList');
+    if (!gamesList) return;
+    
+    const gamesHTML = games.map(game => `
+        <div class="game-card" onclick="showGameDetail(${game.id})">
+            <div class="game-card-image-container">
+                <img src="${game.image}" alt="${game.name}" class="game-card-image">
+                <div class="game-card-overlay">
+                    <div class="game-card-category">${game.category.toUpperCase()}</div>
+                    <div class="game-card-rating">
+                        ${generateStars(game.rating)}
+                        <span>${game.rating}</span>
+                    </div>
+                    <div class="game-card-price">$${game.price}</div>
+                </div>
+            </div>
+            <div class="game-card-body">
+                <h3 class="game-card-title">${game.name}</h3>
+                <p class="game-card-description">${game.description}</p>
+                <div class="game-card-meta">
+                    <span class="game-developer">${game.developer}</span>
+                    <span class="game-release-date">${game.releaseDate}</span>
+                </div>
+            </div>
+        </div>
+    `).join('');
+    
+    gamesList.innerHTML = gamesHTML;
+}
+
+// Generate star rating HTML
+function generateStars(rating) {
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 >= 0.5;
+    let stars = '';
+    
+    for (let i = 0; i < fullStars; i++) {
+        stars += '<i class="fas fa-star"></i>';
+    }
+    
+    if (hasHalfStar && fullStars < 5) {
+        stars += '<i class="fas fa-star-half-alt"></i>';
+    }
+    
+    const emptyStars = 5 - Math.ceil(rating);
+    for (let i = 0; i < emptyStars; i++) {
+        stars += '<i class="far fa-star"></i>';
+    }
+    
+    return stars;
+}
 
 // Display featured games
 function displayFeaturedGames() {
