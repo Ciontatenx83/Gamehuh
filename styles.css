@@ -1020,3 +1020,429 @@ img {
         --text-secondary: #cbd5e1;
     }
 }
+
+/* Admin Panel Styles */
+.admin-section {
+    margin-bottom: 2rem;
+}
+
+.admin-section h6 {
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Theme Engine Styles */
+.theme-selector,
+.background-controls,
+.color-scheme,
+.preset-backgrounds {
+    margin-bottom: 2rem;
+}
+
+.preset-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.preset-item {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 1rem;
+    text-align: center;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+
+.preset-item:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-glow);
+}
+
+.preset-item img {
+    width: 100%;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+}
+
+.preset-item span {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.theme-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 2rem;
+}
+
+/* User Dashboard Styles */
+.user-stats {
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: 1.5rem;
+    text-align: center;
+    transition: var(--transition-smooth);
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-glow);
+}
+
+.stat-card .stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+
+.stat-card .stat-label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.user-management,
+.role-management {
+    margin-bottom: 2rem;
+}
+
+.users-table-container {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: 1rem;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.users-table-container table {
+    margin-bottom: 0;
+}
+
+.users-table-container th {
+    color: var(--primary-color);
+    font-weight: 600;
+    border-bottom: 2px solid var(--glass-border);
+}
+
+.users-table-container td {
+    vertical-align: middle;
+    border-color: var(--glass-border);
+}
+
+.role-assignments,
+.role-permissions {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 1.5rem;
+}
+
+.permission-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+.permission-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.permission-item input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--primary-color);
+}
+
+/* Analytics Panel Styles */
+.analytics-overview {
+    margin-bottom: 2rem;
+}
+
+.activity-logs {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: 1.5rem;
+}
+
+.log-filters {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.log-filters select {
+    width: 200px;
+}
+
+.activity-list {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.log-entry {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid var(--glass-border);
+    transition: var(--transition-smooth);
+}
+
+.log-entry:hover {
+    background: rgba(99, 102, 241, 0.1);
+}
+
+.log-entry-type {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.log-entry-type.download {
+    background: var(--success-color);
+    color: white;
+}
+
+.log-entry-type.purchase {
+    background: var(--primary-color);
+    color: white;
+}
+
+.log-entry-type.login {
+    background: var(--warning-color);
+    color: white;
+}
+
+.log-entry-type.registration {
+    background: var(--accent-color);
+    color: white;
+}
+
+/* Settings Panel Styles */
+.settings-section {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.settings-section h6 {
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+
+.settings-actions {
+    text-align: center;
+    margin-top: 2rem;
+}
+
+/* Admin Navigation Tabs */
+.nav-tabs {
+    border-bottom: 2px solid var(--glass-border);
+    margin-bottom: 2rem;
+}
+
+.nav-tabs .nav-link {
+    color: var(--text-secondary);
+    border: none;
+    background: transparent;
+    padding: 1rem 1.5rem;
+    border-radius: 8px 8px 0 0;
+    transition: var(--transition-smooth);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.nav-tabs .nav-link:hover {
+    color: var(--primary-color);
+    background: var(--glass-bg);
+}
+
+.nav-tabs .nav-link.active {
+    color: var(--primary-color);
+    background: var(--glass-bg);
+    border-bottom: 2px solid var(--primary-color);
+}
+
+.tab-content {
+    background: transparent;
+}
+
+/* Form Controls for Admin */
+.form-select.glass-morphism,
+.form-control.glass-morphism {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    color: var(--text-primary);
+}
+
+.form-select.glass-morphism:focus,
+.form-control.glass-morphism:focus {
+    background: var(--glass-bg);
+    border-color: var(--primary-color);
+    color: var(--text-primary);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.input-group .form-control.glass-morphism {
+    border-radius: 0;
+}
+
+.input-group .btn {
+    border-radius: 0 8px 8px 0;
+}
+
+/* Mobile Optimization for Admin Panel */
+@media (max-width: 768px) {
+    .admin-section {
+        margin-bottom: 1.5rem;
+    }
+    
+    .preset-grid {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 0.75rem;
+    }
+    
+    .theme-actions {
+        flex-direction: column;
+    }
+    
+    .user-stats .row {
+        gap: 1rem;
+    }
+    
+    .log-filters {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .log-filters select {
+        width: 100%;
+    }
+    
+    .permission-list {
+        grid-template-columns: 1fr;
+    }
+    
+    .users-table-container {
+        font-size: 0.9rem;
+    }
+    
+    .nav-tabs .nav-link {
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* Admin Status Indicators */
+.status-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.status-badge.active {
+    background: var(--success-color);
+    color: white;
+}
+
+.status-badge.inactive {
+    background: var(--text-muted);
+    color: white;
+}
+
+.status-badge.vip {
+    background: var(--accent-color);
+    color: white;
+}
+
+.status-badge.admin {
+    background: var(--danger-color);
+    color: white;
+}
+
+/* Admin Action Buttons */
+.btn-admin-action {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+    border-radius: 6px;
+    margin: 0 0.25rem;
+}
+
+/* Loading States for Admin */
+.admin-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+}
+
+.admin-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--glass-border);
+    border-top: 3px solid var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+/* Theme Preview */
+.theme-preview {
+    width: 100%;
+    height: 200px;
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    margin-top: 1rem;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.theme-preview::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, rgba(99, 102, 241, 0.3), rgba(139, 92, 246, 0.3));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 1.2rem;
+}

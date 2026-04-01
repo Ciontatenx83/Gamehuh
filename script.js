@@ -996,3 +996,651 @@ function showForgotPassword() {
 function loadMoreGames() {
     dataManager.showNotification('Load more games feature coming soon!', 'info');
 }
+
+// ==================== ADMIN PANEL FUNCTIONS ====================
+
+// Admin Data Manager Extension
+class AdminDataManager extends DataManager {
+    constructor() {
+        super();
+        this.initializeAdminStorage();
+        this.loadAdminData();
+    }
+
+    initializeAdminStorage() {
+        // Admin settings storage
+        if (!localStorage.getItem('gamehub_admin_settings')) {
+            localStorage.setItem('gamehub_admin_settings', JSON.stringify({
+                theme: {
+                    current: 'dark',
+                    primaryColor: '#6366f1',
+                    secondaryColor: '#8b5cf6',
+                    accentColor: '#ec4899',
+                    backgroundColor: '#0f172a',
+                    backgroundImage: null
+                },
+                platform: {
+                    name: 'GameHub',
+                    contactEmail: 'admin@gamehub.com',
+                    maintenanceMode: false,
+                    allowRegistration: true
+                },
+                roles: {
+                    tester: { earlyAccess: true, moderation: false, analytics: false, userManagement: false },
+                    moderator: { earlyAccess: true, moderation: true, analytics: true, userManagement: false },
+                    vip: { earlyAccess: true, moderation: false, analytics: true, userManagement: false },
+                    admin: { earlyAccess: true, moderation: true, analytics: true, userManagement: true }
+                }
+            }));
+        }
+        
+        // User activity tracking
+        if (!localStorage.getItem('gamehub_activity_logs')) {
+            localStorage.setItem('gamehub_activity_logs', JSON.stringify([]));
+        }
+        
+        // User roles storage
+        if (!localStorage.getItem('gamehub_user_roles')) {
+            localStorage.setItem('gamehub_user_roles', JSON.stringify({}));
+        }
+    }
+
+    loadAdminData() {
+        this.adminSettings = JSON.parse(localStorage.getItem('gamehub_admin_settings') || '{}');
+        this.activityLogs = JSON.parse(localStorage.getItem('gamehub_activity_logs') || '[]');
+        this.userRoles = JSON.parse(localStorage.getItem('gamehub_user_roles') || '{}');
+        
+        // Apply saved theme on load
+        this.applySavedTheme();
+    }
+
+    applySavedTheme() {
+        const theme = this.adminSettings.theme;
+        if (theme) {
+            // Apply theme to CSS variables
+            document.documentElement.style.setProperty('--primary-color', theme.primaryColor);
+            document.documentElement.style.setProperty('--secondary-color', theme.secondaryColor);
+            document.documentElement.style.setProperty('--accent-color', theme.accentColor);
+            
+            if (theme.backgroundImage) {
+                document.body.style.backgroundImage = `url(${theme.backgroundImage})`;
+            } else if (theme.backgroundColor) {
+                document.body.style.backgroundColor = theme.backgroundColor;
+            }
+        }
+    }
+
+    saveAdminSettings() {
+        localStorage.setItem('gamehub_admin_settings', JSON.stringify(this.adminSettings));
+    }
+
+    logActivity(type, details, userId = null) {
+        const logEntry = {
+            id: Date.now(),
+            type: type,
+            details: details,
+            userId: userId || this.user?.id || 'anonymous',
+            timestamp: new Date().toISOString(),
+            userAgent: navigator.userAgent
+        };
+        
+        this.activityLogs.unshift(logEntry);
+        
+        // Keep only last 1000 logs
+        if (this.activityLogs.length > 1000) {
+            this.activityLogs = this.activityLogs.slice(0, 1000);
+        }
+        
+        localStorage.setItem('gamehub_activity_logs', JSON.stringify(this.activityLogs));
+    }
+
+    getUserRole(userId) {
+        return this.userRoles[userId] || { role: 'user', permissions: {} };
+    }
+
+    setUserRole(userId, role) {
+        this.userRoles[userId] = {
+            role: role,
+            assignedAt: new Date().toISOString(),
+            assignedBy: this.user?.id || 'system'
+        };
+        
+        localStorage.setItem('gamehub_user_roles', JSON.stringify(this.userRoles));
+        
+        this.logActivity('role_assignment', {
+            userId: userId,
+            newRole: role,
+            assignedBy: this.user?.id || 'system'
+        });
+    }
+
+    getUsers() {
+        const users = JSON.parse(localStorage.getItem('gamehub_users') || '[]');
+        return users.map(user => ({
+            ...user,
+            role: this.getUserRole(user.id),
+            lastSeen: this.getUserLastSeen(user.id),
+            totalPlayTime: this.getUserPlayTime(user.id)
+        }));
+    }
+
+    getUserLastSeen(userId) {
+        const logs = this.activityLogs.filter(log => 
+            log.userId === userId && (log.type === 'login' || log.type === 'download')
+        );
+        
+        if (logs.length === 0) return 'Never';
+        
+        const lastLog = logs[0];
+        const date = new Date(lastLog.timestamp);
+        return date.toLocaleString();
+    }
+
+    getUserPlayTime(userId) {
+        const logs = this.activityLogs.filter(log => 
+            log.userId === userId && log.type === 'download'
+        );
+        
+        return logs.length * 2; // Estimate 2 hours per download
+    }
+
+    getAnalytics() {
+        const downloads = this.activityLogs.filter(log => log.type === 'download').length;
+        const purchases = this.activityLogs.filter(log => log.type === 'purchase').length;
+        const registrations = this.activityLogs.filter(log => log.type === 'registration').length;
+        const logins = this.activityLogs.filter(log => log.type === 'login').length;
+        
+        const totalRevenue = purchases * 45.99; // Average price
+        
+        return {
+            totalDownloads: downloads,
+            totalRevenue: totalRevenue,
+            avgSessionTime: '12m', // Mock data
+            conversionRate: registrations > 0 ? ((purchases / registrations) * 100).toFixed(1) + '%' : '0%',
+            totalUsers: this.getUsers().length,
+            activeUsers: logins,
+            newUsers: registrations,
+            vipUsers: Object.values(this.userRoles).filter(role => role.role === 'vip').length
+        };
+    }
+}
+
+// Initialize Admin Data Manager
+const adminData = new AdminDataManager();
+
+// Theme Engine Functions
+function showAdminPanel() {
+    if (!dataManager.user) {
+        dataManager.showNotification('Please login to access admin panel', 'error');
+        return;
+    }
+    
+    // Check if user has admin privileges
+    const userRole = adminData.getUserRole(dataManager.user.id);
+    if (userRole.role !== 'admin') {
+        dataManager.showNotification('You do not have admin privileges', 'error');
+        return;
+    }
+    
+    // Load admin data
+    loadAdminPanelData();
+    
+    const modal = new bootstrap.Modal(document.getElementById('adminModal'));
+    modal.show();
+}
+
+function loadAdminPanelData() {
+    // Load theme settings
+    const theme = adminData.adminSettings.theme;
+    if (theme) {
+        document.getElementById('themeSelector').value = theme.current || 'dark';
+        document.getElementById('primaryColor').value = theme.primaryColor || '#6366f1';
+        document.getElementById('secondaryColor').value = theme.secondaryColor || '#8b5cf6';
+        document.getElementById('accentColor').value = theme.accentColor || '#ec4899';
+        document.getElementById('bgColorPicker').value = theme.backgroundColor || '#0f172a';
+        document.getElementById('bgColorHex').value = theme.backgroundColor || '#0f172a';
+        document.getElementById('bgImageUrl').value = theme.backgroundImage || '';
+    }
+    
+    // Load platform settings
+    const platform = adminData.adminSettings.platform;
+    if (platform) {
+        document.getElementById('platformName').value = platform.name || 'GameHub';
+        document.getElementById('contactEmail').value = platform.contactEmail || 'admin@gamehub.com';
+        document.getElementById('maintenanceMode').checked = platform.maintenanceMode || false;
+        document.getElementById('allowRegistration').checked = platform.allowRegistration !== false;
+    }
+    
+    // Load user data
+    loadUserDashboard();
+    
+    // Load analytics
+    loadAnalytics();
+    
+    // Load activity logs
+    loadActivityLogs();
+}
+
+function loadUserDashboard() {
+    const users = adminData.getUsers();
+    const analytics = adminData.getAnalytics();
+    
+    // Update statistics
+    document.getElementById('totalUsers').textContent = analytics.totalUsers;
+    document.getElementById('activeUsers').textContent = analytics.activeUsers;
+    document.getElementById('newUsers').textContent = analytics.newUsers;
+    document.getElementById('vipUsers').textContent = analytics.vipUsers;
+    
+    // Load users table
+    const usersTableBody = document.getElementById('usersTableBody');
+    usersTableBody.innerHTML = users.map(user => `
+        <tr>
+            <td>${user.id}</td>
+            <td>${user.name}</td>
+            <td>${user.email}</td>
+            <td><span class="status-badge ${user.role.role}">${user.role.role}</span></td>
+            <td>${new Date(user.joinedAt).toLocaleDateString()}</td>
+            <td>${user.lastSeen}</td>
+            <td><span class="status-badge active">Active</span></td>
+            <td>
+                <button class="btn btn-sm btn-primary btn-admin-action" onclick="viewUserDetails(${user.id})">
+                    <i class="fas fa-eye"></i>
+                </button>
+                <button class="btn btn-sm btn-warning btn-admin-action" onclick="editUserRole(${user.id})">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn btn-sm btn-danger btn-admin-action" onclick="deleteUser(${user.id})">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </td>
+        </tr>
+    `).join('');
+    
+    // Load role selector
+    const roleSelector = document.getElementById('roleSelector');
+    roleSelector.innerHTML = '<option value="">Select User</option>' + 
+        users.map(user => `<option value="${user.id}">${user.name}</option>`).join('');
+}
+
+function loadAnalytics() {
+    const analytics = adminData.getAnalytics();
+    
+    document.getElementById('totalDownloads').textContent = analytics.totalDownloads;
+    document.getElementById('totalRevenue').textContent = `$${analytics.totalRevenue.toFixed(2)}`;
+    document.getElementById('avgSessionTime').textContent = analytics.avgSessionTime;
+    document.getElementById('conversionRate').textContent = analytics.conversionRate;
+}
+
+function loadActivityLogs() {
+    const logs = adminData.activityLogs.slice(0, 50); // Show last 50 logs
+    const activityList = document.getElementById('activityList');
+    
+    activityList.innerHTML = logs.map(log => `
+        <div class="log-entry">
+            <div>
+                <span class="log-entry-type ${log.type}">${log.type}</span>
+                <strong>${log.details}</strong>
+                <small class="text-muted d-block">User ID: ${log.userId}</small>
+            </div>
+            <small class="text-muted">${new Date(log.timestamp).toLocaleString()}</small>
+        </div>
+    `).join('');
+}
+
+// Theme Management Functions
+function applyTheme() {
+    const themeSelector = document.getElementById('themeSelector');
+    const selectedTheme = themeSelector.value;
+    
+    const themes = {
+        dark: {
+            backgroundColor: '#0f172a',
+            primaryColor: '#6366f1',
+            secondaryColor: '#8b5cf6',
+            accentColor: '#ec4899'
+        },
+        glassmorphism: {
+            backgroundColor: '#1a1f3a',
+            primaryColor: '#3b82f6',
+            secondaryColor: '#8b5cf6',
+            accentColor: '#ec4899'
+        },
+        cyberpunk: {
+            backgroundColor: '#0a0a0a',
+            primaryColor: '#ff006e',
+            secondaryColor: '#fb5607',
+            accentColor: '#ffbe0b'
+        },
+        neon: {
+            backgroundColor: '#0a0a0a',
+            primaryColor: '#00ff88',
+            secondaryColor: '#ff00ff',
+            accentColor: '#00ffff'
+        },
+        minimal: {
+            backgroundColor: '#ffffff',
+            primaryColor: '#000000',
+            secondaryColor: '#666666',
+            accentColor: '#333333'
+        }
+    };
+    
+    const theme = themes[selectedTheme];
+    if (theme) {
+        // Apply to CSS variables
+        document.documentElement.style.setProperty('--primary-color', theme.primaryColor);
+        document.documentElement.style.setProperty('--secondary-color', theme.secondaryColor);
+        document.documentElement.style.setProperty('--accent-color', theme.accentColor);
+        document.body.style.backgroundColor = theme.backgroundColor;
+        
+        // Update color pickers
+        document.getElementById('primaryColor').value = theme.primaryColor;
+        document.getElementById('secondaryColor').value = theme.secondaryColor;
+        document.getElementById('accentColor').value = theme.accentColor;
+        document.getElementById('bgColorPicker').value = theme.backgroundColor;
+        document.getElementById('bgColorHex').value = theme.backgroundColor;
+        
+        // Save to admin settings
+        adminData.adminSettings.theme.current = selectedTheme;
+        adminData.adminSettings.theme.primaryColor = theme.primaryColor;
+        adminData.adminSettings.theme.secondaryColor = theme.secondaryColor;
+        adminData.adminSettings.theme.accentColor = theme.accentColor;
+        adminData.adminSettings.theme.backgroundColor = theme.backgroundColor;
+        adminData.saveAdminSettings();
+        
+        dataManager.showNotification(`Theme applied: ${selectedTheme}`, 'success');
+    }
+}
+
+function applyBackgroundColor() {
+    const color = document.getElementById('bgColorPicker').value;
+    document.getElementById('bgColorHex').value = color;
+    document.body.style.backgroundColor = color;
+    
+    adminData.adminSettings.theme.backgroundColor = color;
+    adminData.saveAdminSettings();
+    
+    dataManager.showNotification('Background color applied', 'success');
+}
+
+function applyBackgroundImage() {
+    const imageUrl = document.getElementById('bgImageUrl').value;
+    
+    if (imageUrl) {
+        document.body.style.backgroundImage = `url(${imageUrl})`;
+        document.body.style.backgroundSize = 'cover';
+        document.body.style.backgroundPosition = 'center';
+        document.body.style.backgroundRepeat = 'no-repeat';
+        
+        adminData.adminSettings.theme.backgroundImage = imageUrl;
+        adminData.saveAdminSettings();
+        
+        dataManager.showNotification('Background image applied', 'success');
+    }
+}
+
+function applyPresetBackground(preset) {
+    const presets = {
+        gradient1: 'https://picsum.photos/seed/cyber-gradient/1920/1080',
+        gradient2: 'https://picsum.photos/seed/neon-nights/1920/1080',
+        gradient3: 'https://picsum.photos/seed/dark-matter/1920/1080',
+        gradient4: 'https://picsum.photos/seed/aurora/1920/1080'
+    };
+    
+    const imageUrl = presets[preset];
+    if (imageUrl) {
+        document.body.style.backgroundImage = `url(${imageUrl})`;
+        document.body.style.backgroundSize = 'cover';
+        document.body.style.backgroundPosition = 'center';
+        document.body.style.backgroundRepeat = 'no-repeat';
+        
+        adminData.adminSettings.theme.backgroundImage = imageUrl;
+        adminData.saveAdminSettings();
+        
+        dataManager.showNotification('Preset background applied', 'success');
+    }
+}
+
+function updateColorScheme() {
+    const primaryColor = document.getElementById('primaryColor').value;
+    const secondaryColor = document.getElementById('secondaryColor').value;
+    const accentColor = document.getElementById('accentColor').value;
+    
+    document.documentElement.style.setProperty('--primary-color', primaryColor);
+    document.documentElement.style.setProperty('--secondary-color', secondaryColor);
+    document.documentElement.style.setProperty('--accent-color', accentColor);
+    
+    adminData.adminSettings.theme.primaryColor = primaryColor;
+    adminData.adminSettings.theme.secondaryColor = secondaryColor;
+    adminData.adminSettings.theme.accentColor = accentColor;
+    adminData.saveAdminSettings();
+    
+    dataManager.showNotification('Color scheme updated', 'success');
+}
+
+function saveThemeSettings() {
+    adminData.saveAdminSettings();
+    dataManager.showNotification('Theme settings saved', 'success');
+}
+
+function resetTheme() {
+    const defaultTheme = {
+        current: 'dark',
+        primaryColor: '#6366f1',
+        secondaryColor: '#8b5cf6',
+        accentColor: '#ec4899',
+        backgroundColor: '#0f172a',
+        backgroundImage: null
+    };
+    
+    adminData.adminSettings.theme = defaultTheme;
+    adminData.saveAdminSettings();
+    adminData.applySavedTheme();
+    
+    dataManager.showNotification('Theme reset to default', 'info');
+}
+
+function exportTheme() {
+    const themeData = JSON.stringify(adminData.adminSettings.theme, null, 2);
+    const blob = new Blob([themeData], { type: 'application/json' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'gamehub-theme.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+    
+    dataManager.showNotification('Theme exported', 'success');
+}
+
+function importTheme() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+    input.onchange = function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                try {
+                    const themeData = JSON.parse(event.target.result);
+                    adminData.adminSettings.theme = themeData;
+                    adminData.saveAdminSettings();
+                    adminData.applySavedTheme();
+                    
+                    dataManager.showNotification('Theme imported successfully', 'success');
+                } catch (error) {
+                    dataManager.showNotification('Invalid theme file', 'error');
+                }
+            };
+            reader.readAsText(file);
+        }
+    };
+    input.click();
+}
+
+// User Management Functions
+function searchUsers() {
+    const searchTerm = document.getElementById('userSearch').value.toLowerCase();
+    const users = adminData.getUsers();
+    
+    const filteredUsers = users.filter(user => 
+        user.name.toLowerCase().includes(searchTerm) ||
+        user.email.toLowerCase().includes(searchTerm)
+    );
+    
+    // Update users table with filtered results
+    const usersTableBody = document.getElementById('usersTableBody');
+    usersTableBody.innerHTML = filteredUsers.map(user => `
+        <tr>
+            <td>${user.id}</td>
+            <td>${user.name}</td>
+            <td>${user.email}</td>
+            <td><span class="status-badge ${user.role.role}">${user.role.role}</span></td>
+            <td>${new Date(user.joinedAt).toLocaleDateString()}</td>
+            <td>${user.lastSeen}</td>
+            <td><span class="status-badge active">Active</span></td>
+            <td>
+                <button class="btn btn-sm btn-primary btn-admin-action" onclick="viewUserDetails(${user.id})">
+                    <i class="fas fa-eye"></i>
+                </button>
+                <button class="btn btn-sm btn-warning btn-admin-action" onclick="editUserRole(${user.id})">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn btn-sm btn-danger btn-admin-action" onclick="deleteUser(${user.id})">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+function addNewUser() {
+    dataManager.showNotification('Add user feature coming soon!', 'info');
+}
+
+function viewUserDetails(userId) {
+    const users = adminData.getUsers();
+    const user = users.find(u => u.id === userId);
+    
+    if (user) {
+        const userDetails = `
+            User Details:
+            Name: ${user.name}
+            Email: ${user.email}
+            Role: ${user.role.role}
+            Join Date: ${new Date(user.joinedAt).toLocaleDateString()}
+            Last Seen: ${user.lastSeen}
+            Total Play Time: ${user.totalPlayTime} hours
+        `;
+        
+        dataManager.showNotification(userDetails, 'info');
+    }
+}
+
+function editUserRole(userId) {
+    const users = adminData.getUsers();
+    const user = users.find(u => u.id === userId);
+    
+    if (user) {
+        const roleSelector = document.getElementById('roleSelector');
+        const newRole = document.getElementById('newRole').value;
+        
+        if (roleSelector.value && newRole) {
+            adminData.setUserRole(userId, newRole);
+            loadUserDashboard(); // Refresh dashboard
+            dataManager.showNotification(`Role updated for ${user.name}`, 'success');
+        } else {
+            dataManager.showNotification('Please select user and new role', 'error');
+        }
+    }
+}
+
+function assignRole() {
+    const userId = document.getElementById('roleSelector').value;
+    const newRole = document.getElementById('newRole').value;
+    
+    if (userId && newRole) {
+        adminData.setUserRole(parseInt(userId), newRole);
+        loadUserDashboard(); // Refresh dashboard
+        dataManager.showNotification('Role assigned successfully', 'success');
+    } else {
+        dataManager.showNotification('Please select user and new role', 'error');
+    }
+}
+
+function deleteUser(userId) {
+    if (confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
+        const users = JSON.parse(localStorage.getItem('gamehub_users') || '[]');
+        const updatedUsers = users.filter(user => user.id !== userId);
+        localStorage.setItem('gamehub_users', JSON.stringify(updatedUsers));
+        
+        loadUserDashboard(); // Refresh dashboard
+        dataManager.showNotification('User deleted successfully', 'success');
+    }
+}
+
+// Analytics Functions
+function refreshActivityLogs() {
+    loadActivityLogs();
+    dataManager.showNotification('Activity logs refreshed', 'info');
+}
+
+// Settings Functions
+function savePlatformSettings() {
+    const platformName = document.getElementById('platformName').value;
+    const contactEmail = document.getElementById('contactEmail').value;
+    const maintenanceMode = document.getElementById('maintenanceMode').checked;
+    const allowRegistration = document.getElementById('allowRegistration').checked;
+    
+    adminData.adminSettings.platform = {
+        name: platformName,
+        contactEmail: contactEmail,
+        maintenanceMode: maintenanceMode,
+        allowRegistration: allowRegistration
+    };
+    
+    adminData.saveAdminSettings();
+    dataManager.showNotification('Platform settings saved', 'success');
+}
+
+function logoutAdmin() {
+    const modal = bootstrap.Modal.getInstance(document.getElementById('adminModal'));
+    if (modal) modal.hide();
+    
+    dataManager.showNotification('Logged out of admin panel', 'info');
+}
+
+// Update existing functions to log activity
+const originalLogin = dataManager.login;
+dataManager.login = function(userData) {
+    const result = originalLogin.call(this, userData);
+    if (result) {
+        adminData.logActivity('login', `User logged in: ${result.email}`, result.id);
+        
+        // Show admin link if user has admin role
+        const userRole = adminData.getUserRole(result.id);
+        if (userRole.role === 'admin') {
+            document.getElementById('adminLink').style.display = 'block';
+        }
+    }
+    return result;
+};
+
+const originalDownloadGame = window.downloadGame;
+window.downloadGame = function(game) {
+    const result = originalDownloadGame.call(this, game);
+    adminData.logActivity('download', `Game downloaded: ${game.name}`, dataManager.user?.id);
+    return result;
+};
+
+const originalCheckout = window.checkout;
+window.checkout = function() {
+    const result = originalCheckout.call(this);
+    if (dataManager.cart.length > 0) {
+        adminData.logActivity('purchase', `Purchase completed: ${dataManager.cart.length} items`, dataManager.user?.id);
+    }
+    return result;
+};

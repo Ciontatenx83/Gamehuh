@@ -74,6 +74,9 @@
                             <a href="#" onclick="showOrders()">
                                 <i class="fas fa-box"></i> My Orders
                             </a>
+                            <a href="#" onclick="showAdminPanel()" id="adminLink" style="display: none;">
+                                <i class="fas fa-cog"></i> Admin Panel
+                            </a>
                             <a href="#" onclick="logout()">
                                 <i class="fas fa-sign-out-alt"></i> Logout
                             </a>
@@ -518,6 +521,409 @@
             </div>
         </div>
     </footer>
+
+    <!-- Admin Panel Modal -->
+    <div class="modal fade" id="adminModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content glass-morphism">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-cog"></i>
+                        Admin Panel
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Admin Navigation Tabs -->
+                    <ul class="nav nav-tabs" id="adminTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="theme-tab" data-bs-toggle="tab" data-bs-target="#theme-panel" type="button">
+                                <i class="fas fa-palette"></i> Theme Engine
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="users-tab" data-bs-toggle="tab" data-bs-target="#users-panel" type="button">
+                                <i class="fas fa-users"></i> User Dashboard
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="analytics-tab" data-bs-toggle="tab" data-bs-target="#analytics-panel" type="button">
+                                <i class="fas fa-chart-line"></i> Analytics
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="settings-tab" data-bs-toggle="tab" data-bs-target="#settings-panel" type="button">
+                                <i class="fas fa-sliders-h"></i> Settings
+                            </button>
+                        </li>
+                    </ul>
+
+                    <!-- Tab Content -->
+                    <div class="tab-content" id="adminTabContent">
+                        <!-- Theme Engine Panel -->
+                        <div class="tab-pane fade show active" id="theme-panel" role="tabpanel">
+                            <div class="admin-section">
+                                <h6><i class="fas fa-palette"></i> Appearance Management</h6>
+                                
+                                <!-- Theme Selection -->
+                                <div class="theme-selector">
+                                    <label class="form-label">Active Theme</label>
+                                    <select class="form-select glass-morphism" id="themeSelector" onchange="applyTheme()">
+                                        <option value="dark">Dark Mode</option>
+                                        <option value="glassmorphism">Glassmorphism</option>
+                                        <option value="cyberpunk">Cyberpunk</option>
+                                        <option value="neon">Neon</option>
+                                        <option value="minimal">Minimal</option>
+                                    </select>
+                                </div>
+
+                                <!-- Background Controls -->
+                                <div class="background-controls">
+                                    <label class="form-label">Background Settings</label>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label">Background Color</label>
+                                                <div class="input-group">
+                                                    <input type="color" class="form-control" id="bgColorPicker" value="#0f172a">
+                                                    <input type="text" class="form-control glass-morphism" id="bgColorHex" value="#0f172a" placeholder="#000000">
+                                                    <button class="btn btn-primary" onclick="applyBackgroundColor()">Apply</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label">Background Image URL</label>
+                                                <div class="input-group">
+                                                    <input type="url" class="form-control glass-morphism" id="bgImageUrl" placeholder="https://example.com/image.jpg">
+                                                    <button class="btn btn-primary" onclick="applyBackgroundImage()">Apply</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Preset Backgrounds -->
+                                    <div class="preset-backgrounds">
+                                        <label class="form-label">Preset Backgrounds</label>
+                                        <div class="preset-grid">
+                                            <div class="preset-item" onclick="applyPresetBackground('gradient1')">
+                                                <img src="https://picsum.photos/seed/gradient1/100/60" alt="Gradient 1">
+                                                <span>Cyber Gradient</span>
+                                            </div>
+                                            <div class="preset-item" onclick="applyPresetBackground('gradient2')">
+                                                <img src="https://picsum.photos/seed/gradient2/100/60" alt="Gradient 2">
+                                                <span>Neon Nights</span>
+                                            </div>
+                                            <div class="preset-item" onclick="applyPresetBackground('gradient3')">
+                                                <img src="https://picsum.photos/seed/gradient3/100/60" alt="Gradient 3">
+                                                <span>Dark Matter</span>
+                                            </div>
+                                            <div class="preset-item" onclick="applyPresetBackground('gradient4')">
+                                                <img src="https://picsum.photos/seed/gradient4/100/60" alt="Gradient 4">
+                                                <span>Aurora</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Color Scheme -->
+                                <div class="color-scheme">
+                                    <label class="form-label">Color Scheme</label>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div class="mb-3">
+                                                <label class="form-label">Primary Color</label>
+                                                <input type="color" class="form-control" id="primaryColor" value="#6366f1" onchange="updateColorScheme()">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="mb-3">
+                                                <label class="form-label">Secondary Color</label>
+                                                <input type="color" class="form-control" id="secondaryColor" value="#8b5cf6" onchange="updateColorScheme()">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="mb-3">
+                                                <label class="form-label">Accent Color</label>
+                                                <input type="color" class="form-control" id="accentColor" value="#ec4899" onchange="updateColorScheme()">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="mb-3">
+                                                <label class="form-label">Success Color</label>
+                                                <input type="color" class="form-control" id="successColor" value="#10b981" onchange="updateColorScheme()">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Theme Actions -->
+                                <div class="theme-actions">
+                                    <button class="btn btn-success" onclick="saveThemeSettings()">
+                                        <i class="fas fa-save"></i> Save Theme
+                                    </button>
+                                    <button class="btn btn-warning" onclick="resetTheme()">
+                                        <i class="fas fa-undo"></i> Reset to Default
+                                    </button>
+                                    <button class="btn btn-info" onclick="exportTheme()">
+                                        <i class="fas fa-download"></i> Export Theme
+                                    </button>
+                                    <button class="btn btn-primary" onclick="importTheme()">
+                                        <i class="fas fa-upload"></i> Import Theme
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- User Dashboard Panel -->
+                        <div class="tab-pane fade" id="users-panel" role="tabpanel">
+                            <div class="admin-section">
+                                <h6><i class="fas fa-users"></i> User Information Dashboard</h6>
+                                
+                                <!-- User Statistics -->
+                                <div class="user-stats">
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div class="stat-card glass-morphism">
+                                                <div class="stat-number" id="totalUsers">0</div>
+                                                <div class="stat-label">Total Users</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="stat-card glass-morphism">
+                                                <div class="stat-number" id="activeUsers">0</div>
+                                                <div class="stat-label">Active Today</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="stat-card glass-morphism">
+                                                <div class="stat-number" id="newUsers">0</div>
+                                                <div class="stat-label">New This Week</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="stat-card glass-morphism">
+                                                <div class="stat-number" id="vipUsers">0</div>
+                                                <div class="stat-label">VIP Users</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- User Management -->
+                                <div class="user-management">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <label class="form-label mb-0">User Management</label>
+                                        <div>
+                                            <input type="text" class="form-control glass-morphism d-inline-block" id="userSearch" placeholder="Search users..." style="width: 200px;">
+                                            <button class="btn btn-primary ms-2" onclick="searchUsers()">
+                                                <i class="fas fa-search"></i>
+                                            </button>
+                                            <button class="btn btn-success ms-1" onclick="addNewUser()">
+                                                <i class="fas fa-plus"></i> Add User
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Users Table -->
+                                    <div class="users-table-container">
+                                        <table class="table table-dark table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>User ID</th>
+                                                    <th>Username</th>
+                                                    <th>Email</th>
+                                                    <th>Role</th>
+                                                    <th>Join Date</th>
+                                                    <th>Last Seen</th>
+                                                    <th>Status</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="usersTableBody">
+                                                <!-- Users will be loaded here -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <!-- Role Management -->
+                                <div class="role-management">
+                                    <h6><i class="fas fa-user-tag"></i> Role Management</h6>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="role-assignments">
+                                                <label class="form-label">Quick Role Assignment</label>
+                                                <select class="form-select glass-morphism" id="roleSelector">
+                                                    <option value="">Select User</option>
+                                                </select>
+                                                <select class="form-select glass-morphism ms-2" id="newRole">
+                                                    <option value="user">User</option>
+                                                    <option value="tester">Tester</option>
+                                                    <option value="moderator">Moderator</option>
+                                                    <option value="vip">VIP</option>
+                                                    <option value="admin">Admin</option>
+                                                </select>
+                                                <button class="btn btn-primary ms-2" onclick="assignRole()">
+                                                    <i class="fas fa-user-plus"></i> Assign Role
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="role-permissions">
+                                                <label class="form-label">Role Permissions</label>
+                                                <div class="permission-list">
+                                                    <div class="permission-item">
+                                                        <input type="checkbox" id="permEarlyAccess" checked>
+                                                        <label for="permEarlyAccess">Early Access to Games</label>
+                                                    </div>
+                                                    <div class="permission-item">
+                                                        <input type="checkbox" id="permModeration">
+                                                        <label for="permModeration">Content Moderation</label>
+                                                    </div>
+                                                    <div class="permission-item">
+                                                        <input type="checkbox" id="permAnalytics">
+                                                        <label for="permAnalytics">View Analytics</label>
+                                                    </div>
+                                                    <div class="permission-item">
+                                                        <input type="checkbox" id="permUserManagement">
+                                                        <label for="permUserManagement">User Management</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Analytics Panel -->
+                        <div class="tab-pane fade" id="analytics-panel" role="tabpanel">
+                            <div class="admin-section">
+                                <h6><i class="fas fa-chart-line"></i> Platform Analytics</h6>
+                                
+                                <!-- Analytics Overview -->
+                                <div class="analytics-overview">
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div class="stat-card glass-morphism">
+                                                <div class="stat-number" id="totalDownloads">0</div>
+                                                <div class="stat-label">Total Downloads</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="stat-card glass-morphism">
+                                                <div class="stat-number" id="totalRevenue">$0</div>
+                                                <div class="stat-label">Total Revenue</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="stat-card glass-morphism">
+                                                <div class="stat-number" id="avgSessionTime">0m</div>
+                                                <div class="stat-label">Avg Session Time</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="stat-card glass-morphism">
+                                                <div class="stat-number" id="conversionRate">0%</div>
+                                                <div class="stat-label">Conversion Rate</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Activity Logs -->
+                                <div class="activity-logs">
+                                    <h6><i class="fas fa-history"></i> Recent Activity</h6>
+                                    <div class="log-container">
+                                        <div class="log-filters">
+                                            <select class="form-select glass-morphism" id="logFilter">
+                                                <option value="all">All Activity</option>
+                                                <option value="downloads">Downloads</option>
+                                                <option value="purchases">Purchases</option>
+                                                <option value="logins">Logins</option>
+                                                <option value="registrations">Registrations</option>
+                                            </select>
+                                            <button class="btn btn-primary ms-2" onclick="refreshActivityLogs()">
+                                                <i class="fas fa-sync"></i> Refresh
+                                            </button>
+                                        </div>
+                                        <div class="activity-list" id="activityList">
+                                            <!-- Activity logs will be loaded here -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Settings Panel -->
+                        <div class="tab-pane fade" id="settings-panel" role="tabpanel">
+                            <div class="admin-section">
+                                <h6><i class="fas fa-sliders-h"></i> Platform Settings</h6>
+                                
+                                <!-- General Settings -->
+                                <div class="settings-section">
+                                    <h6>General Settings</h6>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label">Platform Name</label>
+                                                <input type="text" class="form-control glass-morphism" id="platformName" value="GameHub">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label">Contact Email</label>
+                                                <input type="email" class="form-control glass-morphism" id="contactEmail" value="admin@gamehub.com">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label">Maintenance Mode</label>
+                                                <div class="form-check form-switch">
+                                                    <input class="form-check-input" type="checkbox" id="maintenanceMode">
+                                                    <label class="form-check-label" for="maintenanceMode">
+                                                        Enable Maintenance Mode
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label">Registration</label>
+                                                <div class="form-check form-switch">
+                                                    <input class="form-check-input" type="checkbox" id="allowRegistration" checked>
+                                                    <label class="form-check-label" for="allowRegistration">
+                                                        Allow New Registrations
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Save Settings -->
+                                <div class="settings-actions">
+                                    <button class="btn btn-success btn-lg" onclick="savePlatformSettings()">
+                                        <i class="fas fa-save"></i> Save All Settings
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-glass" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" onclick="logoutAdmin()">
+                        <i class="fas fa-sign-out-alt"></i> Logout Admin
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
