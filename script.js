@@ -1644,3 +1644,181 @@ window.checkout = function() {
     }
     return result;
 };
+
+// ==================== SOCIAL MEDIA FUNCTIONS ====================
+
+// Social media sharing functions
+function shareGame(game, platform) {
+    const shareUrls = {
+        twitter: `https://twitter.com/intent/tweet?text=Check out ${game.name} on GameHub! 🎮&url=${window.location.href}`,
+        facebook: `https://www.facebook.com/sharer/sharer.php?u=${window.location.href}&quote=Check out ${game.name} on GameHub!`,
+        reddit: `https://reddit.com/submit?url=${window.location.href}&title=${game.name} - GameHub`,
+        discord: `https://discord.com/channels/@me`,
+        whatsapp: `https://wa.me/?text=Check out ${game.name} on GameHub! 🎮 ${window.location.href}`,
+        telegram: `https://t.me/share/url?url=${window.location.href}&text=Check out ${game.name} on GameHub! 🎮`
+    };
+
+    const url = shareUrls[platform];
+    if (url) {
+        if (platform === 'discord') {
+            // For Discord, copy to clipboard and open Discord
+            navigator.clipboard.writeText(`Check out ${game.name} on GameHub! 🎮 ${window.location.href}`);
+            dataManager.showNotification('Link copied to clipboard! Opening Discord...', 'info');
+            window.open('https://discord.com/channels/@me', '_blank');
+        } else {
+            window.open(url, '_blank', 'width=600,height=400');
+        }
+        
+        // Log sharing activity
+        adminData.logActivity('social_share', `Game shared on ${platform}: ${game.name}`, dataManager.user?.id);
+    }
+}
+
+// Add social sharing to game modal
+function addSocialSharingToModal(game) {
+    const modalBody = document.querySelector('#gameModal .modal-body');
+    const existingShareSection = modalBody.querySelector('.social-sharing');
+    
+    if (existingShareSection) {
+        existingShareSection.remove();
+    }
+    
+    const shareSection = document.createElement('div');
+    shareSection.className = 'social-sharing';
+    shareSection.innerHTML = `
+        <div class="share-section">
+            <h6><i class="fas fa-share-alt"></i> Share this game</h6>
+            <div class="share-buttons">
+                <button class="btn-share btn-twitter" onclick="shareGame(${JSON.stringify(game).replace(/"/g, '&quot;')}, 'twitter')" title="Share on Twitter">
+                    <i class="fab fa-twitter"></i>
+                </button>
+                <button class="btn-share btn-facebook" onclick="shareGame(${JSON.stringify(game).replace(/"/g, '&quot;')}, 'facebook')" title="Share on Facebook">
+                    <i class="fab fa-facebook"></i>
+                </button>
+                <button class="btn-share btn-reddit" onclick="shareGame(${JSON.stringify(game).replace(/"/g, '&quot;')}, 'reddit')" title="Share on Reddit">
+                    <i class="fab fa-reddit"></i>
+                </button>
+                <button class="btn-share btn-discord" onclick="shareGame(${JSON.stringify(game).replace(/"/g, '&quot;')}, 'discord')" title="Share on Discord">
+                    <i class="fab fa-discord"></i>
+                </button>
+                <button class="btn-share btn-whatsapp" onclick="shareGame(${JSON.stringify(game).replace(/"/g, '&quot;')}, 'whatsapp')" title="Share on WhatsApp">
+                    <i class="fab fa-whatsapp"></i>
+                </button>
+                <button class="btn-share btn-telegram" onclick="shareGame(${JSON.stringify(game).replace(/"/g, '&quot;')}, 'telegram')" title="Share on Telegram">
+                    <i class="fab fa-telegram"></i>
+                </button>
+                <button class="btn-share btn-copy" onclick="copyGameLink(${JSON.stringify(game).replace(/"/g, '&quot;')})" title="Copy link">
+                    <i class="fas fa-link"></i>
+                </button>
+            </div>
+        </div>
+    `;
+    
+    modalBody.appendChild(shareSection);
+}
+
+// Copy game link to clipboard
+function copyGameLink(game) {
+    const gameUrl = `${window.location.origin}#game-${game.id}`;
+    navigator.clipboard.writeText(gameUrl).then(() => {
+        dataManager.showNotification('Game link copied to clipboard!', 'success');
+        adminData.logActivity('link_copy', `Game link copied: ${game.name}`, dataManager.user?.id);
+    }).catch(() => {
+        dataManager.showNotification('Failed to copy link', 'error');
+    });
+}
+
+// Social media link tracking
+function trackSocialClick(platform) {
+    adminData.logActivity('social_click', `Social link clicked: ${platform}`, dataManager.user?.id);
+    dataManager.showNotification(`Opening ${platform}...`, 'info');
+}
+
+// Enhanced social links with tracking
+document.addEventListener('DOMContentLoaded', function() {
+    // Add click tracking to footer social links
+    const socialLinks = document.querySelectorAll('.social-link');
+    socialLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            const platform = this.querySelector('i').className.split(' ')[1].replace('fa-', '');
+            trackSocialClick(platform);
+        });
+    });
+    
+    // Add hover effects and tooltips
+    socialLinks.forEach(link => {
+        link.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-3px) scale(1.1) rotate(5deg)';
+        });
+        
+        link.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0) scale(1) rotate(0deg)';
+        });
+    });
+});
+
+// Social media feed simulation (for demo purposes)
+function loadSocialFeed() {
+    const socialPosts = [
+        {
+            platform: 'twitter',
+            icon: 'fab fa-twitter',
+            content: 'Just discovered an amazing new game on GameHub! 🎮 #gaming #indiegames',
+            time: '2 hours ago'
+        },
+        {
+            platform: 'discord',
+            icon: 'fab fa-discord',
+            content: 'Join our Discord community for exclusive game previews and giveaways!',
+            time: '4 hours ago'
+        },
+        {
+            platform: 'youtube',
+            icon: 'fab fa-youtube',
+            content: 'New gameplay trailer is now live! Check it out on our YouTube channel.',
+            time: '1 day ago'
+        }
+    ];
+    
+    // This could be displayed in a social feed widget
+    return socialPosts;
+}
+
+// Social media notification system
+function showSocialNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `social-notification ${type}`;
+    notification.innerHTML = `
+        <div class="social-notification-content">
+            <i class="fas fa-share-alt"></i>
+            <span>${message}</span>
+        </div>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.classList.add('show');
+    }, 100);
+    
+    setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => {
+            document.body.removeChild(notification);
+        }, 300);
+    }, 3000);
+}
+
+// Update the showGameModal function to include social sharing
+const originalShowGameModal = window.showGameModal;
+window.showGameModal = function(gameId) {
+    originalShowGameModal.call(this, gameId);
+    
+    // Add social sharing after modal is shown
+    setTimeout(() => {
+        const game = games.find(g => g.id === gameId);
+        if (game) {
+            addSocialSharingToModal(game);
+        }
+    }, 100);
+};
