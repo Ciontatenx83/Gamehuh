@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GameHub - Premium Gaming Platform</title>
     <meta name="description" content="Download premium games with secure payments and instant delivery">
+    <meta name="theme-color" content="#6366f1">
+    
+    <!-- Preload Critical Resources -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" as="style">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" as="style">
     
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -16,17 +21,26 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="loading-screen">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <p>Loading GameHub...</p>
+        </div>
+    </div>
+
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg fixed-top">
+    <nav class="navbar navbar-expand-lg fixed-top glass-morphism">
         <div class="container">
-            <a class="navbar-brand" href="#home">
-                <i class="fas fa-gamepad"></i> GameHub
+            <a class="navbar-brand" href="#home" data-aos="fade-right">
+                <i class="fas fa-gamepad brand-icon"></i>
+                <span class="brand-text">GameHub</span>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
+                <ul class="navbar-nav ms-auto" data-aos="fade-left">
                     <li class="nav-item">
                         <a class="nav-link" href="#home">Home</a>
                     </li>
@@ -38,14 +52,32 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link cart-link" href="#" onclick="openCart(event)">
-                            <i class="fas fa-shopping-cart"></i> Cart 
+                            <i class="fas fa-shopping-cart"></i>
                             <span class="cart-count" id="cartCount">0</span>
+                            <span class="cart-label">Cart</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <button class="btn btn-outline-light btn-sm ms-2" onclick="showLogin()">
-                            Login
+                        <button class="btn btn-glass btn-sm ms-2" onclick="showLogin()" id="loginBtn">
+                            <i class="fas fa-user"></i>
+                            <span class="btn-text">Login</span>
                         </button>
+                    </li>
+                    <li class="nav-item user-menu" id="userMenu" style="display: none;">
+                        <div class="user-avatar" onclick="toggleUserMenu()">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="user-dropdown" id="userDropdown">
+                            <a href="#" onclick="showProfile()">
+                                <i class="fas fa-user-circle"></i> Profile
+                            </a>
+                            <a href="#" onclick="showOrders()">
+                                <i class="fas fa-box"></i> My Orders
+                            </a>
+                            <a href="#" onclick="logout()">
+                                <i class="fas fa-sign-out-alt"></i> Logout
+                            </a>
+                        </div>
                     </li>
                 </ul>
             </div>
@@ -54,33 +86,71 @@
 
     <!-- Hero Section -->
     <section id="home" class="hero">
+        <div class="hero-background">
+            <div class="hero-particles"></div>
+        </div>
         <div class="container">
             <div class="row align-items-center min-vh-100">
                 <div class="col-lg-6">
-                    <div class="hero-content">
-                        <h1 class="display-3 fw-bold mb-4">GameHub</h1>
-                        <p class="lead mb-4">Premium Gaming Platform - Instant Downloads - Secure Payments</p>
-                        <div class="hero-search mb-4">
-                            <div class="input-group">
-                                <input type="text" class="form-control form-control-lg" id="searchInput" placeholder="Search games...">
-                                <button class="btn btn-primary btn-lg" type="button" onclick="searchGames()">
-                                    <i class="fas fa-search"></i>
-                                </button>
+                    <div class="hero-content" data-aos="fade-up">
+                        <h1 class="hero-title">
+                            <span class="gradient-text">GameHub</span>
+                        </h1>
+                        <p class="hero-subtitle">Premium Gaming Platform</p>
+                        <p class="hero-description">Instant Downloads • Secure Payments • 24/7 Support</p>
+                        <div class="hero-search">
+                            <div class="search-container glass-morphism">
+                                <i class="fas fa-search search-icon"></i>
+                                <input type="text" class="search-input" id="searchInput" placeholder="Search games, categories, developers..." autocomplete="off">
+                                <div class="search-suggestions" id="searchSuggestions"></div>
+                            </div>
+                        </div>
+                        <div class="hero-stats">
+                            <div class="stat-item">
+                                <span class="stat-number" data-count="1000">0</span>
+                                <span class="stat-label">Games</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number" data-count="50000">0</span>
+                                <span class="stat-label">Users</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number" data-count="24">0</span>
+                                <span class="stat-label">Support</span>
                             </div>
                         </div>
                         <div class="hero-buttons">
-                            <button class="btn btn-primary btn-lg me-3" onclick="document.getElementById('games').scrollIntoView({behavior: 'smooth'})">
-                                <i class="fas fa-rocket"></i> Browse Games
+                            <button class="btn btn-primary btn-lg" onclick="document.getElementById('games').scrollIntoView({behavior: 'smooth'})">
+                                <i class="fas fa-rocket"></i>
+                                <span>Browse Games</span>
                             </button>
-                            <button class="btn btn-outline-light btn-lg" onclick="document.getElementById('categories').scrollIntoView({behavior: 'smooth'})">
-                                <i class="fas fa-th-large"></i> Categories
+                            <button class="btn btn-glass btn-lg" onclick="document.getElementById('categories').scrollIntoView({behavior: 'smooth'})">
+                                <i class="fas fa-th-large"></i>
+                                <span>Categories</span>
                             </button>
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-6">
-                    <div class="hero-image">
-                        <i class="fas fa-gamepad hero-icon"></i>
+                    <div class="hero-visual" data-aos="fade-left">
+                        <div class="floating-game-card">
+                            <img src="https://picsum.photos/seed/hero1/300/400" alt="Featured Game" class="game-poster">
+                            <div class="game-overlay">
+                                <div class="game-info">
+                                    <h4>Cyber Strike 2077</h4>
+                                    <div class="game-rating">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star-half-alt"></i>
+                                    </div>
+                                    <button class="btn btn-download">
+                                        <i class="fas fa-download"></i> Download
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -88,121 +158,207 @@
     </section>
 
     <!-- Categories Section -->
-    <section id="categories" class="py-5">
+    <section id="categories" class="categories">
         <div class="container">
-            <h2 class="text-center mb-5">Game Categories</h2>
-            <div class="row g-4">
-                <div class="col-md-4 col-sm-6">
-                    <div class="category-card" onclick="filterCategory('action')">
-                        <div class="category-icon">
-                            <i class="fas fa-bolt"></i>
-                        </div>
-                        <h4>Action</h4>
+            <div class="section-header" data-aos="fade-up">
+                <h2 class="section-title">Game Categories</h2>
+                <p class="section-subtitle">Explore our diverse collection of premium games</p>
+            </div>
+            <div class="categories-grid">
+                <div class="category-card glass-morphism" data-category="action" onclick="filterCategory('action')" data-aos="fade-up" data-aos-delay="100">
+                    <div class="category-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <div class="category-content">
+                        <h3>Action</h3>
                         <p>High-octane adventures</p>
-                    </div>
-                </div>
-                <div class="col-md-4 col-sm-6">
-                    <div class="category-card" onclick="filterCategory('rpg')">
-                        <div class="category-icon">
-                            <i class="fas fa-dragon"></i>
+                        <div class="category-stats">
+                            <span class="game-count">156 Games</span>
                         </div>
-                        <h4>RPG</h4>
+                    </div>
+                    <div class="category-hover-effect"></div>
+                </div>
+                <div class="category-card glass-morphism" data-category="rpg" onclick="filterCategory('rpg')" data-aos="fade-up" data-aos-delay="200">
+                    <div class="category-icon">
+                        <i class="fas fa-dragon"></i>
+                    </div>
+                    <div class="category-content">
+                        <h3>RPG</h3>
                         <p>Epic role-playing journeys</p>
-                    </div>
-                </div>
-                <div class="col-md-4 col-sm-6">
-                    <div class="category-card" onclick="filterCategory('racing')">
-                        <div class="category-icon">
-                            <i class="fas fa-flag-checkered"></i>
+                        <div class="category-stats">
+                            <span class="game-count">89 Games</span>
                         </div>
-                        <h4>Racing</h4>
+                    </div>
+                    <div class="category-hover-effect"></div>
+                </div>
+                <div class="category-card glass-morphism" data-category="racing" onclick="filterCategory('racing')" data-aos="fade-up" data-aos-delay="300">
+                    <div class="category-icon">
+                        <i class="fas fa-flag-checkered"></i>
+                    </div>
+                    <div class="category-content">
+                        <h3>Racing</h3>
                         <p>Speed and competition</p>
-                    </div>
-                </div>
-                <div class="col-md-4 col-sm-6">
-                    <div class="category-card" onclick="filterCategory('sports')">
-                        <div class="category-icon">
-                            <i class="fas fa-football-ball"></i>
+                        <div class="category-stats">
+                            <span class="game-count">67 Games</span>
                         </div>
-                        <h4>Sports</h4>
+                    </div>
+                    <div class="category-hover-effect"></div>
+                </div>
+                <div class="category-card glass-morphism" data-category="sports" onclick="filterCategory('sports')" data-aos="fade-up" data-aos-delay="400">
+                    <div class="category-icon">
+                        <i class="fas fa-football-ball"></i>
+                    </div>
+                    <div class="category-content">
+                        <h3>Sports</h3>
                         <p>Athletic challenges</p>
-                    </div>
-                </div>
-                <div class="col-md-4 col-sm-6">
-                    <div class="category-card" onclick="filterCategory('strategy')">
-                        <div class="category-icon">
-                            <i class="fas fa-chess"></i>
+                        <div class="category-stats">
+                            <span class="game-count">124 Games</span>
                         </div>
-                        <h4>Strategy</h4>
+                    </div>
+                    <div class="category-hover-effect"></div>
+                </div>
+                <div class="category-card glass-morphism" data-category="strategy" onclick="filterCategory('strategy')" data-aos="fade-up" data-aos-delay="500">
+                    <div class="category-icon">
+                        <i class="fas fa-chess"></i>
+                    </div>
+                    <div class="category-content">
+                        <h3>Strategy</h3>
                         <p>Tactical gameplay</p>
-                    </div>
-                </div>
-                <div class="col-md-4 col-sm-6">
-                    <div class="category-card" onclick="filterCategory('puzzle')">
-                        <div class="category-icon">
-                            <i class="fas fa-puzzle-piece"></i>
+                        <div class="category-stats">
+                            <span class="game-count">93 Games</span>
                         </div>
-                        <h4>Puzzle</h4>
-                        <p>Brain-teasing fun</p>
                     </div>
+                    <div class="category-hover-effect"></div>
+                </div>
+                <div class="category-card glass-morphism" data-category="puzzle" onclick="filterCategory('puzzle')" data-aos="fade-up" data-aos-delay="600">
+                    <div class="category-icon">
+                        <i class="fas fa-puzzle-piece"></i>
+                    </div>
+                    <div class="category-content">
+                        <h3>Puzzle</h3>
+                        <p>Brain-teasing fun</p>
+                        <div class="category-stats">
+                            <span class="game-count">78 Games</span>
+                        </div>
+                    </div>
+                    <div class="category-hover-effect"></div>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Games Section -->
-    <section id="games" class="py-5 bg-dark">
+    <section id="games" class="games">
         <div class="container">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2>All Games</h2>
-                <div class="d-flex gap-2">
-                    <select class="form-select" id="sortSelect" onchange="sortGames()">
+            <div class="section-header" data-aos="fade-up">
+                <div class="section-title-group">
+                    <h2 class="section-title">All Games</h2>
+                    <p class="section-subtitle" id="gamesCount">Showing 6 games</p>
+                </div>
+                <div class="games-controls">
+                    <div class="search-container glass-morphism">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" class="search-input" id="gamesSearch" placeholder="Search games..." autocomplete="off">
+                    </div>
+                    <select class="form-select glass-morphism" id="sortSelect" onchange="sortGames()">
                         <option value="name">Sort by Name</option>
                         <option value="price">Sort by Price</option>
                         <option value="rating">Sort by Rating</option>
+                        <option value="newest">Sort by Newest</option>
                     </select>
-                    <button class="btn btn-outline-light" onclick="clearFilter()">Clear Filter</button>
+                    <button class="btn btn-glass" onclick="clearFilter()">
+                        <i class="fas fa-times"></i>
+                        <span>Clear</span>
+                    </button>
                 </div>
             </div>
             
-            <div class="row g-4" id="gamesGrid">
+            <div class="games-grid" id="gamesGrid">
                 <!-- Games will be loaded here -->
+            </div>
+            
+            <div class="load-more-container" id="loadMoreContainer" style="display: none;">
+                <button class="btn btn-primary" onclick="loadMoreGames()">
+                    <i class="fas fa-plus"></i>
+                    <span>Load More Games</span>
+                </button>
             </div>
         </div>
     </section>
 
-    <!-- Game Modal -->
+    <!-- Game Details Modal -->
     <div class="modal fade" id="gameModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content bg-dark text-white">
-                <div class="modal-header border-secondary">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content glass-morphism">
+                <div class="modal-header">
                     <h5 class="modal-title" id="modalTitle">Game Title</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <img id="modalImage" src="" alt="" class="img-fluid rounded">
+                    <div class="game-detail-container">
+                        <div class="game-detail-visual">
+                            <img id="modalImage" src="" alt="" class="game-poster-large">
+                            <div class="game-actions">
+                                <button class="btn btn-download btn-lg" onclick="downloadGame()">
+                                    <i class="fas fa-download"></i>
+                                    <span>Download Now</span>
+                                </button>
+                                <button class="btn btn-primary btn-lg" onclick="addToCart()">
+                                    <i class="fas fa-shopping-cart"></i>
+                                    <span>Add to Cart</span>
+                                </button>
+                            </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="game-detail-info">
+                            <h3 id="modalGameTitle">Game Title</h3>
                             <p id="modalDescription">Game description</p>
-                            <div class="game-details">
-                                <p><strong>Developer:</strong> <span id="modalDeveloper"></span></p>
-                                <p><strong>Category:</strong> <span id="modalCategory"></span></p>
-                                <p><strong>Rating:</strong> <span id="modalRating"></span></p>
-                                <p><strong>Price:</strong> <span id="modalPrice"></span></p>
+                            
+                            <div class="game-meta">
+                                <div class="meta-item">
+                                    <i class="fas fa-user"></i>
+                                    <span>Developer:</span>
+                                    <strong id="modalDeveloper">Developer</strong>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="fas fa-tag"></i>
+                                    <span>Category:</span>
+                                    <strong id="modalCategory">Category</strong>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="fas fa-star"></i>
+                                    <span>Rating:</span>
+                                    <strong id="modalRating">Rating</strong>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="fas fa-dollar-sign"></i>
+                                    <span>Price:</span>
+                                    <strong id="modalPrice">Price</strong>
+                                </div>
+                            </div>
+                            
+                            <div class="game-requirements">
+                                <h4>System Requirements</h4>
+                                <div class="requirements-grid">
+                                    <div class="requirement-item">
+                                        <i class="fas fa-desktop"></i>
+                                        <span>OS: Windows 10 64-bit</span>
+                                    </div>
+                                    <div class="requirement-item">
+                                        <i class="fas fa-microchip"></i>
+                                        <span>CPU: Intel Core i5-8400</span>
+                                    </div>
+                                    <div class="requirement-item">
+                                        <i class="fas fa-memory"></i>
+                                        <span>RAM: 8 GB</span>
+                                    </div>
+                                    <div class="requirement-item">
+                                        <i class="fas fa-hdd"></i>
+                                        <span>Storage: 50 GB</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer border-secondary">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-success" onclick="downloadGame()">
-                        <i class="fas fa-download"></i> Download
-                    </button>
-                    <button type="button" class="btn btn-primary" onclick="addToCart()">
-                        <i class="fas fa-shopping-cart"></i> Add to Cart
-                    </button>
                 </div>
             </div>
         </div>
@@ -211,22 +367,45 @@
     <!-- Cart Modal -->
     <div class="modal fade" id="cartModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
-            <div class="modal-content bg-dark text-white">
-                <div class="modal-header border-secondary">
-                    <h5 class="modal-title">Shopping Cart</h5>
+            <div class="modal-content glass-morphism">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-shopping-cart"></i>
+                        Shopping Cart
+                    </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div id="cartItems">
-                        <p class="text-center">Your cart is empty</p>
+                        <div class="empty-cart">
+                            <i class="fas fa-shopping-cart fa-3x"></i>
+                            <p>Your cart is empty</p>
+                            <button class="btn btn-primary" onclick="document.getElementById('games').scrollIntoView({behavior: 'smooth'})">
+                                Browse Games
+                            </button>
+                        </div>
                     </div>
-                    <div class="text-end mt-3">
-                        <h4>Total: $<span id="cartTotal">0.00</span></h4>
+                    <div class="cart-summary" id="cartSummary" style="display: none;">
+                        <div class="summary-row">
+                            <span>Subtotal:</span>
+                            <span id="cartSubtotal">$0.00</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Tax:</span>
+                            <span id="cartTax">$0.00</span>
+                        </div>
+                        <div class="summary-row total">
+                            <span>Total:</span>
+                            <span id="cartTotal">$0.00</span>
+                        </div>
                     </div>
                 </div>
-                <div class="modal-footer border-secondary">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Continue Shopping</button>
-                    <button type="button" class="btn btn-primary" onclick="checkout()">Checkout</button>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-glass" data-bs-dismiss="modal">Continue Shopping</button>
+                    <button type="button" class="btn btn-success btn-lg" onclick="checkout()" id="checkoutBtn">
+                        <i class="fas fa-credit-card"></i>
+                        <span>Secure Checkout</span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -235,22 +414,51 @@
     <!-- Login Modal -->
     <div class="modal fade" id="loginModal" tabindex="-1">
         <div class="modal-dialog">
-            <div class="modal-content bg-dark text-white">
-                <div class="modal-header border-secondary">
-                    <h5 class="modal-title">Login</h5>
+            <div class="modal-content glass-morphism">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-user"></i>
+                        Login to GameHub
+                    </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <form id="loginForm" onsubmit="handleLogin(event)">
                         <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
-                            <input type="email" class="form-control bg-dark text-white border-secondary" id="email" required>
+                            <label for="email" class="form-label">Email Address</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-envelope"></i>
+                                </span>
+                                <input type="email" class="form-control glass-morphism" id="email" required>
+                            </div>
                         </div>
                         <div class="mb-3">
                             <label for="password" class="form-label">Password</label>
-                            <input type="password" class="form-control bg-dark text-white border-secondary" id="password" required>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-lock"></i>
+                                </span>
+                                <input type="password" class="form-control glass-morphism" id="password" required>
+                                <button class="btn btn-outline-secondary" type="button" onclick="togglePassword()">
+                                    <i class="fas fa-eye" id="passwordToggle"></i>
+                                </button>
+                            </div>
                         </div>
-                        <button type="submit" class="btn btn-primary w-100">Login</button>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="rememberMe">
+                            <label class="form-check-label" for="rememberMe">
+                                Remember me
+                            </label>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 btn-lg">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <span>Login</span>
+                        </button>
+                        <div class="auth-footer">
+                            <p>Don't have an account? <a href="#" onclick="showSignup()">Sign up</a></p>
+                            <p><a href="#" onclick="showForgotPassword()">Forgot password?</a></p>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -258,35 +466,62 @@
     </div>
 
     <!-- Footer -->
-    <footer class="bg-black text-white py-4">
+    <footer class="footer">
         <div class="container">
             <div class="row">
-                <div class="col-md-4">
-                    <h5>GameHub</h5>
-                    <p>Your premium gaming destination with instant downloads.</p>
+                <div class="col-lg-4 col-md-6">
+                    <div class="footer-section">
+                        <h5>GameHub</h5>
+                        <p>Your premium gaming destination with instant downloads and secure payments.</p>
+                        <div class="social-links">
+                            <a href="#" class="social-link">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            <a href="#" class="social-link">
+                                <i class="fab fa-discord"></i>
+                            </a>
+                            <a href="#" class="social-link">
+                                <i class="fab fa-steam"></i>
+                            </a>
+                            <a href="#" class="social-link">
+                                <i class="fab fa-youtube"></i>
+                            </a>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-4">
-                    <h5>Quick Links</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="#home" class="text-white-50">Home</a></li>
-                        <li><a href="#games" class="text-white-50">Games</a></li>
-                        <li><a href="#categories" class="text-white-50">Categories</a></li>
-                    </ul>
+                <div class="col-lg-4 col-md-6">
+                    <div class="footer-section">
+                        <h5>Quick Links</h5>
+                        <ul class="footer-links">
+                            <li><a href="#home">Home</a></li>
+                            <li><a href="#games">Games</a></li>
+                            <li><a href="#categories">Categories</a></li>
+                            <li><a href="#" onclick="showSupport()">Support</a></li>
+                        </ul>
+                    </div>
                 </div>
-                <div class="col-md-4">
-                    <h5>Support</h5>
-                    <p>24/7 customer support available</p>
+                <div class="col-lg-4 col-md-6">
+                    <div class="footer-section">
+                        <h5>Legal</h5>
+                        <ul class="footer-links">
+                            <li><a href="#" onclick="showTerms()">Terms of Service</a></li>
+                            <li><a href="#" onclick="showPrivacy()">Privacy Policy</a></li>
+                            <li><a href="#" onclick="showRefund()">Refund Policy</a></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
-            <hr class="border-secondary">
-            <div class="text-center">
+            <hr>
+            <div class="footer-bottom">
                 <p>&copy; 2024 GameHub. All rights reserved.</p>
+                <p>Made with <i class="fas fa-heart text-danger"></i> for gamers</p>
             </div>
         </div>
     </footer>
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
